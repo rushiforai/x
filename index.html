@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search</title>
+    
+    <!-- Include Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Include Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+</head>
+<body>
+
+<div id="app" class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card p-4">
+                <h5 class="card-title text-center mb-4">Search</h5>
+                <div class="form-group">
+                    <input v-model="pcModel" class="form-control" type="search" placeholder="Search for a model">
+                </div>
+                <button @click="openPremiumContentPortals" class="btn btn-danger btn-block mt-3">Open Premium Content</button>
+                <button @click="openOtherSites" class="btn btn-outline-danger btn-block mt-3">Other Sites</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      pcModel: '',
+    },
+    methods: {
+      openUrl(url) {
+        window.open(url, Math.random());
+      },
+      openPremiumContentPortals() {
+        const originalPcModel = this.pcModel.trim();
+        const pcModelKebab = originalPcModel.replace(/\s+/g, "-").toLowerCase(); // Convert to lowercase
+        const portals = [
+          "vixen.com",
+          "tushy.com",
+          "tushyraw.com",
+          "blacked.com",
+          "blackedraw.com",
+          "deeper.com",
+          "milfy.com",
+          "wifey.com"
+        ];
+
+        portals.forEach((portal) => {
+          const url = `https://www.${portal}/performers/${pcModelKebab}`;
+          this.openUrl(url);
+        });
+
+        this.pcModel = originalPcModel;
+      },
+      openOtherSites() {
+  const originalPcModel = this.pcModel.trim();
+  const pcModelKebab = originalPcModel.replace(/\s+/g, "-").toLowerCase();
+  const pcModelKebab1 = originalPcModel.replace(/\s+/g, "+").toLowerCase();
+  const pcModelKebab2 = originalPcModel.replace(/\s+/g, "%20").toLowerCase();    
+  const sites = [
+    `https://tube.perverzija.com/stars/${pcModelKebab}`,
+    `https://porndish.com/tag/${pcModelKebab}`,
+    `https://hqpornero.com/search/${pcModelKebab}.html`,
+    `https://sxyprn.com/${pcModelKebab}.html`,
+    `https://mat6tube.com/video/${pcModelKebab}`,
+    `https://www.fpo.xxx/models/${pcModelKebab}/`,
+    `https://www.xfreehd.com/search?search_query=${pcModelKebab}&search_type=videos`,
+    `https://fuxnxx.com/tags/${pcModelKebab}.html`,  
+    `https://fuxporn.com/tags/${pcModelKebab}.html`,
+    `https://goodporn.to/models/${pcModelKebab}/`,
+    `https://pornxp.com/tags/${pcModelKebab}?sort=new`,
+    `https://www.pxxbay.com/?s=${pcModelKebab1}`,
+    `https://whereismyporn.com/?s=${pcModelKebab1}`,
+    `https://fullporner.com/pornstar/${pcModelKebab}`,
+    `https://www.pornhits.com/videos.php?p=1&q=${pcModelKebab1}`,
+    `https://porn4days.red/search/?s=${pcModelKebab1}`,
+    `https://www.pornhd3x.tv/search/${pcModelKebab2}`,
+    `https://www.sextu.com/pornstar/${pcModelKebab}/videos/1/`,
+    `https://www.mega-xxx.tv/tags/${pcModelKebab}/`,
+    `https://pornrips.to/?s=${pcModelKebab1}`,
+    `https://www.porntrex.com/models/${pcModelKebab}/`,
+  ];
+
+  sites.forEach((site) => {
+    this.openUrl(site);
+  });
+
+  this.pcModel = originalPcModel;
+},
+
+    },
+  });
+</script>
+
+</body>
+</html>
