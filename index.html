@@ -176,26 +176,23 @@
       },
       openPremiumContentPortals() {
         const originalPcModel = this.pcModel.trim();
+        const hasSearch = originalPcModel.length > 0;
         const pcModelKebab = originalPcModel.replace(/\s+/g, "-").toLowerCase();
+        const preset = hasSearch ? '' : this.selectedPreset.trim();
         this.selectedPremium.forEach((portal) => {
-          const url = `https://www.${portal}/performers/${pcModelKebab}`;
-          this.openUrl(url);
+          const baseUrl = hasSearch
+            ? `https://www.${portal}/performers/${pcModelKebab}`
+            : `https://www.${portal}`;
+          this.openUrl(preset ? `${baseUrl}/${preset}` : baseUrl);
         });
       },
       openOtherSites() {
-        const preset = this.selectedPreset.trim();
+        const originalPcModel = this.pcModel.trim();
+        const hasSearch = originalPcModel.length > 0;
+        const preset = hasSearch ? '' : this.selectedPreset.trim();
         this.selectedOthers.forEach((site) => {
           const normalizedSite = site.endsWith('/') ? site.slice(0, -1) : site;
           this.openUrl(preset ? `${normalizedSite}/${preset}` : normalizedSite);
-        });
-      },
-      openPremiumContentPortals() {
-        const originalPcModel = this.pcModel.trim();
-        const pcModelKebab = originalPcModel.replace(/\s+/g, "-").toLowerCase();
-        const preset = this.selectedPreset.trim();
-        this.selectedPremium.forEach((portal) => {
-          const baseUrl = `https://www.${portal}/performers/${pcModelKebab}`;
-          this.openUrl(preset ? `${baseUrl}/${preset}` : baseUrl);
         });
       },
       selectAllPremium() {
