@@ -94,7 +94,6 @@
                     </div>
                     <button @click="selectAllOthers" class="btn btn-sm btn-secondary mt-2">Select All</button>
                     <button @click="deselectAllOthers" class="btn btn-sm btn-outline-secondary mt-2 ml-2">Deselect All</button>
-                    <button @click="openOtherSitesWithPreset" class="btn btn-sm btn-warning mt-2 ml-2">Open with Preset</button>
                 </div>
                 <button @click="openPremiumContentPortals" class="btn btn-danger btn-block mt-3">Vixen</button>
                 <button @click="openOtherSites" class="btn btn-outline-danger btn-block mt-3">Other Sites</button>
@@ -184,18 +183,19 @@
         });
       },
       openOtherSites() {
-        this.selectedOthers.forEach((site) => {
-          this.openUrl(site);
-        });
-      },
-      openOtherSitesWithPreset() {
         const preset = this.selectedPreset.trim();
-        if (!preset) {
-          return;
-        }
         this.selectedOthers.forEach((site) => {
           const normalizedSite = site.endsWith('/') ? site.slice(0, -1) : site;
-          this.openUrl(`${normalizedSite}/${preset}`);
+          this.openUrl(preset ? `${normalizedSite}/${preset}` : normalizedSite);
+        });
+      },
+      openPremiumContentPortals() {
+        const originalPcModel = this.pcModel.trim();
+        const pcModelKebab = originalPcModel.replace(/\s+/g, "-").toLowerCase();
+        const preset = this.selectedPreset.trim();
+        this.selectedPremium.forEach((portal) => {
+          const baseUrl = `https://www.${portal}/performers/${pcModelKebab}`;
+          this.openUrl(preset ? `${baseUrl}/${preset}` : baseUrl);
         });
       },
       selectAllPremium() {
