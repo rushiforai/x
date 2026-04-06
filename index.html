@@ -45,20 +45,21 @@
     </style>
 </head>
 <body>
-<div id="pinOverlay" v-show="!pinAccepted">
-    <div class="card p-4">
-        <h5 class="card-title text-center mb-3">Enter PIN to Continue</h5>
-        <form @submit.prevent="checkPin">
-            <div class="form-group">
-                <input v-model="pinValue" class="form-control" type="password" placeholder="PIN" autofocus>
-            </div>
-            <button type="submit" class="btn btn-primary btn-block">Unlock</button>
-            <p v-if="pinError" class="mt-3 text-danger text-center">{{ pinError }}</p>
-        </form>
+<div id="app">
+    <div id="pinOverlay" v-show="!pinAccepted">
+        <div class="card p-4">
+            <h5 class="card-title text-center mb-3">Enter PIN to Continue</h5>
+            <form @submit.prevent="checkPin">
+                <div class="form-group">
+                    <input v-model="pinValue" class="form-control" type="password" placeholder="PIN" autofocus>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Unlock</button>
+                <p v-if="pinError" class="mt-3 text-danger text-center">{{ pinError }}</p>
+            </form>
+        </div>
     </div>
-</div>
 
-<div id="app" class="container mt-5" v-show="pinAccepted">
+    <div class="container mt-5" v-show="pinAccepted">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card p-4">
@@ -93,6 +94,7 @@
             </div>
         </div>
     </div>
+</div>
 </div>
 
 <script>
