@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Secure Portal · Smart Launcher</title>
+  <title>🫦</title>
   <style>
     * {
       margin: 0;
@@ -431,10 +431,10 @@
 <!-- PIN MODAL -->
 <div id="pinModal" class="pin-overlay">
   <div class="pin-card">
-    <h2>🔐 Secure Access</h2>
-    <p style="margin-bottom: 0.5rem; opacity:0.7;">Enter PIN to continue</p>
+    <!-- <h2>🔐 Secure Access</h2> -->
+    <!-- <p style="margin-bottom: 0.5rem; opacity:0.7;">Enter PIN to continue</p> -->
     <input type="password" id="pinInput" placeholder="••••" maxlength="6" autocomplete="off">
-    <button id="unlockBtn">Unlock Portal</button>
+    <button id="unlockBtn">EnTeR</button>
     <div id="pinError" class="error-msg"></div>
   </div>
 </div>
@@ -442,85 +442,108 @@
 <!-- MAIN APPLICATION -->
 <div id="mainApp" class="main-app">
   <div class="app-header">
-    <div class="logo"><h1>⚡ Material Portal</h1></div>
+    <div class="logo"><h1>Hello!</h1></div>
     <div class="header-actions">
-      <button id="darkModeToggle" class="icon-btn">🌓 Theme</button>
-      <button id="lockScreenBtn" class="icon-btn">🔒 Lock</button>
+      <button id="darkModeToggle" class="icon-btn">🌓</button>
+      <button id="lockScreenBtn" class="icon-btn">🔒</button>
     </div>
   </div>
 
   <!-- Name & Multi-Preset Section -->
   <div class="card">
-    <div class="card-title">📝 Enter Name (optional)</div>
+    <div class="card-title">Enter Name</div>
     <div class="flex-row">
       <div class="input-group">
-        <input type="text" id="nameInput" placeholder="e.g., john doe" autocomplete="off">
+        <input type="text" id="nameInput" placeholder="e.g., Matty Mila Perez" autocomplete="off">
       </div>
     </div>
-    <div class="card-title" style="margin-top: 0.5rem;">🏷️ Select Presets (multiple)</div>
+    <div class="card-title" style="margin-top: 0.5rem;">Select Presets</div>
     <div class="presets-area">
       <div id="presetsChecklist" class="presets-grid"></div>
       <div class="preset-manager">
-        <button id="addPresetBtn" class="small-btn">➕ Add Preset</button>
-        <button id="removeSelectedPresetsBtn" class="small-btn">✖ Remove selected</button>
+        <button id="addPresetBtn" class="small-btn">➕ Add</button>
+        <button id="removeSelectedPresetsBtn" class="small-btn">✖ Remove</button>
       </div>
     </div>
-    <div style="font-size: 0.75rem; margin-top: 0.8rem; opacity:0.8;">
+    <!-- <div style="font-size: 0.75rem; margin-top: 0.8rem; opacity:0.8;">
       💡 Name entered → uses only name. Empty name → uses all checked presets.
-    </div>
+    </div> -->
   </div>
 
   <!-- PREMIUM PORTALS -->
   <div class="card">
-    <div class="card-title">✨ Premium Portals</div>
+    <div class="card-title">Vixen</div>
     <div class="select-all-bar">
       <button id="selectAllPremium" class="select-all-btn">✅ Select All</button>
       <button id="deselectAllPremium" class="select-all-btn">❌ Deselect All</button>
     </div>
     <div id="premiumListContainer" class="urls-section"></div>
     <div class="action-buttons">
-      <button id="openPremiumBtn" class="btn-open">🚀 OPEN PREMIUM</button>
+      <button id="openPremiumBtn" class="btn-open">OPEN</button>
     </div>
   </div>
 
   <!-- OTHER SITES -->
   <div class="card">
-    <div class="card-title">🌐 Other Sites</div>
+    <div class="card-title">Other Sites</div>
     <div class="select-all-bar">
       <button id="selectAllOther" class="select-all-btn">✅ Select All</button>
       <button id="deselectAllOther" class="select-all-btn">❌ Deselect All</button>
     </div>
     <div id="otherListContainer" class="urls-section"></div>
     <div class="action-buttons">
-      <button id="openOtherBtn" class="btn-open">🔗 OPEN OTHER</button>
+      <button id="openOtherBtn" class="btn-open">OPEN</button>
     </div>
   </div>
-  <footer>Default checked items are set in code (hardcoded).</footer>
+  <!-- <footer>Default checked items are set in code (hardcoded).</footer> -->
 </div>
 
 <script>
   // ======================== SECURE PIN ==========================
-  const CORRECT_PIN = "2407";
+  const CORRECT_PIN = "6969";
 
   // ======================== PORTALS WITH HARDCODED DEFAULT CHECKED ===========
   // Set defaultSelected: true/false to choose which are checked by default
   const PREMIUM_PORTALS = [
-    { label: "Pre1 Portal", nameTemplate: "https://pre1.com/stars/{value}", presetTemplate: "https://pre1.com/tag/{value}", format: "hyphen", defaultSelected: true },
-    { label: "Pre2 Dashboard", nameTemplate: "https://pre2.com/user/{value}", presetTemplate: "https://pre2.com/das/tag/{value}", format: "plus", defaultSelected: false },
-    { label: "Premium3 Hub", nameTemplate: "https://premium3.net/profile/{value}", presetTemplate: "https://premium3.net/category/{value}", format: "percent20", defaultSelected: true },
-    { label: "VIP Dashboard", nameTemplate: "https://vip.dashboard.io/stars/{value}/xxy", presetTemplate: "https://vip.dashboard.io/das/tag/{value}", format: "hyphen", defaultSelected: false }
+    { label: "Blacked", nameTemplate: "https://blacked.com/performers/{value}", presetTemplate: "https://blacked.com/videos?search={value}", format: "hyphen", defaultSelected: true },
+    { label: "Blacked Raw", nameTemplate: "https://blackedraw.com/performers/{value}", presetTemplate: "https://blackedraw.com/videos?search={value}", format: "hyphen", defaultSelected: true },    
+    { label: "Vixen", nameTemplate: "https://vixen.com/performers/{value}", presetTemplate: "https://vixen.com/videos?search={value}", format: "hyphen", defaultSelected: true },
+    { label: "Deeper", nameTemplate: "https://deeper.com/performers/{value}", presetTemplate: "https://deeper.com/videos?search={value}", format: "hyphen", defaultSelected: true },
+    { label: "Milfy", nameTemplate: "https://milfy.com/performers/{value}", presetTemplate: "https://milfy.com/videos?search={value}", format: "hyphen", defaultSelected: true },
+    { label: "Wifey", nameTemplate: "https://wifey.com/performers/{value}", presetTemplate: "https://wifey.com/videos?search={value}", format: "hyphen", defaultSelected: true },
+    { label: "Tushy", nameTemplate: "https://tushy.com/performers/{value}", presetTemplate: "https://tushy.com/videos?search={value}", format: "hyphen", defaultSelected: false },
+    { label: "Tushy Raw", nameTemplate: "https://tushyraw.com/performers/{value}", presetTemplate: "https://tushyraw.com/videos?search={value}", format: "hyphen", defaultSelected: false },
+    { label: "Slayed", nameTemplate: "https://slayed.com/performers/{value}", presetTemplate: "https://slayed.com/videos?search={value}", format: "hyphen", defaultSelected: false },
   ];
 
   const OTHER_SITES = [
-    { label: "Site1 Community", nameTemplate: "https://site1.com/member/{value}", presetTemplate: "https://site1.com/group/{value}", format: "hyphen", defaultSelected: true },
-    { label: "Tools Other", nameTemplate: "https://tools.other.org/lookup?name={value}", presetTemplate: "https://tools.other.org/tag?q={value}", format: "plus", defaultSelected: false },
-    { label: "Extrasite XYZ", nameTemplate: "https://extrasite.xyz/find/{value}/details", presetTemplate: "https://extrasite.xyz/tag/{value}", format: "percent20", defaultSelected: true },
-    { label: "Community Net", nameTemplate: "https://community.net/user/{value}", presetTemplate: "https://community.net/tag/{value}", format: "hyphen", defaultSelected: false }
+    { label: "Tube Perverzija", nameTemplate: "https://tube.perverzija.com/stars/{value}", presetTemplate: "https://tube.perverzija.com/tag/{value}", format: "hyphen", defaultSelected: true },
+    { label: "Porn Dish", nameTemplate: "https://porndish.com/video2/{value}", presetTemplate: "https://porndish.com/video2/{value}", format: "hyphen", defaultSelected: true },
+    { label: "Hqpornero", nameTemplate: "https://hqpornero.com/tags/{value}.html", presetTemplate: "https://hqpornero.com/tags/{value}.html", format: "hyphen", defaultSelected: true },
+    { label: "Pornhoarder", nameTemplate: "https://pornhoarder.tw/search/?search={value}", presetTemplate: "https://ww2.pornhoarder.tw/search/?search=black+::+blacked+::+blackedraw+::+{value}", format: "percent20", defaultSelected: true },
+    { label: "Sxyprn", nameTemplate: "https://sxyprn.com/{value}.html", presetTemplate: "https://sxyprn.com/{value}.html", format: "hyphen", defaultSelected: true },
+    { label: "Mat6tube", nameTemplate: "https://mat6tube.com/video/{value}?sort=1&hd=1", presetTemplate: "https://mat6tube.com/video/{value}?sort=1&hd=1", format: "percent20", defaultSelected: false },
+    { label: "Fpo", nameTemplate: "https://www.fpo.xxx/models/{value}/", presetTemplate: "https://www.fpo.xxx/models/{value}/", format: "hyphen", defaultSelected: false },
+    { label: "Fpo", nameTemplate: "https://www.fpo.xxx/search/{value}/", presetTemplate: "https://www.fpo.xxx/search/{value}/", format: "hyphen", defaultSelected: false },
+    { label: "Xfreehd", nameTemplate: "https://www.xfreehd.com/search?search_query={value}&search_type=videos&o=lg", presetTemplate: "https://www.xfreehd.com/tag/{value}", format: "percent20", defaultSelected: false },
+    { label: "Fux", nameTemplate: "https://fux.com/pornstar/{value}.html", presetTemplate: "https://fux.com/tag/{value}.html", format: "hyphen", defaultSelected: false },
+    { label: "Youporn", nameTemplate: "https://www.youporn.com/pornstar/{value}/duration/", presetTemplate: "https://www.youporn.com/tag/{value}/", format: "hyphen", defaultSelected: false },
+    { label: "Pxxbay", nameTemplate: "https://www.pxxbay.com/?s={value}", presetTemplate: "https://www.pxxbay.com/tag/{value}", format: "plus", defaultSelected: false },
+    { label: "Whereismyporn", nameTemplate: "https://whereismyporn.com/?s={value}", presetTemplate: "https://whereismyporn.com/tag/{value}", format: "plus", defaultSelected: false },
+    { label: "Fullporner", nameTemplate: "https://fullporner.com/pornstar/{value}", presetTemplate: "https://fullporner.com/category/{value}", format: "hyphen", defaultSelected: false },
+    { label: "Pornhits", nameTemplate: "https://www.pornhits.com/videos.php?p=1&s=d&ps={value}", presetTemplate: "https://www.pornhits.com/videos.php?p=1&s=l&ct={value}", format: "hyphen", defaultSelected: false },
+    { label: "Porn4days", nameTemplate: "https://porn4days.red/search/?s={value}", presetTemplate: "https://porn4days.red/search/?s={value}", format: "plus", defaultSelected: false },
+    { label: "Pornhd3x", nameTemplate: "https://www.pornhd3x.tv/search/{value}", presetTemplate: "https://www.pornhd3x.tv/tag/{value}", format: "percent20", defaultSelected: false },
+    { label: "Fullvideosporn", nameTemplate: "https://fullvideosporn.com/videos.php?p=1&q={value}", presetTemplate: "https://fullvideosporn.com/videos.php?p=1&q={value}", format: "plus", defaultSelected: false },
+    { label: "Mega-xxx", nameTemplate: "https://top.mega-xxx.name/tags/{value}/", presetTemplate: "https://top.mega-xxx.name/tags/{value}/", format: "hyphen", defaultSelected: false },
+    { label: "Pornrips", nameTemplate: "https://pornrips.to/?s={value}", presetTemplate: "https://pornrips.to/tag/{value}", format: "plus", defaultSelected: false },
+    { label: "Porntex", nameTemplate: "https://www.porntrex.com/models/{value}/longest/", presetTemplate: "https://www.porntrex.com/tags/{value}/", format: "hyphen", defaultSelected: false }
+
   ];
 
   // ======================== PRESETS ===============================
-  let presetList = ["xyz", "guest", "default"];
-  let selectedPresets = new Set(["xyz", "guest"]);
+  let presetList = ["bbc", "black dick", "interracial", "blacked", "blackedraw"];
+  let selectedPresets = new Set(["bbc"]);
 
   // ======================== DOM elements ==========================
   const pinModal = document.getElementById('pinModal');
@@ -559,7 +582,7 @@
     const nameValue = nameInput.value.trim();
     if (nameValue !== "") return [{ source: "name", value: nameValue }];
     const selected = Array.from(selectedPresets);
-    if (selected.length === 0) return [{ source: "preset", value: "xyz" }];
+    if (selected.length === 0) return [{ source: "preset", value: "bbc" }];
     return selected.map(p => ({ source: "preset", value: p }));
   }
 
@@ -635,16 +658,16 @@
     if (storedList) {
       const parsed = JSON.parse(storedList);
       if (Array.isArray(parsed) && parsed.length) presetList = parsed;
-      else presetList = ["xyz", "guest", "default"];
-    } else presetList = ["xyz", "guest", "default"];
+      else presetList = presetList ;
+    } else presetList = presetList ;
     const storedSelected = localStorage.getItem('portal_selected_presets');
     if (storedSelected) {
       const parsedSel = JSON.parse(storedSelected);
       if (Array.isArray(parsedSel)) {
         selectedPresets.clear();
         parsedSel.forEach(p => selectedPresets.add(p));
-      } else { selectedPresets.clear(); selectedPresets.add("xyz"); if(presetList.includes("guest")) selectedPresets.add("guest"); }
-    } else { selectedPresets.clear(); selectedPresets.add("xyz"); if(presetList.includes("guest")) selectedPresets.add("guest"); }
+      } else { selectedPresets.clear(); selectedPresets.add("bbc");}
+    } else { selectedPresets.clear(); selectedPresets.add("bbc");}
     renderPresetCheckboxes();
   }
   function addPreset() {
@@ -660,15 +683,15 @@
     }
   }
   function removeSelectedPresets() {
-    const toRemove = Array.from(selectedPresets).filter(p => p !== "xyz");
-    if (toRemove.length === 0) { alert("Cannot remove 'xyz'. Select other presets."); return; }
+    const toRemove = Array.from(selectedPresets).filter(p => p !== "bbc");
+    if (toRemove.length === 0) { alert("Cannot remove 'bbc'. Select other presets."); return; }
     toRemove.forEach(p => {
       const idx = presetList.indexOf(p);
       if (idx !== -1) presetList.splice(idx, 1);
       selectedPresets.delete(p);
     });
-    if (presetList.length === 0) presetList.push("xyz");
-    if (selectedPresets.size === 0) selectedPresets.add("xyz");
+    if (presetList.length === 0) presetList.push("bbc");
+    if (selectedPresets.size === 0) selectedPresets.add("bbc");
     savePresets();
     renderPresetCheckboxes();
   }
