@@ -1,216 +1,850 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search</title>
-    
-    <!-- Include Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Include Vue.js -->
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
-    <style>
-        body {
-            margin: 0;
-        }
-        #pinOverlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.9);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-        }
-        #pinOverlay .card {
-            width: 100%;
-            max-width: 380px;
-            background: #1c1c1c;
-            border: none;
-        }
-        #pinOverlay .form-control {
-            background: #2a2a2a;
-            border: 1px solid #444;
-            color: #fff;
-        }
-        #pinOverlay .btn-primary {
-            background: #dc3545;
-            border-color: #dc3545;
-        }
-        #pinOverlay .text-danger {
-            color: #ff6b6b;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>🫦</title>
+  <style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  :root {
+    --md-ref-palette-primary0: #000000;
+    --md-ref-palette-primary10: #21005E;
+    --md-ref-palette-primary20: #381E72;
+    --md-ref-palette-primary30: #4F378A;
+    --md-ref-palette-primary40: #6750A4;
+    --md-ref-palette-primary50: #7F67BE;
+    --md-ref-palette-primary60: #9A82DB;
+    --md-ref-palette-primary70: #B69DFF;
+    --md-ref-palette-primary80: #D0BCFF;
+    --md-ref-palette-primary90: #EADDFF;
+    --md-ref-palette-primary95: #F6EDFF;
+    --md-ref-palette-primary99: #FFFBFE;
+    --md-ref-palette-primary100: #FFFFFF;
+
+    --md-ref-palette-surface0: #000000;
+    --md-ref-palette-surface10: #1C1B1F;
+    --md-ref-palette-surface20: #313033;
+    --md-ref-palette-surface30: #48464A;
+    --md-ref-palette-surface40: #605D62;
+    --md-ref-palette-surface50: #79767A;
+    --md-ref-palette-surface60: #938F94;
+    --md-ref-palette-surface70: #AEA9AF;
+    --md-ref-palette-surface80: #CAC5CA;
+    --md-ref-palette-surface90: #E6E1E6;
+    --md-ref-palette-surface95: #F5EFF4;
+    --md-ref-palette-surface99: #FFFBFE;
+    --md-ref-palette-surface100: #FFFFFF;
+
+    --md-sys-color-primary: var(--md-ref-palette-primary40);
+    --md-sys-color-on-primary: var(--md-ref-palette-primary100);
+    --md-sys-color-primary-container: var(--md-ref-palette-primary90);
+    --md-sys-color-on-primary-container: var(--md-ref-palette-primary10);
+    --md-sys-color-secondary: #625B71;
+    --md-sys-color-on-secondary: #FFFFFF;
+    --md-sys-color-secondary-container: #E8DEF8;
+    --md-sys-color-on-secondary-container: #1D192B;
+    --md-sys-color-surface: var(--md-ref-palette-surface99);
+    --md-sys-color-surface-variant: var(--md-ref-palette-surface90);
+    --md-sys-color-on-surface: var(--md-ref-palette-surface10);
+    --md-sys-color-on-surface-variant: var(--md-ref-palette-surface30);
+    --md-sys-color-outline: var(--md-ref-palette-surface50);
+    --md-sys-color-error: #BA1A1A;
+    --md-sys-color-on-error: #FFFFFF;
+    --md-elevation-1: 0 1px 2px 0 rgba(0,0,0,0.05), 0 1px 3px 1px rgba(0,0,0,0.05);
+    --md-elevation-2: 0 1px 2px 0 rgba(0,0,0,0.08), 0 2px 6px 2px rgba(0,0,0,0.05);
+    --md-elevation-3: 0 4px 8px 3px rgba(0,0,0,0.05), 0 1px 3px 0 rgba(0,0,0,0.08);
+    --transition-default: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  body.dark {
+    --md-sys-color-primary: var(--md-ref-palette-primary80);
+    --md-sys-color-on-primary: var(--md-ref-palette-primary20);
+    --md-sys-color-primary-container: var(--md-ref-palette-primary30);
+    --md-sys-color-on-primary-container: var(--md-ref-palette-primary90);
+    --md-sys-color-secondary: #CCC2DC;
+    --md-sys-color-on-secondary: #332D41;
+    --md-sys-color-secondary-container: #4A4458;
+    --md-sys-color-on-secondary-container: #E8DEF8;
+    --md-sys-color-surface: var(--md-ref-palette-surface10);
+    --md-sys-color-surface-variant: var(--md-ref-palette-surface30);
+    --md-sys-color-on-surface: var(--md-ref-palette-surface90);
+    --md-sys-color-on-surface-variant: var(--md-ref-palette-surface80);
+    --md-sys-color-outline: var(--md-ref-palette-surface60);
+    --md-sys-color-error: #CF6679;
+    --md-sys-color-on-error: #140C0E;
+  }
+
+  body {
+    font-family: 'Google Sans', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+    background: var(--md-sys-color-surface);
+    color: var(--md-sys-color-on-surface);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    transition: background-color 0.3s var(--transition-default);
+  }
+
+  /* PIN MODAL */
+  .pin-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(16px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+    animation: fadeIn 0.3s var(--transition-default);
+  }
+
+  .pin-card {
+    background: var(--md-sys-color-surface);
+    border-radius: 32px;
+    max-width: 360px;
+    width: 100%;
+    padding: 2rem 1.5rem 2rem;
+    box-shadow: var(--md-elevation-3);
+    text-align: center;
+    animation: slideUp 0.25s var(--transition-default);
+  }
+
+  .pin-card input {
+    width: 100%;
+    padding: 1rem 1rem;
+    font-size: 1.2rem;
+    text-align: center;
+    background: var(--md-sys-color-surface-variant);
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: 28px;
+    color: var(--md-sys-color-on-surface);
+    margin: 1.2rem 0;
+    transition: var(--transition-default);
+  }
+
+  .pin-card input:focus {
+    outline: none;
+    border-color: var(--md-sys-color-primary);
+    box-shadow: 0 0 0 3px rgba(103, 80, 164, 0.2);
+  }
+
+  .pin-card button {
+    background: var(--md-sys-color-primary);
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 40px;
+    font-weight: 500;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    color: var(--md-sys-color-on-primary);
+    cursor: pointer;
+    width: 100%;
+    transition: var(--transition-default);
+  }
+
+  .pin-card button:hover {
+    filter: brightness(1.02);
+    transform: translateY(-1px);
+    box-shadow: var(--md-elevation-2);
+  }
+
+  .error-msg {
+    color: var(--md-sys-color-error);
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+  }
+
+  /* MAIN APP */
+  .main-app {
+    display: none;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem 2rem;
+    animation: fadeInUp 0.4s var(--transition-default);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Header */
+  .app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .logo h1 {
+    font-size: 1.8rem;
+    font-weight: 500;
+    background: linear-gradient(135deg, var(--md-sys-color-primary), #C58AF9);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    letter-spacing: -0.25px;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  .icon-btn {
+    background: var(--md-sys-color-surface-variant);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 28px;
+    cursor: pointer;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--md-sys-color-on-surface);
+    transition: var(--transition-default);
+  }
+
+  .icon-btn:hover {
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+    transform: scale(0.96);
+  }
+
+  /* Cards */
+  .card {
+    background: var(--md-sys-color-surface);
+    border-radius: 32px;
+    padding: 1.5rem;
+    margin-bottom: 1.8rem;
+    box-shadow: var(--md-elevation-1);
+    transition: var(--transition-default);
+    border: 1px solid var(--md-sys-color-outline);
+  }
+
+  .card:hover {
+    box-shadow: var(--md-elevation-2);
+  }
+
+  .card-title {
+    font-size: 1.3rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-left: 0.5rem;
+    border-left: 5px solid var(--md-sys-color-primary);
+  }
+
+  .flex-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .input-group {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .input-group label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.3rem;
+    color: var(--md-sys-color-on-surface-variant);
+  }
+
+  input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background: var(--md-sys-color-surface-variant);
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: 28px;
+    color: var(--md-sys-color-on-surface);
+    font-size: 0.95rem;
+    transition: var(--transition-default);
+  }
+
+  input:focus {
+    outline: none;
+    border-color: var(--md-sys-color-primary);
+    box-shadow: 0 0 0 3px rgba(103, 80, 164, 0.2);
+  }
+
+  /* Preset chips */
+  .presets-area {
+    background: var(--md-sys-color-surface-variant);
+    border-radius: 24px;
+    padding: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .presets-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .preset-check-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--md-sys-color-surface);
+    padding: 0.4rem 1rem;
+    border-radius: 40px;
+    box-shadow: var(--md-elevation-1);
+    transition: all 0.15s;
+    cursor: pointer;
+    border: 1px solid var(--md-sys-color-outline);
+  }
+
+  .preset-check-item:hover {
+    transform: translateY(-2px);
+    background: var(--md-sys-color-primary-container);
+    border-color: var(--md-sys-color-primary);
+  }
+
+  .preset-check-item input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--md-sys-color-primary);
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .preset-manager {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 0.8rem;
+  }
+
+  .small-btn {
+    background: var(--md-sys-color-surface);
+    border: 1px solid var(--md-sys-color-outline);
+    padding: 0.3rem 1rem;
+    border-radius: 32px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--md-sys-color-on-surface);
+    transition: var(--transition-default);
+  }
+
+  .small-btn:hover {
+    background: var(--md-sys-color-primary-container);
+    border-color: var(--md-sys-color-primary);
+    transform: translateY(-1px);
+  }
+
+  /* Scrollable lists */
+  .urls-section {
+    margin: 1rem 0;
+    max-height: 360px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+  }
+
+  .urls-section::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .urls-section::-webkit-scrollbar-track {
+    background: var(--md-sys-color-surface-variant);
+    border-radius: 10px;
+  }
+
+  .urls-section::-webkit-scrollbar-thumb {
+    background: var(--md-sys-color-primary);
+    border-radius: 10px;
+  }
+
+  .select-all-bar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .select-all-btn {
+    background: var(--md-sys-color-surface);
+    border: 1px solid var(--md-sys-color-outline);
+    padding: 0.3rem 1rem;
+    border-radius: 32px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--md-sys-color-on-surface);
+    transition: var(--transition-default);
+  }
+
+  .select-all-btn:hover {
+    background: var(--md-sys-color-primary-container);
+    border-color: var(--md-sys-color-primary);
+  }
+
+  .url-check-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.7rem 1rem;
+    background: var(--md-sys-color-surface-variant);
+    border-radius: 48px;
+    margin-bottom: 0.6rem;
+    transition: all 0.2s;
+    border: 1px solid var(--md-sys-color-outline);
+  }
+
+  .url-check-item:hover {
+    border-color: var(--md-sys-color-primary);
+    transform: translateX(4px);
+    background: var(--md-sys-color-surface);
+  }
+
+  .url-check-item input {
+    width: 1.2rem;
+    height: 1.2rem;
+    accent-color: var(--md-sys-color-primary);
+  }
+
+  .portal-label {
+    font-weight: 500;
+    font-size: 0.95rem;
+    flex: 1;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+
+  .btn-open {
+    background: var(--md-sys-color-primary);
+    border: none;
+    padding: 0.7rem 1.8rem;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    color: var(--md-sys-color-on-primary);
+    cursor: pointer;
+    transition: var(--transition-default);
+    box-shadow: var(--md-elevation-1);
+  }
+
+  .btn-open:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--md-elevation-2);
+    filter: brightness(1.02);
+  }
+
+  footer {
+    text-align: center;
+    font-size: 0.7rem;
+    margin-top: 2rem;
+    color: var(--md-sys-color-on-surface-variant);
+    opacity: 0.8;
+  }
+</style>
 </head>
 <body>
-<div id="app">
-    <div id="pinOverlay" v-show="!pinAccepted">
-        <div class="card p-4">
-            <h5 class="card-title text-center mb-3">Enter PIN to Continue</h5>
-            <form @submit.prevent="checkPin">
-                <div class="form-group">
-                    <input v-model="pinValue" class="form-control" type="password" placeholder="PIN" autofocus>
-                </div>
-                <button type="submit" class="btn btn-primary btn-center btn-block">Unlock</button>
-                <p v-if="pinError" class="mt-3 text-danger text-center">{{ pinError }}</p>
-            </form>
-        </div>
-    </div>
 
-    <div class="container mt-5" v-show="pinAccepted">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card p-4">
-                <h5 class="card-title text-center mb-4">Search</h5>
-                <div class="form-group">
-                    <input v-model="pcModel" class="form-control" type="search" placeholder="Enter Name">
-                </div>
-                <div class="mt-3">
-                    <h6>Select Preset</h6>
-                    <select class="form-control" v-model="selectedPreset">
-                        <option v-for="preset in presets" :key="preset" :value="preset">{{ preset }}</option>
-                    </select>
-                </div>
-                <div class="mt-3">
-                    <h6>Premium Portals</h6>
-                    <div class="d-flex flex-wrap">
-                        <div v-for="portal in portals" :key="portal" class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" v-model="selectedPremium" :value="portal" :id="'premium-' + portal">
-                            <label class="form-check-label" :for="'premium-' + portal">{{ portal }}</label>
-                        </div>
-                    </div>
-                    <button @click="selectAllPremium" class="btn btn-sm btn-secondary mt-2">Select All</button>
-                    <button @click="deselectAllPremium" class="btn btn-sm btn-outline-secondary mt-2 ml-2">Deselect All</button>
-                </div>
-                <div class="mt-3">
-                    <h6>Other Sites</h6>
-                    <div class="d-flex flex-wrap" style="max-height: 200px; overflow-y: auto;">
-                        <div v-for="site in builtSites" :key="site" class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" v-model="selectedOthers" :value="site" :id="'other-' + site">
-                            <label class="form-check-label" :for="'other-' + site">{{ site.split('/')[2] }}</label>
-                        </div>
-                    </div>
-                    <button @click="selectAllOthers" class="btn btn-sm btn-secondary mt-2">Select All</button>
-                    <button @click="deselectAllOthers" class="btn btn-sm btn-outline-secondary mt-2 ml-2">Deselect All</button>
-                </div>
-                <button @click="openPremiumContentPortals" class="btn btn-danger btn-block mt-3">Vixen</button>
-                <button @click="openOtherSites" class="btn btn-outline-danger btn-block mt-3">Other Sites</button>
-            </div>
-        </div>
-    </div>
+<!-- PIN MODAL -->
+<div id="pinModal" class="pin-overlay">
+  <div class="pin-card">
+    <!-- <h2>🔐 Secure Access</h2> -->
+    <!-- <p style="margin-bottom: 0.5rem; opacity:0.7;">Enter PIN to continue</p> -->
+    <input type="password" id="pinInput" placeholder="••••" maxlength="6" autocomplete="off">
+    <button id="unlockBtn">EnTeR</button>
+    <div id="pinError" class="error-msg"></div>
+  </div>
 </div>
+
+<!-- MAIN APPLICATION -->
+<div id="mainApp" class="main-app">
+  <div class="app-header">
+    <div class="logo"><h1>Hello!</h1></div>
+    <div class="header-actions">
+      <button id="darkModeToggle" class="icon-btn">🌓</button>
+      <button id="lockScreenBtn" class="icon-btn">🔒</button>
+    </div>
+  </div>
+
+  <!-- Name & Multi-Preset Section -->
+  <div class="card">
+    <div class="card-title">Enter Name</div>
+    <div class="flex-row">
+      <div class="input-group">
+        <input type="text" id="nameInput" placeholder="e.g., Matty Mila Perez" autocomplete="off">
+      </div>
+    </div>
+    <div class="card-title" style="margin-top: 0.5rem;">Select Presets</div>
+    <div class="presets-area">
+      <div id="presetsChecklist" class="presets-grid"></div>
+      <div class="preset-manager">
+        <button id="addPresetBtn" class="small-btn">➕ Add</button>
+        <button id="removeSelectedPresetsBtn" class="small-btn">✖ Remove</button>
+      </div>
+    </div>
+    <!-- <div style="font-size: 0.75rem; margin-top: 0.8rem; opacity:0.8;">
+      💡 Name entered → uses only name. Empty name → uses all checked presets.
+    </div> -->
+  </div>
+
+  <!-- PREMIUM PORTALS -->
+  <div class="card">
+    <div class="card-title">Vixen</div>
+    <div class="select-all-bar">
+      <button id="selectAllPremium" class="select-all-btn">✅ Select All</button>
+      <button id="deselectAllPremium" class="select-all-btn">❌ Deselect All</button>
+    </div>
+    <div id="premiumListContainer" class="urls-section"></div>
+    <div class="action-buttons">
+      <button id="openPremiumBtn" class="btn-open">OPEN</button>
+    </div>
+  </div>
+
+  <!-- OTHER SITES -->
+  <div class="card">
+    <div class="card-title">Other Sites</div>
+    <div class="select-all-bar">
+      <button id="selectAllOther" class="select-all-btn">✅ Select All</button>
+      <button id="deselectAllOther" class="select-all-btn">❌ Deselect All</button>
+    </div>
+    <div id="otherListContainer" class="urls-section"></div>
+    <div class="action-buttons">
+      <button id="openOtherBtn" class="btn-open">OPEN</button>
+    </div>
+  </div>
+  <!-- <footer>Default checked items are set in code (hardcoded).</footer> -->
 </div>
 
 <script>
-  new Vue({
-    el: '#app',
-    data: {
-      pinValue: '',
-      pinAccepted: false,
-      pinError: '',
-      pcModel: '',
-      portals: [
-        "vixen.com",
-        "tushy.com",
-        "tushyraw.com",
-        "blacked.com",
-        "blackedraw.com",
-        "deeper.com",
-        "milfy.com",
-        "wifey.com"
-      ],
-      selectedPremium: [],
-      selectedOthers: [],
-      presets: [
-        'bbc',
-        'blcck'
-      ],
-      selectedPreset: 'bbc',
-    },
-    computed: {
-      builtSites() {
-        const originalPcModel = this.pcModel.trim();
-        const hyphen = originalPcModel.replace(/\s+/g, "-").toLowerCase();
-        const spacer = originalPcModel.replace(/\s+/g, "+").toLowerCase();
-        const percent20 = originalPcModel.replace(/\s+/g, "%20").toLowerCase();    
-        return [
-          `https://tube.perverzija.com/stars/${hyphen}`,
-          `https://porndish.com/video2/${hyphen}`,
-          `https://hqpornero.com/tags/${hyphen}.html`,
-          `https://pornhoarder.tw/search/?search=${percent20}`,
-          `https://sxyprn.com/${hyphen}.html`,
-          `https://mat6tube.com/video/${percent20}?sort=1`,
-          `https://www.fpo.xxx/models/${hyphen}/`,
-          `https://www.fpo.xxx/search/${hyphen}/`,
-          `https://www.xfreehd.com/search?search_query=${hyphen}&search_type=videos&o=lg`,
-          `https://fux.com/pornstar/${hyphen}.html`,  
-          `https://www.youporn.com/pornstar/${hyphen}/duration/`,
-          `https://www.pxxbay.com/?s=${spacer}`,
-          `https://whereismyporn.com/?s=${spacer}`,
-          `https://fullporner.com/pornstar/${hyphen}`,
-          `https://www.pornhits.com/videos.php?p=1&s=d&ps=${hyphen}`,
-          `https://porn4days.red/search/?s=${spacer}`,
-          `https://www.pornhd3x.tv/search/${percent20}`,
-          `https://fullvideosporn.com/videos.php?p=1&q=${percent20}`,
-          `https://top.mega-xxx.name/tags/${hyphen}/`,
-          `https://pornrips.to/?s=${spacer}`,
-          `https://www.porntrex.com/models/${hyphen}/longest/`,
-        ];
-      }
-    },
-    methods: {
-      checkPin() {
-        const correctPin = '1234';
-        if (this.pinValue === correctPin) {
-          this.pinAccepted = true;
-          this.pinError = '';
-        } else {
-          this.pinError = 'Invalid PIN. Please try again.';
-          this.pinValue = '';
-        }
-      },
-      openUrl(url) {
-        window.open(url, Math.random());
-      },
-      openPremiumContentPortals() {
-        const originalPcModel = this.pcModel.trim();
-        const hasSearch = originalPcModel.length > 0;
-        const hyphen = originalPcModel.replace(/\s+/g, "-").toLowerCase();
-        const preset = hasSearch ? '' : this.selectedPreset.trim();
-        this.selectedPremium.forEach((portal) => {
-          const baseUrl = hasSearch
-            ? `https://www.${portal}/performers/${hyphen}`
-            : `https://www.${portal}`;
-          this.openUrl(preset ? `${baseUrl}/${preset}` : baseUrl);
-        });
-      },
-      openOtherSites() {
-        const originalPcModel = this.pcModel.trim();
-        const hasSearch = originalPcModel.length > 0;
-        const preset = hasSearch ? '' : this.selectedPreset.trim();
-        this.selectedOthers.forEach((site) => {
-          const normalizedSite = site.endsWith('/') ? site.slice(0, -1) : site;
-          this.openUrl(preset ? `${normalizedSite}/${preset}` : normalizedSite);
-        });
-      },
-      selectAllPremium() {
-        this.selectedPremium = [...this.portals];
-      },
-      deselectAllPremium() {
-        this.selectedPremium = [];
-      },
-      selectAllOthers() {
-        this.selectedOthers = [...this.builtSites];
-      },
-      deselectAllOthers() {
-        this.selectedOthers = [];
-      },
+  // ======================== SECURE PIN ==========================
+  const CORRECT_PIN = "6969";
 
-    },
-  });
+  // ======================== PORTALS WITH HARDCODED DEFAULT CHECKED ===========
+  // Set defaultSelected: true/false to choose which are checked by default
+  const PREMIUM_PORTALS = [
+    { label: "Blacked", nameTemplate: "https://blacked.com/performers/{value}", presetTemplate: "https://blacked.com/videos?search={value}", format: "hyphen", defaultSelected: true },
+    { label: "Blacked Raw", nameTemplate: "https://blackedraw.com/performers/{value}", presetTemplate: "https://blackedraw.com/videos?search={value}", format: "hyphen", defaultSelected: true },    
+    { label: "Vixen", nameTemplate: "https://vixen.com/performers/{value}", presetTemplate: "https://vixen.com/videos?search={value}", format: "hyphen", defaultSelected: true },
+    { label: "Deeper", nameTemplate: "https://deeper.com/performers/{value}", presetTemplate: "https://deeper.com/videos?search={value}", format: "hyphen", defaultSelected: true },
+    { label: "Milfy", nameTemplate: "https://milfy.com/performers/{value}", presetTemplate: "https://milfy.com/videos?search={value}", format: "hyphen", defaultSelected: true },
+    { label: "Wifey", nameTemplate: "https://wifey.com/performers/{value}", presetTemplate: "https://wifey.com/videos?search={value}", format: "hyphen", defaultSelected: true },
+    { label: "Tushy", nameTemplate: "https://tushy.com/performers/{value}", presetTemplate: "https://tushy.com/videos?search={value}", format: "hyphen", defaultSelected: false },
+    { label: "Tushy Raw", nameTemplate: "https://tushyraw.com/performers/{value}", presetTemplate: "https://tushyraw.com/videos?search={value}", format: "hyphen", defaultSelected: false },
+    { label: "Slayed", nameTemplate: "https://slayed.com/performers/{value}", presetTemplate: "https://slayed.com/videos?search={value}", format: "hyphen", defaultSelected: false },
+  ];
+
+  const OTHER_SITES = [
+    { label: "Tube Perverzija", nameTemplate: "https://tube.perverzija.com/stars/{value}", presetTemplate: "https://tube.perverzija.com/tag/{value}", format: "hyphen", defaultSelected: true },
+    { label: "Porn Dish", nameTemplate: "https://porndish.com/video2/{value}", presetTemplate: "https://porndish.com/video2/{value}", format: "hyphen", defaultSelected: true },
+    { label: "Hqpornero", nameTemplate: "https://hqpornero.com/tags/{value}.html", presetTemplate: "https://hqpornero.com/tags/{value}.html", format: "hyphen", defaultSelected: true },
+    { label: "Pornhoarder", nameTemplate: "https://pornhoarder.tw/search/?search={value}", presetTemplate: "https://ww2.pornhoarder.tw/search/?search=black+::+blacked+::+blackedraw+::+{value}", format: "percent20", defaultSelected: true },
+    { label: "Sxyprn", nameTemplate: "https://sxyprn.com/{value}.html", presetTemplate: "https://sxyprn.com/{value}.html", format: "hyphen", defaultSelected: true },
+    { label: "Mat6tube", nameTemplate: "https://mat6tube.com/video/{value}?sort=1&hd=1", presetTemplate: "https://mat6tube.com/video/{value}?sort=1&hd=1", format: "percent20", defaultSelected: false },
+    { label: "Fpo", nameTemplate: "https://www.fpo.xxx/models/{value}/", presetTemplate: "https://www.fpo.xxx/models/{value}/", format: "hyphen", defaultSelected: false },
+    { label: "Fpo", nameTemplate: "https://www.fpo.xxx/search/{value}/", presetTemplate: "https://www.fpo.xxx/search/{value}/", format: "hyphen", defaultSelected: false },
+    { label: "Xfreehd", nameTemplate: "https://www.xfreehd.com/search?search_query={value}&search_type=videos&o=lg", presetTemplate: "https://www.xfreehd.com/tag/{value}", format: "percent20", defaultSelected: false },
+    { label: "Fux", nameTemplate: "https://fux.com/pornstar/{value}.html", presetTemplate: "https://fux.com/tag/{value}.html", format: "hyphen", defaultSelected: false },
+    { label: "Youporn", nameTemplate: "https://www.youporn.com/pornstar/{value}/duration/", presetTemplate: "https://www.youporn.com/tag/{value}/", format: "hyphen", defaultSelected: false },
+    { label: "Pxxbay", nameTemplate: "https://www.pxxbay.com/?s={value}", presetTemplate: "https://www.pxxbay.com/tag/{value}", format: "plus", defaultSelected: false },
+    { label: "Whereismyporn", nameTemplate: "https://whereismyporn.com/?s={value}", presetTemplate: "https://whereismyporn.com/tag/{value}", format: "plus", defaultSelected: false },
+    { label: "Fullporner", nameTemplate: "https://fullporner.com/pornstar/{value}", presetTemplate: "https://fullporner.com/category/{value}", format: "hyphen", defaultSelected: false },
+    { label: "Pornhits", nameTemplate: "https://www.pornhits.com/videos.php?p=1&s=d&ps={value}", presetTemplate: "https://www.pornhits.com/videos.php?p=1&s=l&ct={value}", format: "hyphen", defaultSelected: false },
+    { label: "Porn4days", nameTemplate: "https://porn4days.red/search/?s={value}", presetTemplate: "https://porn4days.red/search/?s={value}", format: "plus", defaultSelected: false },
+    { label: "Pornhd3x", nameTemplate: "https://www.pornhd3x.tv/search/{value}", presetTemplate: "https://www.pornhd3x.tv/tag/{value}", format: "percent20", defaultSelected: false },
+    { label: "Fullvideosporn", nameTemplate: "https://fullvideosporn.com/videos.php?p=1&q={value}", presetTemplate: "https://fullvideosporn.com/videos.php?p=1&q={value}", format: "plus", defaultSelected: false },
+    { label: "Mega-xxx", nameTemplate: "https://top.mega-xxx.name/tags/{value}/", presetTemplate: "https://top.mega-xxx.name/tags/{value}/", format: "hyphen", defaultSelected: false },
+    { label: "Pornrips", nameTemplate: "https://pornrips.to/?s={value}", presetTemplate: "https://pornrips.to/tag/{value}", format: "plus", defaultSelected: false },
+    { label: "Porntex", nameTemplate: "https://www.porntrex.com/models/{value}/longest/", presetTemplate: "https://www.porntrex.com/tags/{value}/", format: "hyphen", defaultSelected: false }
+
+  ];
+
+  // ======================== PRESETS ===============================
+  let presetList = ["bbc", "black dick", "interracial", "blacked", "blackedraw"];
+  let selectedPresets = new Set(["bbc"]);
+
+  // ======================== DOM elements ==========================
+  const pinModal = document.getElementById('pinModal');
+  const mainAppDiv = document.getElementById('mainApp');
+  const pinInput = document.getElementById('pinInput');
+  const unlockBtn = document.getElementById('unlockBtn');
+  const pinErrorSpan = document.getElementById('pinError');
+  const lockScreenBtn = document.getElementById('lockScreenBtn');
+  const darkModeToggle = document.getElementById('darkModeToggle');
+  const nameInput = document.getElementById('nameInput');
+  const presetsChecklistDiv = document.getElementById('presetsChecklist');
+  const addPresetBtn = document.getElementById('addPresetBtn');
+  const removeSelectedPresetsBtn = document.getElementById('removeSelectedPresetsBtn');
+  const premiumContainer = document.getElementById('premiumListContainer');
+  const otherContainer = document.getElementById('otherListContainer');
+  const openPremiumBtn = document.getElementById('openPremiumBtn');
+  const openOtherBtn = document.getElementById('openOtherBtn');
+  const selectAllPremiumBtn = document.getElementById('selectAllPremium');
+  const deselectAllPremiumBtn = document.getElementById('deselectAllPremium');
+  const selectAllOtherBtn = document.getElementById('selectAllOther');
+  const deselectAllOtherBtn = document.getElementById('deselectAllOther');
+
+  // Helper: format value
+  function formatValue(rawValue, formatType) {
+    let trimmed = rawValue.trim();
+    if (trimmed === "") return "";
+    switch(formatType) {
+      case 'hyphen': return trimmed.replace(/\s+/g, '-');
+      case 'plus': return trimmed.replace(/\s+/g, '+');
+      case 'percent20': return trimmed.replace(/\s+/g, '%20');
+      default: return trimmed.replace(/\s+/g, '-');
+    }
+  }
+
+  function getActiveValues() {
+    const nameValue = nameInput.value.trim();
+    if (nameValue !== "") return [{ source: "name", value: nameValue }];
+    const selected = Array.from(selectedPresets);
+    if (selected.length === 0) return [{ source: "preset", value: "bbc" }];
+    return selected.map(p => ({ source: "preset", value: p }));
+  }
+
+  // Render premium list with checkboxes based on defaultSelected
+  function renderPremiumList() {
+    premiumContainer.innerHTML = "";
+    PREMIUM_PORTALS.forEach((item, idx) => {
+      const div = document.createElement('div');
+      div.className = 'url-check-item';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.className = 'premium-checkbox';
+      cb.checked = item.defaultSelected;
+      const labelSpan = document.createElement('span');
+      labelSpan.className = 'portal-label';
+      labelSpan.textContent = item.label;
+      div.appendChild(cb);
+      div.appendChild(labelSpan);
+      premiumContainer.appendChild(div);
+    });
+  }
+
+  function renderOtherList() {
+    otherContainer.innerHTML = "";
+    OTHER_SITES.forEach((item, idx) => {
+      const div = document.createElement('div');
+      div.className = 'url-check-item';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.className = 'other-checkbox';
+      cb.checked = item.defaultSelected;
+      const labelSpan = document.createElement('span');
+      labelSpan.className = 'portal-label';
+      labelSpan.textContent = item.label;
+      div.appendChild(cb);
+      div.appendChild(labelSpan);
+      otherContainer.appendChild(div);
+    });
+  }
+
+  // ========== PRESET CHECKBOX LOGIC ==========
+  function renderPresetCheckboxes() {
+    presetsChecklistDiv.innerHTML = "";
+    presetList.forEach(preset => {
+      const div = document.createElement('div');
+      div.className = 'preset-check-item';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.value = preset;
+      cb.checked = selectedPresets.has(preset);
+      cb.addEventListener('change', (e) => {
+        if (e.target.checked) selectedPresets.add(preset);
+        else selectedPresets.delete(preset);
+        savePresetsSelection();
+      });
+      const label = document.createElement('span');
+      label.textContent = preset;
+      div.appendChild(cb);
+      div.appendChild(label);
+      presetsChecklistDiv.appendChild(div);
+    });
+  }
+
+  function savePresets() {
+    localStorage.setItem('portal_presets_list', JSON.stringify(presetList));
+    savePresetsSelection();
+  }
+  function savePresetsSelection() {
+    localStorage.setItem('portal_selected_presets', JSON.stringify(Array.from(selectedPresets)));
+  }
+  function loadPresets() {
+    const storedList = localStorage.getItem('portal_presets_list');
+    if (storedList) {
+      const parsed = JSON.parse(storedList);
+      if (Array.isArray(parsed) && parsed.length) presetList = parsed;
+      else presetList = presetList ;
+    } else presetList = presetList ;
+    const storedSelected = localStorage.getItem('portal_selected_presets');
+    if (storedSelected) {
+      const parsedSel = JSON.parse(storedSelected);
+      if (Array.isArray(parsedSel)) {
+        selectedPresets.clear();
+        parsedSel.forEach(p => selectedPresets.add(p));
+      } else { selectedPresets.clear(); selectedPresets.add("bbc");}
+    } else { selectedPresets.clear(); selectedPresets.add("bbc");}
+    renderPresetCheckboxes();
+  }
+  function addPreset() {
+    let newPreset = prompt("Enter new preset:");
+    if (newPreset && newPreset.trim()) {
+      newPreset = newPreset.trim();
+      if (!presetList.includes(newPreset)) {
+        presetList.push(newPreset);
+        selectedPresets.add(newPreset);
+        savePresets();
+        renderPresetCheckboxes();
+      } else alert("Preset exists.");
+    }
+  }
+  function removeSelectedPresets() {
+    const toRemove = Array.from(selectedPresets).filter(p => p !== "bbc");
+    if (toRemove.length === 0) { alert("Cannot remove 'bbc'. Select other presets."); return; }
+    toRemove.forEach(p => {
+      const idx = presetList.indexOf(p);
+      if (idx !== -1) presetList.splice(idx, 1);
+      selectedPresets.delete(p);
+    });
+    if (presetList.length === 0) presetList.push("bbc");
+    if (selectedPresets.size === 0) selectedPresets.add("bbc");
+    savePresets();
+    renderPresetCheckboxes();
+  }
+
+  // Select/Deselect all
+  function selectAllPremium() {
+    document.querySelectorAll('.premium-checkbox').forEach(cb => cb.checked = true);
+  }
+  function deselectAllPremium() {
+    document.querySelectorAll('.premium-checkbox').forEach(cb => cb.checked = false);
+  }
+  function selectAllOther() {
+    document.querySelectorAll('.other-checkbox').forEach(cb => cb.checked = true);
+  }
+  function deselectAllOther() {
+    document.querySelectorAll('.other-checkbox').forEach(cb => cb.checked = false);
+  }
+
+  // Open URLs
+  function openUrlsForValue(activeValue, urlsArray, checkboxSelector) {
+    const checkboxes = document.querySelectorAll(checkboxSelector);
+    const selected = [];
+    checkboxes.forEach((cb, idx) => { if (cb.checked) selected.push(idx); });
+    if (selected.length === 0) return false;
+    for (let idx of selected) {
+      const entry = urlsArray[idx];
+      if (!entry) continue;
+      let template = (activeValue.source === "name") ? entry.nameTemplate : entry.presetTemplate;
+      if (!template) continue;
+      let formatted = formatValue(activeValue.value, entry.format);
+      let url = template.replace(/\{value\}/g, formatted);
+      if (!url.startsWith('http')) url = 'https://' + url;
+      window.open(url, '_blank');
+    }
+    return true;
+  }
+  function openSelectedUrlsWithMultiPreset(urlsArray, checkboxSelector, categoryName) {
+    const values = getActiveValues();
+    if (values.length === 0) { alert("No name or preset selected."); return false; }
+    const anyChecked = Array.from(document.querySelectorAll(checkboxSelector)).some(cb => cb.checked);
+    if (!anyChecked) { alert(`No ${categoryName} selected.`); return false; }
+    let msg = `Open ${categoryName} for: `;
+    if (values.length === 1) msg += `"${values[0].value}"`;
+    else msg += `${values.length} presets: ${values.map(v => v.value).join(", ")}`;
+    if (!confirm(msg + " ?")) return false;
+    for (let val of values) openUrlsForValue(val, urlsArray, checkboxSelector);
+    return true;
+  }
+
+  // Dark mode
+  function initDarkMode() {
+    const stored = localStorage.getItem('theme');
+    if (stored === 'dark') document.body.classList.add('dark');
+    else if (stored === 'light') document.body.classList.remove('dark');
+    else if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.body.classList.add('dark');
+  }
+  function toggleDarkMode() {
+    document.body.classList.toggle('dark');
+    localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+  }
+
+  // PIN lock/unlock
+  function lockScreen() {
+    sessionStorage.removeItem('portal_unlocked');
+    pinModal.style.display = 'flex';
+    mainAppDiv.style.display = 'none';
+    pinInput.value = '';
+    pinErrorSpan.innerText = '';
+  }
+  function unlockWithPin() {
+    if (pinInput.value === CORRECT_PIN) {
+      sessionStorage.setItem('portal_unlocked', 'true');
+      pinModal.style.display = 'none';
+      mainAppDiv.style.display = 'block';
+      pinErrorSpan.innerText = '';
+      loadPresets();
+      renderPremiumList();
+      renderOtherList();
+    } else pinErrorSpan.innerText = '❌ Incorrect PIN.';
+  }
+  function checkSession() {
+    if (sessionStorage.getItem('portal_unlocked') === 'true') {
+      pinModal.style.display = 'none';
+      mainAppDiv.style.display = 'block';
+      loadPresets();
+      renderPremiumList();
+      renderOtherList();
+    } else {
+      pinModal.style.display = 'flex';
+      mainAppDiv.style.display = 'none';
+    }
+  }
+
+  function bindEvents() {
+    unlockBtn.addEventListener('click', unlockWithPin);
+    pinInput.addEventListener('keypress', e => e.key === 'Enter' && unlockWithPin());
+    lockScreenBtn.addEventListener('click', lockScreen);
+    darkModeToggle.addEventListener('click', toggleDarkMode);
+    addPresetBtn.addEventListener('click', addPreset);
+    removeSelectedPresetsBtn.addEventListener('click', removeSelectedPresets);
+    openPremiumBtn.addEventListener('click', () => openSelectedUrlsWithMultiPreset(PREMIUM_PORTALS, '.premium-checkbox', "Premium Portals"));
+    openOtherBtn.addEventListener('click', () => openSelectedUrlsWithMultiPreset(OTHER_SITES, '.other-checkbox', "Other Sites"));
+    selectAllPremiumBtn.addEventListener('click', selectAllPremium);
+    deselectAllPremiumBtn.addEventListener('click', deselectAllPremium);
+    selectAllOtherBtn.addEventListener('click', selectAllOther);
+    deselectAllOtherBtn.addEventListener('click', deselectAllOther);
+  }
+
+  initDarkMode();
+  bindEvents();
+  checkSession();
 </script>
-
 </body>
 </html>
