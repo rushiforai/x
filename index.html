@@ -610,15 +610,15 @@
 
   // Helper: format value
   function formatValue(rawValue, formatType) {
-    let trimmed = rawValue.trim();
-    if (trimmed === "") return "";
-    switch(formatType) {
-      case 'hyphen': return trimmed.replace(/\s+/g, '-');
-      case 'plus': return trimmed.replace(/\s+/g, '+');
-      case 'percent20': return trimmed.replace(/\s+/g, '%20');
-      default: return trimmed.replace(/\s+/g, '-');
-    }
+  let trimmed = rawValue.trim().toLowerCase();  // <-- add .toLowerCase()
+  if (trimmed === "") return "";
+  switch(formatType) {
+    case 'hyphen': return trimmed.replace(/\s+/g, '-');
+    case 'plus': return trimmed.replace(/\s+/g, '+');
+    case 'percent20': return trimmed.replace(/\s+/g, '%20');
+    default: return trimmed.replace(/\s+/g, '-');
   }
+}
 
   function getActiveValues() {
     const nameValue = nameInput.value.trim();
@@ -713,16 +713,16 @@
     renderPresetCheckboxes();
   }
   function addPreset() {
-    let newPreset = prompt("Enter new preset:");
-    if (newPreset && newPreset.trim()) {
-      newPreset = newPreset.trim();
-      if (!presetList.includes(newPreset)) {
-        presetList.push(newPreset);
-        selectedPresets.add(newPreset);
-        savePresets();
-        renderPresetCheckboxes();
-      } else alert("Preset exists.");
-    }
+  let newPreset = prompt("Enter new preset:");
+  if (newPreset && newPreset.trim()) {
+    newPreset = newPreset.trim().toLowerCase();  // <-- add .toLowerCase()
+    if (!presetList.includes(newPreset)) {
+      presetList.push(newPreset);
+      selectedPresets.add(newPreset);
+      savePresets();
+      renderPresetCheckboxes();
+    } else alert("Preset exists.");
+  }
   }
   function removeSelectedPresets() {
     const toRemove = Array.from(selectedPresets).filter(p => p !== "bbc");
