@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Secure Portal · Smart Launcher</title>
+  <title>Secure Portal · Multi‑Preset Launcher</title>
   <style>
     * {
       margin: 0;
@@ -190,7 +190,7 @@
       color: var(--text-secondary);
     }
 
-    input, select {
+    input {
       width: 100%;
       padding: 0.7rem 1rem;
       background: var(--surface-elevated);
@@ -200,15 +200,63 @@
       font-size: 0.9rem;
     }
 
-    /* SCROLLABLE LISTS */
+    /* Preset checkboxes area */
+    .presets-area {
+      background: var(--surface-elevated);
+      border-radius: 1rem;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      border: 1px solid var(--border);
+    }
+
+    .presets-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .preset-check-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--surface);
+      padding: 0.3rem 0.8rem;
+      border-radius: 2rem;
+      border: 1px solid var(--border);
+    }
+
+    .preset-check-item input {
+      width: auto;
+      margin: 0;
+      accent-color: var(--accent);
+    }
+
+    .preset-manager {
+      display: flex;
+      gap: 0.6rem;
+      margin-top: 0.8rem;
+      align-items: center;
+    }
+
+    .small-btn {
+      background: var(--surface-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 0.3rem 0.8rem;
+      font-size: 0.75rem;
+      border-radius: 1rem;
+      cursor: pointer;
+    }
+
+    /* Scrollable lists */
     .urls-section {
       margin: 1rem 0 1rem 0;
-      max-height: 300px;
+      max-height: 280px;
       overflow-y: auto;
       padding-right: 0.5rem;
     }
 
-    /* Custom scrollbar for modern browsers */
     .urls-section::-webkit-scrollbar {
       width: 6px;
     }
@@ -314,21 +362,27 @@
     </div>
   </div>
 
-  <!-- Name & Preset Section -->
+  <!-- Name & Multi-Preset Section -->
   <div class="card">
-    <div class="card-title">📝 Enter Name</div>
+    <div class="card-title">📝 Enter Name (optional)</div>
     <div class="flex-row">
       <div class="input-group">
         <input type="text" id="nameInput" placeholder="e.g., john doe" autocomplete="off">
       </div>
-      <div class="input-group">
-        <label>Select Preset</label>
-        <select id="presetSelect"></select>
+    </div>
+    <div class="card-title" style="margin-top: 1rem;">🏷️ Select Presets (multiple allowed)</div>
+    <div class="presets-area">
+      <div id="presetsChecklist" class="presets-grid">
+        <!-- dynamic preset checkboxes -->
+      </div>
+      <div class="preset-manager">
+        <button id="addPresetBtn" class="small-btn">➕ Add Preset</button>
+        <button id="removeSelectedPresetsBtn" class="small-btn">✖ Remove selected</button>
       </div>
     </div>
-    <div class="preset-manager" style="display: flex; gap:0.6rem; margin-top:0.5rem;">
-      <button id="addPresetBtn" style="background: var(--surface-elevated); color: var(--text-primary); border:1px solid var(--border); padding:0.3rem 0.8rem; font-size:0.75rem;">➕ Add Preset</button>
-      <button id="removePresetBtn" style="background: var(--surface-elevated); color: var(--text-primary); border:1px solid var(--border); padding:0.3rem 0.8rem; font-size:0.75rem;">✖ Remove selected</button>
+    <div style="font-size: 0.75rem; margin-top: 0.5rem; color: var(--text-secondary);">
+      💡 If name is entered → uses name only (ignores presets).<br>
+      💡 If name is empty → uses ALL checked presets (each opens its own set of URLs).
     </div>
   </div>
 
@@ -359,8 +413,7 @@
   </div>
 
   <footer>
-    💡 Scrollable lists – add as many portals as you need. Each uses separate name/preset URL templates.<br>
-    <code>{value}</code> is replaced with the formatted name/preset (hyphen, plus, or %20).
+    🧩 Each portal uses name/preset templates. With multiple presets, each preset opens a separate batch of tabs.
   </footer>
 </div>
 
@@ -369,29 +422,24 @@
   const CORRECT_PIN = "2407";
   let isUnlocked = false;
 
-  // ======================== DUAL TEMPLATE URLS WITH LABELS ======
-  // Add as many items as you want – the container will scroll
+  // ======================== DUAL TEMPLATE URLS ==================
   const PREMIUM_PORTALS = [
     { label: "Pre1 Portal", nameTemplate: "https://pre1.com/stars/{value}", presetTemplate: "https://pre1.com/tag/{value}", format: "hyphen" },
     { label: "Pre2 Dashboard", nameTemplate: "https://pre2.com/user/{value}", presetTemplate: "https://pre2.com/das/tag/{value}", format: "plus" },
     { label: "Premium3 Hub", nameTemplate: "https://premium3.net/profile/{value}", presetTemplate: "https://premium3.net/category/{value}", format: "percent20" },
-    { label: "VIP Dashboard", nameTemplate: "https://vip.dashboard.io/stars/{value}/xxy", presetTemplate: "https://vip.dashboard.io/das/tag/{value}", format: "hyphen" },
-    // Example extra items to demonstrate scrolling
-    { label: "Extra Premium 1", nameTemplate: "https://extra1.com/{value}", presetTemplate: "https://extra1.com/tag/{value}", format: "hyphen" },
-    { label: "Extra Premium 2", nameTemplate: "https://extra2.com/user/{value}", presetTemplate: "https://extra2.com/cat/{value}", format: "plus" }
+    { label: "VIP Dashboard", nameTemplate: "https://vip.dashboard.io/stars/{value}/xxy", presetTemplate: "https://vip.dashboard.io/das/tag/{value}", format: "hyphen" }
   ];
 
   const OTHER_SITES = [
     { label: "Site1 Community", nameTemplate: "https://site1.com/member/{value}", presetTemplate: "https://site1.com/group/{value}", format: "hyphen" },
     { label: "Tools Other", nameTemplate: "https://tools.other.org/lookup?name={value}", presetTemplate: "https://tools.other.org/tag?q={value}", format: "plus" },
     { label: "Extrasite XYZ", nameTemplate: "https://extrasite.xyz/find/{value}/details", presetTemplate: "https://extrasite.xyz/tag/{value}", format: "percent20" },
-    { label: "Community Net", nameTemplate: "https://community.net/user/{value}", presetTemplate: "https://community.net/tag/{value}", format: "hyphen" },
-    { label: "Extra Other 1", nameTemplate: "https://other1.com/{value}", presetTemplate: "https://other1.com/preset/{value}", format: "hyphen" },
-    { label: "Extra Other 2", nameTemplate: "https://other2.com/name/{value}", presetTemplate: "https://other2.com/tag/{value}", format: "percent20" }
+    { label: "Community Net", nameTemplate: "https://community.net/user/{value}", presetTemplate: "https://community.net/tag/{value}", format: "hyphen" }
   ];
 
-  // ======================== PRESETS ===============================
-  let presetList = ["xyz", "default", "guest"];
+  // ======================== PRESETS (with checkboxes) ===========
+  let presetList = ["xyz", "guest", "default"];   // initial presets
+  let selectedPresets = new Set(["xyz", "guest"]); // which are checked by default
 
   // ======================== DOM elements ==========================
   const pinModal = document.getElementById('pinModal');
@@ -402,9 +450,9 @@
   const lockScreenBtn = document.getElementById('lockScreenBtn');
   const darkModeToggle = document.getElementById('darkModeToggle');
   const nameInput = document.getElementById('nameInput');
-  const presetSelect = document.getElementById('presetSelect');
+  const presetsChecklistDiv = document.getElementById('presetsChecklist');
   const addPresetBtn = document.getElementById('addPresetBtn');
-  const removePresetBtn = document.getElementById('removePresetBtn');
+  const removeSelectedPresetsBtn = document.getElementById('removeSelectedPresetsBtn');
   const premiumContainer = document.getElementById('premiumListContainer');
   const otherContainer = document.getElementById('otherListContainer');
   const openPremiumBtn = document.getElementById('openPremiumBtn');
@@ -414,7 +462,7 @@
   const selectAllOtherBtn = document.getElementById('selectAllOther');
   const deselectAllOtherBtn = document.getElementById('deselectAllOther');
 
-  // Helper: format value according to format type
+  // Helper: format value
   function formatValue(rawValue, formatType) {
     let trimmed = rawValue.trim();
     if (trimmed === "") return "";
@@ -426,47 +474,81 @@
     }
   }
 
-  // Get active value and its source (name or preset)
-  function getActiveValue() {
+  // Get list of values to use (name or multiple presets)
+  function getActiveValues() {
     const nameValue = nameInput.value.trim();
-    if (nameValue !== "") return { source: "name", value: nameValue };
-    const selectedPreset = presetSelect.value;
-    return { source: "preset", value: selectedPreset || "xyz" };
+    if (nameValue !== "") {
+      return [{ source: "name", value: nameValue }];
+    }
+    // No name: return all selected presets
+    const selected = Array.from(selectedPresets);
+    if (selected.length === 0) {
+      // fallback: select "xyz" if nothing else
+      return [{ source: "preset", value: "xyz" }];
+    }
+    return selected.map(p => ({ source: "preset", value: p }));
   }
 
-  // Render preset dropdown
-  function renderPresetDropdown() {
-    const currentVal = presetSelect.value;
-    presetSelect.innerHTML = "";
-    presetList.forEach(p => {
-      const opt = document.createElement('option');
-      opt.value = p;
-      opt.textContent = p;
-      presetSelect.appendChild(opt);
+  // Render preset checkboxes
+  function renderPresetCheckboxes() {
+    presetsChecklistDiv.innerHTML = "";
+    presetList.forEach(preset => {
+      const div = document.createElement('div');
+      div.className = 'preset-check-item';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.value = preset;
+      cb.checked = selectedPresets.has(preset);
+      cb.addEventListener('change', (e) => {
+        if (e.target.checked) selectedPresets.add(preset);
+        else selectedPresets.delete(preset);
+        savePresetsSelection();
+      });
+      const label = document.createElement('span');
+      label.textContent = preset;
+      div.appendChild(cb);
+      div.appendChild(label);
+      presetsChecklistDiv.appendChild(div);
     });
-    if (currentVal && presetList.includes(currentVal)) presetSelect.value = currentVal;
-    else presetSelect.value = presetList[0];
   }
 
-  // Presets storage
+  // Presets storage (list + selection)
   function savePresets() {
-    localStorage.setItem('portal_presets', JSON.stringify(presetList));
+    localStorage.setItem('portal_presets_list', JSON.stringify(presetList));
+    savePresetsSelection();
   }
-
+  function savePresetsSelection() {
+    localStorage.setItem('portal_selected_presets', JSON.stringify(Array.from(selectedPresets)));
+  }
   function loadPresets() {
-    const stored = localStorage.getItem('portal_presets');
-    if (stored) {
-      const parsed = JSON.parse(stored);
+    const storedList = localStorage.getItem('portal_presets_list');
+    if (storedList) {
+      const parsed = JSON.parse(storedList);
       if (Array.isArray(parsed) && parsed.length > 0) {
         presetList = parsed;
-        if (!presetList.includes('xyz')) presetList.unshift('xyz');
       } else {
-        presetList = ["xyz", "default", "guest"];
+        presetList = ["xyz", "guest", "default"];
       }
     } else {
-      presetList = ["xyz", "default", "guest"];
+      presetList = ["xyz", "guest", "default"];
     }
-    renderPresetDropdown();
+    const storedSelected = localStorage.getItem('portal_selected_presets');
+    if (storedSelected) {
+      const parsedSel = JSON.parse(storedSelected);
+      if (Array.isArray(parsedSel)) {
+        selectedPresets.clear();
+        parsedSel.forEach(p => selectedPresets.add(p));
+      } else {
+        selectedPresets.clear();
+        selectedPresets.add("xyz");
+        if (presetList.includes("guest")) selectedPresets.add("guest");
+      }
+    } else {
+      selectedPresets.clear();
+      selectedPresets.add("xyz");
+      if (presetList.includes("guest")) selectedPresets.add("guest");
+    }
+    renderPresetCheckboxes();
   }
 
   function addPreset() {
@@ -475,33 +557,40 @@
       newPreset = newPreset.trim();
       if (!presetList.includes(newPreset)) {
         presetList.push(newPreset);
+        selectedPresets.add(newPreset);
         savePresets();
-        renderPresetDropdown();
+        renderPresetCheckboxes();
       } else {
         alert("Preset already exists.");
       }
     }
   }
 
-  function removeCurrentPreset() {
-    const toRemove = presetSelect.value;
-    if (!toRemove) return;
-    if (toRemove === "xyz") {
-      alert("❌ Cannot remove 'xyz' — required fallback preset.");
+  function removeSelectedPresets() {
+    const toRemove = [];
+    for (let p of selectedPresets) {
+      if (p !== "xyz") toRemove.push(p);
+    }
+    if (toRemove.length === 0) {
+      alert("Cannot remove 'xyz' (required fallback). Select other presets to remove.");
       return;
     }
-    const idx = presetList.indexOf(toRemove);
-    if (idx !== -1) {
-      presetList.splice(idx, 1);
-      savePresets();
-      renderPresetDropdown();
+    for (let p of toRemove) {
+      const idx = presetList.indexOf(p);
+      if (idx !== -1) presetList.splice(idx, 1);
+      selectedPresets.delete(p);
     }
+    // Ensure at least one preset remains
+    if (presetList.length === 0) presetList.push("xyz");
+    if (selectedPresets.size === 0) selectedPresets.add("xyz");
+    savePresets();
+    renderPresetCheckboxes();
   }
 
-  // Render scrollable lists (friendly labels only)
+  // Render URL lists (friendly labels only)
   function renderPremiumList() {
     premiumContainer.innerHTML = "";
-    PREMIUM_PORTALS.forEach((item, idx) => {
+    PREMIUM_PORTALS.forEach((item) => {
       const div = document.createElement('div');
       div.className = 'url-check-item';
       const cb = document.createElement('input');
@@ -519,7 +608,7 @@
 
   function renderOtherList() {
     otherContainer.innerHTML = "";
-    OTHER_SITES.forEach((item, idx) => {
+    OTHER_SITES.forEach((item) => {
       const div = document.createElement('div');
       div.className = 'url-check-item';
       const cb = document.createElement('input');
@@ -549,11 +638,36 @@
     document.querySelectorAll('.other-checkbox').forEach(cb => cb.checked = false);
   }
 
-  // Open selected URLs using the appropriate template
-  function openSelectedUrls(urlsArray, checkboxSelector, categoryName) {
-    const active = getActiveValue();
-    if (!active.value || active.value.trim() === "") {
-      alert(`⚠️ No name entered and no preset selected. Please type a name or ensure a preset exists.`);
+  // Open URLs for one specific value (name or preset)
+  function openUrlsForValue(activeValue, urlsArray, checkboxSelector, categoryName) {
+    const checkboxes = document.querySelectorAll(checkboxSelector);
+    if (checkboxes.length === 0) return false;
+    const selectedIndices = [];
+    checkboxes.forEach((cb, idx) => {
+      if (cb.checked) selectedIndices.push(idx);
+    });
+    if (selectedIndices.length === 0) return false;
+
+    for (let idx of selectedIndices) {
+      const entry = urlsArray[idx];
+      if (!entry) continue;
+      let template = (activeValue.source === "name") ? entry.nameTemplate : entry.presetTemplate;
+      if (!template || template.trim() === "") continue;
+      let formattedValue = formatValue(activeValue.value, entry.format);
+      let finalUrl = template.replace(/\{value\}/g, formattedValue);
+      if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+        finalUrl = 'https://' + finalUrl;
+      }
+      window.open(finalUrl, '_blank');
+    }
+    return true;
+  }
+
+  // Main open handler: loop over active values (name or multiple presets)
+  function openSelectedUrlsWithMultiPreset(urlsArray, checkboxSelector, categoryName) {
+    const activeValues = getActiveValues();
+    if (activeValues.length === 0) {
+      alert(`⚠️ No name entered and no preset selected. Please type a name or check at least one preset.`);
       return false;
     }
 
@@ -562,33 +676,25 @@
       alert(`No ${categoryName} available.`);
       return false;
     }
-
-    const selectedIndices = [];
-    checkboxes.forEach((cb, idx) => {
-      if (cb.checked) selectedIndices.push(idx);
-    });
-    if (selectedIndices.length === 0) {
+    const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+    if (!anyChecked) {
       alert(`⚠️ No ${categoryName} selected. Use "Select All" or check individual items.`);
       return false;
     }
 
-    const confirmMsg = `Open ${selectedIndices.length} selected ${categoryName} with ${active.source === "name" ? "name" : "preset"}: "${active.value}"?`;
-    if (!confirm(confirmMsg)) return false;
+    // Build confirm message
+    let msg = `Open ${categoryName} for: `;
+    if (activeValues.length === 1) {
+      msg += `"${activeValues[0].value}" (${activeValues[0].source})`;
+    } else {
+      msg += `${activeValues.length} presets: ${activeValues.map(v => v.value).join(", ")}`;
+    }
+    msg += `\nEach preset will open its own set of tabs. Proceed?`;
+    if (!confirm(msg)) return false;
 
-    for (let idx of selectedIndices) {
-      const entry = urlsArray[idx];
-      if (!entry) continue;
-      
-      let template = (active.source === "name") ? entry.nameTemplate : entry.presetTemplate;
-      if (!template || template.trim() === "") continue;
-      
-      let formattedValue = formatValue(active.value, entry.format);
-      let finalUrl = template.replace(/\{value\}/g, formattedValue);
-      
-      if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
-        finalUrl = 'https://' + finalUrl;
-      }
-      window.open(finalUrl, '_blank');
+    // For each active value, open URLs
+    for (let av of activeValues) {
+      openUrlsForValue(av, urlsArray, checkboxSelector, categoryName);
     }
     return true;
   }
@@ -659,13 +765,13 @@
     lockScreenBtn.addEventListener('click', lockScreen);
     darkModeToggle.addEventListener('click', toggleDarkMode);
     addPresetBtn.addEventListener('click', addPreset);
-    removePresetBtn.addEventListener('click', removeCurrentPreset);
+    removeSelectedPresetsBtn.addEventListener('click', removeSelectedPresets);
     
     openPremiumBtn.addEventListener('click', () => {
-      openSelectedUrls(PREMIUM_PORTALS, '.premium-checkbox', "Premium Portals");
+      openSelectedUrlsWithMultiPreset(PREMIUM_PORTALS, '.premium-checkbox', "Premium Portals");
     });
     openOtherBtn.addEventListener('click', () => {
-      openSelectedUrls(OTHER_SITES, '.other-checkbox', "Other Sites");
+      openSelectedUrlsWithMultiPreset(OTHER_SITES, '.other-checkbox', "Other Sites");
     });
     
     selectAllPremiumBtn.addEventListener('click', selectAllPremium);
