@@ -132,31 +132,31 @@
     computed: {
       builtSites() {
         const originalPcModel = this.pcModel.trim();
-        const pcModelKebab = originalPcModel.replace(/\s+/g, "-").toLowerCase();
-        const pcModelKebab1 = originalPcModel.replace(/\s+/g, "+").toLowerCase();
-        const pcModelKebab2 = originalPcModel.replace(/\s+/g, "%20").toLowerCase();    
+        const hyphen = originalPcModel.replace(/\s+/g, "-").toLowerCase();
+        const spacer = originalPcModel.replace(/\s+/g, "+").toLowerCase();
+        const percent20 = originalPcModel.replace(/\s+/g, "%20").toLowerCase();    
         return [
-          `https://tube.perverzija.com/stars/${pcModelKebab}`,
-          `https://porndish.com/video2/${pcModelKebab}`,
-          `https://hqpornero.com/tags/${pcModelKebab}.html`,
-          `https://pornhoarder.tw/search/?search=${pcModelKebab2}`,
-          `https://sxyprn.com/${pcModelKebab}.html`,
-          `https://mat6tube.com/video/${pcModelKebab2}?sort=1`,
-          `https://www.fpo.xxx/models/${pcModelKebab}/`,
-          `https://www.fpo.xxx/search/${pcModelKebab}/`,
-          `https://www.xfreehd.com/search?search_query=${pcModelKebab}&search_type=videos&o=lg`,
-          `https://fux.com/pornstar/${pcModelKebab}.html`,  
-          `https://www.youporn.com/pornstar/${pcModelKebab}/duration/`,
-          `https://www.pxxbay.com/?s=${pcModelKebab1}`,
-          `https://whereismyporn.com/?s=${pcModelKebab1}`,
-          `https://fullporner.com/pornstar/${pcModelKebab}`,
-          `https://www.pornhits.com/videos.php?p=1&s=d&ps=${pcModelKebab}`,
-          `https://porn4days.red/search/?s=${pcModelKebab1}`,
-          `https://www.pornhd3x.tv/search/${pcModelKebab2}`,
-          `https://fullvideosporn.com/videos.php?p=1&q=${pcModelKebab2}`,
-          `https://top.mega-xxx.name/tags/${pcModelKebab}/`,
-          `https://pornrips.to/?s=${pcModelKebab1}`,
-          `https://www.porntrex.com/models/${pcModelKebab}/longest/`,
+          `https://tube.perverzija.com/stars/${hyphen}`,
+          `https://porndish.com/video2/${hyphen}`,
+          `https://hqpornero.com/tags/${hyphen}.html`,
+          `https://pornhoarder.tw/search/?search=${percent20}`,
+          `https://sxyprn.com/${hyphen}.html`,
+          `https://mat6tube.com/video/${percent20}?sort=1`,
+          `https://www.fpo.xxx/models/${hyphen}/`,
+          `https://www.fpo.xxx/search/${hyphen}/`,
+          `https://www.xfreehd.com/search?search_query=${hyphen}&search_type=videos&o=lg`,
+          `https://fux.com/pornstar/${hyphen}.html`,  
+          `https://www.youporn.com/pornstar/${hyphen}/duration/`,
+          `https://www.pxxbay.com/?s=${spacer}`,
+          `https://whereismyporn.com/?s=${spacer}`,
+          `https://fullporner.com/pornstar/${hyphen}`,
+          `https://www.pornhits.com/videos.php?p=1&s=d&ps=${hyphen}`,
+          `https://porn4days.red/search/?s=${spacer}`,
+          `https://www.pornhd3x.tv/search/${percent20}`,
+          `https://fullvideosporn.com/videos.php?p=1&q=${percent20}`,
+          `https://top.mega-xxx.name/tags/${hyphen}/`,
+          `https://pornrips.to/?s=${spacer}`,
+          `https://www.porntrex.com/models/${hyphen}/longest/`,
         ];
       }
     },
@@ -177,11 +177,11 @@
       openPremiumContentPortals() {
         const originalPcModel = this.pcModel.trim();
         const hasSearch = originalPcModel.length > 0;
-        const pcModelKebab = originalPcModel.replace(/\s+/g, "-").toLowerCase();
+        const hyphen = originalPcModel.replace(/\s+/g, "-").toLowerCase();
         const preset = hasSearch ? '' : this.selectedPreset.trim();
         this.selectedPremium.forEach((portal) => {
           const baseUrl = hasSearch
-            ? `https://www.${portal}/performers/${pcModelKebab}`
+            ? `https://www.${portal}/performers/${hyphen}`
             : `https://www.${portal}`;
           this.openUrl(preset ? `${baseUrl}/${preset}` : baseUrl);
         });
