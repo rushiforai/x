@@ -44,7 +44,6 @@
       min-height: 100vh;
     }
 
-    /* PIN MODAL */
     .pin-overlay {
       position: fixed;
       inset: 0;
@@ -103,7 +102,6 @@
       margin-top: 0.5rem;
     }
 
-    /* MAIN APP */
     .main-app {
       display: none;
       max-width: 1100px;
@@ -202,7 +200,6 @@
       font-size: 0.9rem;
     }
 
-    /* URL LIST WITH CHECKBOXES */
     .urls-section {
       margin: 1rem 0 1rem 0;
     }
@@ -244,7 +241,15 @@
 
     .url-text {
       font-family: monospace;
+      font-size: 0.8rem;
+      word-break: break-all;
+      color: var(--text-secondary);
+    }
+
+    .url-template {
+      font-family: monospace;
       font-size: 0.85rem;
+      font-weight: 500;
       word-break: break-all;
     }
 
@@ -300,7 +305,7 @@
     </div>
   </div>
 
-  <!-- Name & Preset Section (no preview) -->
+  <!-- Name & Preset Section -->
   <div class="card">
     <div class="card-title">📝 Enter Name</div>
     <div class="flex-row">
@@ -343,6 +348,11 @@
       <button id="openOtherBtn" class="btn-open">🔗 OPEN OTHER</button>
     </div>
   </div>
+
+  <footer>
+    💡 URL templates use <code>{value}</code> as placeholder for the formatted name/preset.<br>
+    Example: <code>https://url/stars/{value}</code> → <code>https://url/stars/john-doe</code>
+  </footer>
 </div>
 
 <script>
@@ -350,19 +360,20 @@
   const CORRECT_PIN = "2407";
   let isUnlocked = false;
 
-  // ======================== FIXED URLS ==========================
+  // ======================== TEMPLATE-BASED URLS =================
+  // Each item: { template: string with {value}, format: 'hyphen'|'plus'|'percent20' }
   const PREMIUM_PORTALS = [
-    { url: "https://pre1.com/good/", format: "hyphen" },
-    { url: "https://pre2.com/user/", format: "plus" },
-    { url: "https://premium3.net/profile/", format: "percent20" },
-    { url: "https://vip.dashboard.io/entry/", format: "hyphen" }
+    { template: "https://pre1.com/stars/{value}", format: "hyphen" },
+    { template: "https://pre2.com/user/{value}", format: "plus" },
+    { template: "https://premium3.net/profile/{value}", format: "percent20" },
+    { template: "https://vip.dashboard.io/search?q={value}&type=premium", format: "hyphen" }
   ];
 
   const OTHER_SITES = [
-    { url: "https://site1.com/member/", format: "hyphen" },
-    { url: "https://tools.other.org/lookup?q=", format: "plus" },
-    { url: "https://extrasite.xyz/find/", format: "percent20" },
-    { url: "https://community.net/user/", format: "hyphen" }
+    { template: "https://site1.com/member/{value}", format: "hyphen" },
+    { template: "https://tools.other.org/lookup?query={value}", format: "plus" },
+    { template: "https://extrasite.xyz/find/{value}/details", format: "percent20" },
+    { template: "https://community.net/tag/{value}", format: "hyphen" }
   ];
 
   // ======================== PRESETS ===============================
@@ -389,7 +400,7 @@
   const selectAllOtherBtn = document.getElementById('selectAllOther');
   const deselectAllOtherBtn = document.getElementById('deselectAllOther');
 
-  // Helper: format name
+  // Helper: format name according to format type
   function formatNameString(rawName, formatType) {
     let trimmed = rawName.trim();
     if (trimmed === "") return "";
@@ -401,7 +412,7 @@
     }
   }
 
-  // Get active name (name input or preset)
+  // Get active raw name (name input or preset)
   function getActiveRawName() {
     const nameValue = nameInput.value.trim();
     if (nameValue !== "") return nameValue;
@@ -473,39 +484,40 @@
     }
   }
 
-  // Render URL lists (no format badges, just URL text)
+  // Render URL lists (show template with placeholder)
   function renderPremiumList() {
     premiumContainer.innerHTML = "";
-    PREMIUM_PORTALS.forEach((item) => {
+    PREMIUM_PORTALS.forEach((item, idx) => {
       const div = document.createElement('div');
       div.className = 'url-check-item';
       const cb = document.createElement('input');
       cb.type = 'checkbox';
       cb.className = 'premium-checkbox';
       cb.checked = true;
-      const urlSpan = document.createElement('span');
-      urlSpan.className = 'url-text';
-      urlSpan.textContent = `🔗 ${item.url}`;
+      const templateSpan = document.createElement('span');
+      templateSpan.className = 'url-template';
+      // Show the template for clarity
+      templateSpan.textContent = `📄 ${item.template}`;
       div.appendChild(cb);
-      div.appendChild(urlSpan);
+      div.appendChild(templateSpan);
       premiumContainer.appendChild(div);
     });
   }
 
   function renderOtherList() {
     otherContainer.innerHTML = "";
-    OTHER_SITES.forEach((item) => {
+    OTHER_SITES.forEach((item, idx) => {
       const div = document.createElement('div');
       div.className = 'url-check-item';
       const cb = document.createElement('input');
       cb.type = 'checkbox';
       cb.className = 'other-checkbox';
       cb.checked = true;
-      const urlSpan = document.createElement('span');
-      urlSpan.className = 'url-text';
-      urlSpan.textContent = `🌍 ${item.url}`;
+      const templateSpan = document.createElement('span');
+      templateSpan.className = 'url-template';
+      templateSpan.textContent = `📄 ${item.template}`;
       div.appendChild(cb);
-      div.appendChild(urlSpan);
+      div.appendChild(templateSpan);
       otherContainer.appendChild(div);
     });
   }
@@ -524,7 +536,7 @@
     document.querySelectorAll('.other-checkbox').forEach(cb => cb.checked = false);
   }
 
-  // Open selected URLs
+  // Open selected URLs using template replacement
   function openSelectedUrls(urlsArray, checkboxSelector, categoryName) {
     const activeRaw = getActiveRawName();
     if (!activeRaw || activeRaw.trim() === "") {
@@ -544,16 +556,19 @@
       alert(`⚠️ No ${categoryName} selected. Use "Select All" or check individual items.`);
       return false;
     }
-    const confirmMsg = `Open ${selectedIndices.length} selected ${categoryName} with name: "${activeRaw}"?`;
+    const confirmMsg = `Open ${selectedIndices.length} selected ${categoryName} with name/preset: "${activeRaw}"?`;
     if (!confirm(confirmMsg)) return false;
 
     for (let idx of selectedIndices) {
       const entry = urlsArray[idx];
       if (!entry) continue;
-      let baseUrl = entry.url.trim();
-      if (baseUrl === "") continue;
-      let formattedName = formatNameString(activeRaw, entry.format);
-      let finalUrl = baseUrl + formattedName;
+      let template = entry.template.trim();
+      if (template === "") continue;
+      // Format the active value according to this entry's format
+      let formattedValue = formatNameString(activeRaw, entry.format);
+      // Replace {value} placeholder (case-sensitive)
+      let finalUrl = template.replace(/\{value\}/g, formattedValue);
+      // Ensure protocol
       if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
         finalUrl = 'https://' + finalUrl;
       }
