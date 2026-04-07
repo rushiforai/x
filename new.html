@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Secure Portal · Smart Launcher</title>
+  <title>Secure Portal · Dual Template Launcher</title>
   <style>
     * {
       margin: 0;
@@ -239,18 +239,16 @@
       accent-color: var(--accent);
     }
 
-    .url-text {
-      font-family: monospace;
+    .template-info {
+      flex: 1;
       font-size: 0.8rem;
+      font-family: monospace;
       word-break: break-all;
       color: var(--text-secondary);
     }
 
-    .url-template {
-      font-family: monospace;
-      font-size: 0.85rem;
-      font-weight: 500;
-      word-break: break-all;
+    .template-info strong {
+      color: var(--accent);
     }
 
     .action-buttons {
@@ -350,8 +348,8 @@
   </div>
 
   <footer>
-    💡 URL templates use <code>{value}</code> as placeholder for the formatted name/preset.<br>
-    Example: <code>https://url/stars/{value}</code> → <code>https://url/stars/john-doe</code>
+    💡 Each portal uses two templates: <strong>name template</strong> (when you type a name) and <strong>preset template</strong> (when preset is used).<br>
+    <code>{value}</code> is replaced with formatted name/preset (hyphen, plus, or %20). Example: <code>/stars/{value}</code> → <code>/stars/john-doe</code>
   </footer>
 </div>
 
@@ -360,20 +358,55 @@
   const CORRECT_PIN = "2407";
   let isUnlocked = false;
 
-  // ======================== TEMPLATE-BASED URLS =================
-  // Each item: { template: string with {value}, format: 'hyphen'|'plus'|'percent20' }
+  // ======================== DUAL TEMPLATE URLS ==================
+  // Each item: 
+  //   nameTemplate   - used when user entered a name (non-empty)
+  //   presetTemplate - used when no name and a preset is selected
+  //   format         - 'hyphen', 'plus', or 'percent20'
   const PREMIUM_PORTALS = [
-    { template: "https://pre1.com/stars/{value}", format: "hyphen" },
-    { template: "https://pre2.com/user/{value}", format: "plus" },
-    { template: "https://premium3.net/profile/{value}", format: "percent20" },
-    { template: "https://vip.dashboard.io/search?q={value}&type=premium", format: "hyphen" }
+    { 
+      nameTemplate: "https://pre1.com/stars/{value}", 
+      presetTemplate: "https://pre1.com/tag/{value}", 
+      format: "hyphen" 
+    },
+    { 
+      nameTemplate: "https://pre2.com/user/{value}", 
+      presetTemplate: "https://pre2.com/das/tag/{value}", 
+      format: "plus" 
+    },
+    { 
+      nameTemplate: "https://premium3.net/profile/{value}", 
+      presetTemplate: "https://premium3.net/category/{value}", 
+      format: "percent20" 
+    },
+    { 
+      nameTemplate: "https://vip.dashboard.io/stars/{value}/xxy", 
+      presetTemplate: "https://vip.dashboard.io/das/tag/{value}", 
+      format: "hyphen" 
+    }
   ];
 
   const OTHER_SITES = [
-    { template: "https://site1.com/member/{value}", format: "hyphen" },
-    { template: "https://tools.other.org/lookup?query={value}", format: "plus" },
-    { template: "https://extrasite.xyz/find/{value}/details", format: "percent20" },
-    { template: "https://community.net/tag/{value}", format: "hyphen" }
+    { 
+      nameTemplate: "https://site1.com/member/{value}", 
+      presetTemplate: "https://site1.com/group/{value}", 
+      format: "hyphen" 
+    },
+    { 
+      nameTemplate: "https://tools.other.org/lookup?name={value}", 
+      presetTemplate: "https://tools.other.org/tag?q={value}", 
+      format: "plus" 
+    },
+    { 
+      nameTemplate: "https://extrasite.xyz/find/{value}/details", 
+      presetTemplate: "https://extrasite.xyz/tag/{value}", 
+      format: "percent20" 
+    },
+    { 
+      nameTemplate: "https://community.net/user/{value}", 
+      presetTemplate: "https://community.net/tag/{value}", 
+      format: "hyphen" 
+    }
   ];
 
   // ======================== PRESETS ===============================
@@ -400,9 +433,9 @@
   const selectAllOtherBtn = document.getElementById('selectAllOther');
   const deselectAllOtherBtn = document.getElementById('deselectAllOther');
 
-  // Helper: format name according to format type
-  function formatNameString(rawName, formatType) {
-    let trimmed = rawName.trim();
+  // Helper: format name/preset according to format type
+  function formatValue(rawValue, formatType) {
+    let trimmed = rawValue.trim();
     if (trimmed === "") return "";
     switch(formatType) {
       case 'hyphen': return trimmed.replace(/\s+/g, '-');
@@ -412,12 +445,12 @@
     }
   }
 
-  // Get active raw name (name input or preset)
-  function getActiveRawName() {
+  // Get the active raw value (name if entered, otherwise selected preset)
+  function getActiveValue() {
     const nameValue = nameInput.value.trim();
-    if (nameValue !== "") return nameValue;
+    if (nameValue !== "") return { source: "name", value: nameValue };
     const selectedPreset = presetSelect.value;
-    return (selectedPreset && selectedPreset !== "") ? selectedPreset : "xyz";
+    return { source: "preset", value: selectedPreset || "xyz" };
   }
 
   // Render preset dropdown
@@ -484,7 +517,7 @@
     }
   }
 
-  // Render URL lists (show template with placeholder)
+  // Render URL lists (show both templates for clarity)
   function renderPremiumList() {
     premiumContainer.innerHTML = "";
     PREMIUM_PORTALS.forEach((item, idx) => {
@@ -494,12 +527,12 @@
       cb.type = 'checkbox';
       cb.className = 'premium-checkbox';
       cb.checked = true;
-      const templateSpan = document.createElement('span');
-      templateSpan.className = 'url-template';
-      // Show the template for clarity
-      templateSpan.textContent = `📄 ${item.template}`;
+      const infoSpan = document.createElement('span');
+      infoSpan.className = 'template-info';
+      infoSpan.innerHTML = `<strong>📛 Name:</strong> ${escapeHtml(item.nameTemplate)}<br>
+                            <strong>🏷️ Preset:</strong> ${escapeHtml(item.presetTemplate)}`;
       div.appendChild(cb);
-      div.appendChild(templateSpan);
+      div.appendChild(infoSpan);
       premiumContainer.appendChild(div);
     });
   }
@@ -513,12 +546,22 @@
       cb.type = 'checkbox';
       cb.className = 'other-checkbox';
       cb.checked = true;
-      const templateSpan = document.createElement('span');
-      templateSpan.className = 'url-template';
-      templateSpan.textContent = `📄 ${item.template}`;
+      const infoSpan = document.createElement('span');
+      infoSpan.className = 'template-info';
+      infoSpan.innerHTML = `<strong>📛 Name:</strong> ${escapeHtml(item.nameTemplate)}<br>
+                            <strong>🏷️ Preset:</strong> ${escapeHtml(item.presetTemplate)}`;
       div.appendChild(cb);
-      div.appendChild(templateSpan);
+      div.appendChild(infoSpan);
       otherContainer.appendChild(div);
+    });
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
     });
   }
 
@@ -536,18 +579,20 @@
     document.querySelectorAll('.other-checkbox').forEach(cb => cb.checked = false);
   }
 
-  // Open selected URLs using template replacement
+  // Open selected URLs using the appropriate template
   function openSelectedUrls(urlsArray, checkboxSelector, categoryName) {
-    const activeRaw = getActiveRawName();
-    if (!activeRaw || activeRaw.trim() === "") {
-      alert(`⚠️ No name entered and preset fallback is empty. Please type a name or add a valid preset.`);
+    const active = getActiveValue();
+    if (!active.value || active.value.trim() === "") {
+      alert(`⚠️ No name entered and no preset selected. Please type a name or ensure a preset exists.`);
       return false;
     }
+
     const checkboxes = document.querySelectorAll(checkboxSelector);
     if (checkboxes.length === 0) {
       alert(`No ${categoryName} available.`);
       return false;
     }
+
     const selectedIndices = [];
     checkboxes.forEach((cb, idx) => {
       if (cb.checked) selectedIndices.push(idx);
@@ -556,19 +601,21 @@
       alert(`⚠️ No ${categoryName} selected. Use "Select All" or check individual items.`);
       return false;
     }
-    const confirmMsg = `Open ${selectedIndices.length} selected ${categoryName} with name/preset: "${activeRaw}"?`;
+
+    const confirmMsg = `Open ${selectedIndices.length} selected ${categoryName} with ${active.source === "name" ? "name" : "preset"}: "${active.value}"?`;
     if (!confirm(confirmMsg)) return false;
 
     for (let idx of selectedIndices) {
       const entry = urlsArray[idx];
       if (!entry) continue;
-      let template = entry.template.trim();
-      if (template === "") continue;
-      // Format the active value according to this entry's format
-      let formattedValue = formatNameString(activeRaw, entry.format);
-      // Replace {value} placeholder (case-sensitive)
+      
+      // Choose template based on source (name or preset)
+      let template = (active.source === "name") ? entry.nameTemplate : entry.presetTemplate;
+      if (!template || template.trim() === "") continue;
+      
+      let formattedValue = formatValue(active.value, entry.format);
       let finalUrl = template.replace(/\{value\}/g, formattedValue);
-      // Ensure protocol
+      
       if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
         finalUrl = 'https://' + finalUrl;
       }
