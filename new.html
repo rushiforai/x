@@ -1,831 +1,704 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Secure Portal Hub | Name-Driven URL Launcher</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Secure Portal · Smart Name Launcher</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s;
+    }
 
-        :root {
-            --bg-page: #f8fafc;
-            --surface: #ffffff;
-            --surface-elevated: #f1f5f9;
-            --text-primary: #0f172a;
-            --text-secondary: #334155;
-            --border: #cbd5e1;
-            --accent: #3b82f6;
-            --accent-hover: #2563eb;
-            --danger: #ef4444;
-            --danger-hover: #dc2626;
-            --success: #10b981;
-            --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-        }
+    :root {
+      --bg-page: #f1f5f9;
+      --surface: #ffffff;
+      --surface-elevated: #f8fafc;
+      --text-primary: #0f172a;
+      --text-secondary: #334155;
+      --border: #cbd5e1;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --danger: #ef4444;
+      --success: #10b981;
+      --badge-bg: #e2e8f0;
+    }
 
-        body.dark {
-            --bg-page: #0f172a;
-            --surface: #1e293b;
-            --surface-elevated: #0f172a;
-            --text-primary: #f1f5f9;
-            --text-secondary: #cbd5e1;
-            --border: #334155;
-            --accent: #60a5fa;
-            --accent-hover: #3b82f6;
-            --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3);
-        }
+    body.dark {
+      --bg-page: #0f172a;
+      --surface: #1e293b;
+      --surface-elevated: #0f172a;
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --border: #334155;
+      --accent: #60a5fa;
+      --accent-hover: #3b82f6;
+      --badge-bg: #2d3a4e;
+    }
 
-        body {
-            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
-            background: var(--bg-page);
-            color: var(--text-primary);
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-        }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
 
-        /* PIN MODAL */
-        .pin-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(6px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 1rem;
-        }
+    /* PIN MODAL */
+    .pin-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+    }
 
-        .pin-card {
-            background: var(--surface);
-            border-radius: 2rem;
-            max-width: 400px;
-            width: 100%;
-            padding: 2rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            border: 1px solid var(--border);
-        }
+    .pin-card {
+      background: var(--surface);
+      border-radius: 2rem;
+      max-width: 400px;
+      width: 100%;
+      padding: 2rem;
+      box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      border: 1px solid var(--border);
+    }
 
-        .pin-card h2 {
-            margin-bottom: 1rem;
-            font-weight: 600;
-        }
+    .pin-card h2 {
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
 
-        .pin-card input {
-            width: 100%;
-            padding: 0.9rem;
-            font-size: 1.2rem;
-            text-align: center;
-            background: var(--surface-elevated);
-            border: 1px solid var(--border);
-            border-radius: 2rem;
-            color: var(--text-primary);
-            margin: 1rem 0;
-            letter-spacing: 2px;
-        }
+    .pin-card input {
+      width: 100%;
+      padding: 0.9rem;
+      font-size: 1.2rem;
+      text-align: center;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: 2rem;
+      color: var(--text-primary);
+      margin: 1rem 0;
+      letter-spacing: 2px;
+    }
 
-        .pin-card button {
-            background: var(--accent);
-            border: none;
-            padding: 0.8rem 1.8rem;
-            border-radius: 2rem;
-            font-weight: 600;
-            color: white;
-            cursor: pointer;
-            width: 100%;
-        }
+    .pin-card button {
+      background: var(--accent);
+      border: none;
+      padding: 0.8rem 1.8rem;
+      border-radius: 2rem;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      width: 100%;
+    }
 
-        .error-msg {
-            color: #f87171;
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
-        }
+    .error-msg {
+      color: #f87171;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
 
-        /* MAIN APP (initially hidden) */
-        .main-app {
-            display: none;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 1.5rem;
-        }
+    /* MAIN APP */
+    .main-app {
+      display: none;
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
 
-        /* header */
-        .app-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--border);
-        }
+    .app-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+    }
 
-        .logo h1 {
-            font-size: 1.6rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--accent), #a855f7);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-        }
+    .logo h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), #a855f7);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
 
-        .header-actions {
-            display: flex;
-            gap: 0.8rem;
-        }
+    .header-actions {
+      display: flex;
+      gap: 0.8rem;
+    }
 
-        .icon-btn {
-            background: var(--surface-elevated);
-            border: 1px solid var(--border);
-            padding: 0.5rem 1rem;
-            border-radius: 2rem;
-            cursor: pointer;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            color: var(--text-primary);
-        }
+    .icon-btn {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      cursor: pointer;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-primary);
+    }
 
-        /* cards */
-        .card {
-            background: var(--surface);
-            border-radius: 1.5rem;
-            border: 1px solid var(--border);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--card-shadow);
-        }
+    .card {
+      background: var(--surface);
+      border-radius: 1.5rem;
+      border: 1px solid var(--border);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
 
-        .card-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            border-left: 4px solid var(--accent);
-            padding-left: 0.8rem;
-        }
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-left: 4px solid var(--accent);
+      padding-left: 0.8rem;
+    }
 
-        .flex-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            align-items: flex-end;
-        }
+    .flex-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: flex-end;
+    }
 
-        .input-group {
-            flex: 1;
-            min-width: 180px;
-        }
+    .input-group {
+      flex: 1;
+      min-width: 180px;
+    }
 
-        .input-group label {
-            display: block;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.3rem;
-            color: var(--text-secondary);
-        }
+    .input-group label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.3rem;
+      color: var(--text-secondary);
+    }
 
-        input, select, .preset-select {
-            width: 100%;
-            padding: 0.7rem 1rem;
-            background: var(--surface-elevated);
-            border: 1px solid var(--border);
-            border-radius: 1rem;
-            color: var(--text-primary);
-            font-size: 0.9rem;
-        }
+    input, select {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+    }
 
-        button {
-            background: var(--accent);
-            border: none;
-            padding: 0.7rem 1.3rem;
-            border-radius: 1.5rem;
-            font-weight: 600;
-            color: white;
-            cursor: pointer;
-            transition: 0.1s;
-        }
-        button:hover {
-            background: var(--accent-hover);
-            transform: translateY(-1px);
-        }
+    button {
+      background: var(--accent);
+      border: none;
+      padding: 0.7rem 1.3rem;
+      border-radius: 1.5rem;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      transition: 0.1s;
+    }
+    button:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
 
-        .preview-box {
-            background: var(--surface-elevated);
-            border-radius: 1rem;
-            padding: 0.8rem 1rem;
-            margin: 1rem 0;
-            font-family: monospace;
-            font-size: 0.85rem;
-            border-left: 3px solid var(--accent);
-        }
+    .preview-box {
+      background: var(--surface-elevated);
+      border-radius: 1rem;
+      padding: 0.8rem 1rem;
+      margin: 1rem 0;
+      font-family: monospace;
+      font-size: 0.85rem;
+      border-left: 3px solid var(--accent);
+    }
 
-        .url-list {
-            margin-top: 1rem;
-        }
+    .urls-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
 
-        .url-item {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.7rem;
-            align-items: center;
-            background: var(--surface-elevated);
-            padding: 0.8rem;
-            border-radius: 1rem;
-            margin-bottom: 0.7rem;
-            border: 1px solid var(--border);
-        }
-        .url-item .url-input {
-            flex: 3;
-            min-width: 180px;
-        }
-        .url-item .format-select {
-            flex: 1;
-            min-width: 110px;
-        }
-        .url-item .delete-btn {
-            background: var(--danger);
-            padding: 0.5rem 1rem;
-            font-size: 0.8rem;
-        }
-        .url-item .delete-btn:hover {
-            background: var(--danger-hover);
-        }
+    .url-badge {
+      background: var(--badge-bg);
+      border-radius: 1rem;
+      padding: 0.7rem 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
 
-        .add-btn {
-            background: var(--surface-elevated);
-            color: var(--text-primary);
-            border: 1px dashed var(--border);
-            margin-top: 0.5rem;
-            width: 100%;
-        }
-        .add-btn:hover {
-            background: var(--border);
-        }
+    .url-text {
+      font-family: monospace;
+      word-break: break-all;
+      font-weight: 500;
+    }
 
-        .action-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin-top: 1rem;
-        }
+    .format-tag {
+      background: var(--accent);
+      color: white;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 1rem;
+      font-weight: 600;
+    }
 
-        .btn-open {
-            background: #10b981;
-        }
-        .btn-open:hover {
-            background: #059669;
-        }
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1.2rem;
+    }
 
-        hr {
-            border-color: var(--border);
-            margin: 1rem 0;
-        }
+    .btn-open {
+      background: #10b981;
+    }
+    .btn-open:hover {
+      background: #059669;
+    }
 
-        @media (max-width: 700px) {
-            .main-app { padding: 1rem; }
-            .url-item { flex-direction: column; align-items: stretch; }
-        }
-        footer {
-            text-align: center;
-            font-size: 0.75rem;
-            margin-top: 2rem;
-            color: var(--text-secondary);
-        }
-    </style>
+    .preset-manager {
+      display: flex;
+      gap: 0.6rem;
+      margin-top: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .small-btn {
+      background: var(--surface-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 0.3rem 0.8rem;
+      font-size: 0.75rem;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      margin-top: 2rem;
+      color: var(--text-secondary);
+    }
+
+    hr {
+      margin: 0.5rem 0;
+      border-color: var(--border);
+    }
+  </style>
 </head>
 <body>
 
-<!-- PIN PROTECTION MODAL -->
+<!-- PIN MODAL -->
 <div id="pinModal" class="pin-overlay">
-    <div class="pin-card">
-        <h2>🔐 Secure Access</h2>
-        <p style="margin-bottom: 0.5rem; color: var(--text-secondary);">Enter PIN to continue</p>
-        <input type="password" id="pinInput" placeholder="••••" maxlength="6" autocomplete="off">
-        <button id="unlockBtn">Unlock Portal</button>
-        <div id="pinError" class="error-msg"></div>
-    </div>
+  <div class="pin-card">
+    <h2>🔐 Restricted Access</h2>
+    <p style="margin-bottom: 0.5rem; color: var(--text-secondary);">Enter PIN to continue</p>
+    <input type="password" id="pinInput" placeholder="••••" maxlength="6" autocomplete="off">
+    <button id="unlockBtn">Unlock Portal</button>
+    <div id="pinError" class="error-msg"></div>
+  </div>
 </div>
 
-<!-- MAIN APP (hidden until PIN verified) -->
+<!-- MAIN APPLICATION -->
 <div id="mainApp" class="main-app">
-    <div class="app-header">
-        <div class="logo">
-            <h1>⚡ LinkForge · Smart Launcher</h1>
-        </div>
-        <div class="header-actions">
-            <button id="darkModeToggle" class="icon-btn">🌓 Dark/Light</button>
-            <button id="lockScreenBtn" class="icon-btn">🔒 Lock</button>
-        </div>
+  <div class="app-header">
+    <div class="logo">
+      <h1>⚡ LinkForge · Smart Launcher</h1>
     </div>
-
-    <!-- Name & Preset Section -->
-    <div class="card">
-        <div class="card-title">📝 Name & Preset Engine</div>
-        <div class="flex-row">
-            <div class="input-group">
-                <label>Enter Name (supports spaces)</label>
-                <input type="text" id="nameInput" placeholder="e.g., john doe or alice smith" autocomplete="off">
-            </div>
-            <div class="input-group">
-                <label>Select Preset (fallback if name empty)</label>
-                <select id="presetSelect"></select>
-            </div>
-            <div class="input-group">
-                <label>&nbsp;</label>
-                <button id="addPresetBtn" style="background: var(--surface-elevated); color: var(--text-primary);">➕ Add Preset</button>
-            </div>
-        </div>
-        <div class="preview-box" id="formatPreview">
-            <strong>📎 Format preview:</strong> <span id="previewText">—</span>
-        </div>
-        <div style="font-size: 0.8rem; color: var(--text-secondary);">
-            ⚡ Active name: <strong id="activeNameDisplay">—</strong> 
-            <span style="margin-left: 1rem;">🎯 Preset used when name empty</span>
-        </div>
+    <div class="header-actions">
+      <button id="darkModeToggle" class="icon-btn">🌓 Dark/Light</button>
+      <button id="lockScreenBtn" class="icon-btn">🔒 Lock</button>
     </div>
+  </div>
 
-    <!-- Premium Portals Section (editable URLs with per-URL format) -->
-    <div class="card">
-        <div class="card-title">✨ Select Premium Portals</div>
-        <div id="premiumListContainer" class="url-list">
-            <!-- dynamic premium items -->
-        </div>
-        <button id="addPremiumBtn" class="add-btn">+ Add Premium URL</button>
-        <div class="action-buttons">
-            <button id="openPremiumBtn" class="btn-open">🚀 OPEN PREMIUM (all portals + name)</button>
-        </div>
+  <!-- Name & Preset Section -->
+  <div class="card">
+    <div class="card-title">📝 Name Engine & Presets</div>
+    <div class="flex-row">
+      <div class="input-group">
+        <label>Enter Name (supports spaces)</label>
+        <input type="text" id="nameInput" placeholder="e.g., john doe or alice smith" autocomplete="off">
+      </div>
+      <div class="input-group">
+        <label>Select Preset (fallback if name empty)</label>
+        <select id="presetSelect"></select>
+      </div>
     </div>
-
-    <!-- Other Sites Section -->
-    <div class="card">
-        <div class="card-title">🌐 Other Sites</div>
-        <div id="otherListContainer" class="url-list">
-            <!-- dynamic other items -->
-        </div>
-        <button id="addOtherBtn" class="add-btn">+ Add Other Site URL</button>
-        <div class="action-buttons">
-            <button id="openOtherBtn" class="btn-open">🔗 OPEN OTHER (all sites + name)</button>
-        </div>
+    <div class="preset-manager">
+      <button id="addPresetBtn" class="small-btn">➕ Add Preset</button>
+      <button id="removePresetBtn" class="small-btn" style="background: #ef444430;">✖ Remove selected</button>
     </div>
+    <div class="preview-box">
+      <strong>🔍 Active name:</strong> <span id="activeNameDisplay">—</span><br>
+      <strong>📎 Formatted versions:</strong> <span id="previewText">—</span>
+    </div>
+    <div class="preset-manager" style="justify-content: flex-start; margin-top: 0.2rem;">
+      <span style="font-size:0.75rem;">💡 If name is empty → preset value is used. Preset "xyz" always exists.</span>
+    </div>
+  </div>
 
-    <footer>
-        💡 Each URL appends transformed name (hyphen / plus / %20) based on per-link format. <br>
-        🧩 Premium & Other lists are saved locally — edit freely.
-    </footer>
+  <!-- PREMIUM PORTALS (fixed, predefined) -->
+  <div class="card">
+    <div class="card-title">✨ Premium Portals (fixed URLs)</div>
+    <div id="premiumFixedList" class="urls-grid">
+      <!-- dynamically populated from JS but read-only -->
+    </div>
+    <div class="action-buttons">
+      <button id="openPremiumBtn" class="btn-open">🚀 OPEN PREMIUM (all portals + formatted name)</button>
+    </div>
+  </div>
+
+  <!-- OTHER SITES (fixed, predefined) -->
+  <div class="card">
+    <div class="card-title">🌐 Other Sites (fixed URLs)</div>
+    <div id="otherFixedList" class="urls-grid">
+      <!-- read-only list -->
+    </div>
+    <div class="action-buttons">
+      <button id="openOtherBtn" class="btn-open">🔗 OPEN OTHER SITES + formatted name</button>
+    </div>
+  </div>
+
+  <footer>
+    ✅ Each URL uses a predefined format (hyphen - , plus + , or %20) — automatic space conversion.<br>
+    🔒 PIN protection, dark/light mode, presets saved locally. URLs are fixed in code.
+  </footer>
 </div>
 
 <script>
-    // ------------------- CONST & GLOBALS ------------------
-    const CORRECT_PIN = "2407";     // Simple PIN protection (4-digit)
-    let isUnlocked = false;
-    
-    // Data models for URL lists (each entry: { url: string, format: 'hyphen'|'plus'|'percent20' })
-    let premiumPortals = [];
-    let otherSites = [];
-    
-    // Presets array
-    let presetList = ["xyz", "default", "guest"];   // includes 'xyz' as required
-    
-    // DOM elements
-    const pinModal = document.getElementById('pinModal');
-    const mainAppDiv = document.getElementById('mainApp');
-    const pinInput = document.getElementById('pinInput');
-    const unlockBtn = document.getElementById('unlockBtn');
-    const pinErrorSpan = document.getElementById('pinError');
-    const lockScreenBtn = document.getElementById('lockScreenBtn');
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    const nameInput = document.getElementById('nameInput');
-    const presetSelect = document.getElementById('presetSelect');
-    const addPresetBtn = document.getElementById('addPresetBtn');
-    const previewSpan = document.getElementById('previewText');
-    const activeNameSpan = document.getElementById('activeNameDisplay');
-    const premiumContainer = document.getElementById('premiumListContainer');
-    const otherContainer = document.getElementById('otherListContainer');
-    const addPremiumBtn = document.getElementById('addPremiumBtn');
-    const addOtherBtn = document.getElementById('addOtherBtn');
-    const openPremiumBtn = document.getElementById('openPremiumBtn');
-    const openOtherBtn = document.getElementById('openOtherBtn');
-    
-    // helper: load/save localStorage
-    function saveDataToLocal() {
-        localStorage.setItem('premiumPortals', JSON.stringify(premiumPortals));
-        localStorage.setItem('otherSites', JSON.stringify(otherSites));
-        localStorage.setItem('presetList', JSON.stringify(presetList));
+  // ======================== SECURE PIN ==========================
+  const CORRECT_PIN = "2407";     // change PIN here if needed
+  let isUnlocked = false;
+
+  // ======================== FIXED URLS (predefined) =================
+  // Premium portals: each object has url (base) and format type
+  const PREMIUM_PORTALS_FIXED = [
+    { url: "https://pre1.com/good/", format: "hyphen", description: "pre1.com (hyphen)" },
+    { url: "https://pre2.com/user/", format: "plus", description: "pre2.com (plus)" },
+    { url: "https://premium3.net/profile/", format: "percent20", description: "pre3.net (%20)" },
+    { url: "https://vip.dashboard.io/entry/", format: "hyphen", description: "vip.io (hyphen)" }
+  ];
+
+  const OTHER_SITES_FIXED = [
+    { url: "https://site1.com/member/", format: "hyphen", description: "site1.com (hyphen)" },
+    { url: "https://tools.other.org/lookup?q=", format: "plus", description: "other.org (plus)" },
+    { url: "https://extrasite.xyz/find/", format: "percent20", description: "extrasite.xyz (%20)" },
+    { url: "https://community.net/user/", format: "hyphen", description: "community.net (hyphen)" }
+  ];
+
+  // ======================== PRESETS MANAGEMENT ====================
+  let presetList = ["xyz", "default", "guest"];   // "xyz" is required by spec
+
+  // ======================== DOM elements ==========================
+  const pinModal = document.getElementById('pinModal');
+  const mainAppDiv = document.getElementById('mainApp');
+  const pinInput = document.getElementById('pinInput');
+  const unlockBtn = document.getElementById('unlockBtn');
+  const pinErrorSpan = document.getElementById('pinError');
+  const lockScreenBtn = document.getElementById('lockScreenBtn');
+  const darkModeToggle = document.getElementById('darkModeToggle');
+  const nameInput = document.getElementById('nameInput');
+  const presetSelect = document.getElementById('presetSelect');
+  const addPresetBtn = document.getElementById('addPresetBtn');
+  const removePresetBtn = document.getElementById('removePresetBtn');
+  const activeNameSpan = document.getElementById('activeNameDisplay');
+  const previewTextSpan = document.getElementById('previewText');
+  const openPremiumBtn = document.getElementById('openPremiumBtn');
+  const openOtherBtn = document.getElementById('openOtherBtn');
+  const premiumFixedContainer = document.getElementById('premiumFixedList');
+  const otherFixedContainer = document.getElementById('otherFixedList');
+
+  // =============== Helper: format name according to format type =========
+  function formatNameString(rawName, formatType) {
+    let trimmed = rawName.trim();
+    if (trimmed === "") return "";
+    switch(formatType) {
+      case 'hyphen':
+        return trimmed.replace(/\s+/g, '-');
+      case 'plus':
+        return trimmed.replace(/\s+/g, '+');
+      case 'percent20':
+        return trimmed.replace(/\s+/g, '%20');
+      default:
+        return trimmed.replace(/\s+/g, '-');
     }
-    
-    function loadDataFromLocal() {
-        const storedPremium = localStorage.getItem('premiumPortals');
-        const storedOther = localStorage.getItem('otherSites');
-        const storedPresets = localStorage.getItem('presetList');
-        
-        if (storedPremium) {
-            premiumPortals = JSON.parse(storedPremium);
-        } else {
-            // Default premium portals with demo formats
-            premiumPortals = [
-                { url: "https://premium.example/profile/", format: "hyphen" },
-                { url: "https://vip.dashboard.com/user/", format: "plus" },
-                { url: "https://api.premiumservice.net/find?name=", format: "percent20" }
-            ];
-        }
-        
-        if (storedOther) {
-            otherSites = JSON.parse(storedOther);
-        } else {
-            otherSites = [
-                { url: "https://community.forum.com/member/", format: "hyphen" },
-                { url: "https://tools.othersite.com/lookup?q=", format: "plus" },
-                { url: "https://extrasite.org/entry/", format: "percent20" }
-            ];
-        }
-        
-        if (storedPresets) {
-            presetList = JSON.parse(storedPresets);
-            // ensure 'xyz' is present (requirement)
-            if (!presetList.includes('xyz')) presetList.unshift('xyz');
-        } else {
-            presetList = ["xyz", "default", "guest"];
-        }
-        saveDataToLocal(); // sync defaults
+  }
+
+  // Get active name: if nameInput has value -> use it, else use selected preset
+  function getActiveRawName() {
+    const nameValue = nameInput.value.trim();
+    if (nameValue !== "") return nameValue;
+    const selectedPreset = presetSelect.value;
+    return selectedPreset && selectedPreset !== "" ? selectedPreset : "xyz";
+  }
+
+  // Update preview and active name display
+  function updatePreviewAndActive() {
+    const activeRaw = getActiveRawName();
+    activeNameSpan.innerText = activeRaw === "" ? "(fallback: xyz)" : `"${activeRaw}"`;
+    if (activeRaw === "") {
+      previewTextSpan.innerText = "⚠️ no valid name/preset";
+      return;
     }
-    
-    // name formatting engine: name with spaces -> based on formatType
-    function formatNameString(rawName, formatType) {
-        let trimmed = rawName.trim();
-        if (trimmed === "") return "";
-        switch(formatType) {
-            case 'hyphen':
-                return trimmed.replace(/\s+/g, '-');
-            case 'plus':
-                return trimmed.replace(/\s+/g, '+');
-            case 'percent20':
-                return trimmed.replace(/\s+/g, '%20');
-            default:
-                return trimmed.replace(/\s+/g, '-');
-        }
+    const hyphenVer = formatNameString(activeRaw, 'hyphen');
+    const plusVer = formatNameString(activeRaw, 'plus');
+    const percentVer = formatNameString(activeRaw, 'percent20');
+    previewTextSpan.innerHTML = `➖ ${hyphenVer}  | ➕ ${plusVer}  | 🔗 ${percentVer}`;
+  }
+
+  // Render preset dropdown
+  function renderPresetDropdown() {
+    const currentVal = presetSelect.value;
+    presetSelect.innerHTML = "";
+    presetList.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p;
+      opt.textContent = p;
+      presetSelect.appendChild(opt);
+    });
+    if (currentVal && presetList.includes(currentVal)) presetSelect.value = currentVal;
+    else presetSelect.value = presetList[0];
+    updatePreviewAndActive();
+  }
+
+  // Save presets to localStorage
+  function savePresets() {
+    localStorage.setItem('portal_presets', JSON.stringify(presetList));
+  }
+
+  function loadPresets() {
+    const stored = localStorage.getItem('portal_presets');
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        presetList = parsed;
+        if (!presetList.includes('xyz')) presetList.unshift('xyz');
+      } else {
+        presetList = ["xyz", "default", "guest"];
+      }
+    } else {
+      presetList = ["xyz", "default", "guest"];
     }
-    
-    // get active name: if nameInput value not empty -> use name, else use selected preset value
-    function getActiveRawName() {
-        const nameVal = nameInput.value.trim();
-        if (nameVal !== "") return nameVal;
-        const selectedPreset = presetSelect.value;
-        return selectedPreset || "xyz";
-    }
-    
-    // update preview and active name display
-    function updateFormatPreview() {
-        const activeRaw = getActiveRawName();
-        activeNameSpan.innerText = activeRaw === "" ? "(using preset)" : activeRaw;
-        if (activeRaw === "") {
-            previewSpan.innerText = "⚠️ No name / preset? Type a name or choose preset";
-            return;
-        }
-        const hyphenVer = formatNameString(activeRaw, 'hyphen');
-        const plusVer = formatNameString(activeRaw, 'plus');
-        const percentVer = formatNameString(activeRaw, 'percent20');
-        previewSpan.innerHTML = ` ➖ ${hyphenVer}  | ➕ ${plusVer}  | 🔗 ${percentVer}`;
-    }
-    
-    // rebuild preset dropdown
-    function renderPresetDropdown() {
-        const currentVal = presetSelect.value;
-        presetSelect.innerHTML = "";
-        presetList.forEach(preset => {
-            const option = document.createElement('option');
-            option.value = preset;
-            option.textContent = preset;
-            presetSelect.appendChild(option);
-        });
-        if (currentVal && presetList.includes(currentVal)) presetSelect.value = currentVal;
-        else presetSelect.value = presetList[0];
-        updateFormatPreview();
-    }
-    
-    // RENDER Premium list dynamically
-    function renderPremiumList() {
-        premiumContainer.innerHTML = "";
-        premiumPortals.forEach((item, idx) => {
-            const div = document.createElement('div');
-            div.className = 'url-item';
-            div.dataset.index = idx;
-            div.dataset.type = 'premium';
-            // URL input
-            const urlInput = document.createElement('input');
-            urlInput.type = 'text';
-            urlInput.className = 'url-input';
-            urlInput.value = item.url;
-            urlInput.placeholder = 'https://example.com/path/';
-            urlInput.addEventListener('change', (e) => {
-                premiumPortals[idx].url = e.target.value;
-                saveDataToLocal();
-            });
-            // Format select
-            const formatSelect = document.createElement('select');
-            formatSelect.className = 'format-select';
-            const formats = [
-                { value: 'hyphen', label: 'Hyphen (name-with-hyphen)' },
-                { value: 'plus', label: 'Plus (name+with+plus)' },
-                { value: 'percent20', label: '%20 (name%20with%20space)' }
-            ];
-            formats.forEach(f => {
-                const opt = document.createElement('option');
-                opt.value = f.value;
-                opt.textContent = f.label;
-                formatSelect.appendChild(opt);
-            });
-            formatSelect.value = item.format;
-            formatSelect.addEventListener('change', (e) => {
-                premiumPortals[idx].format = e.target.value;
-                saveDataToLocal();
-            });
-            // Delete button
-            const delBtn = document.createElement('button');
-            delBtn.textContent = '✖ Delete';
-            delBtn.className = 'delete-btn';
-            delBtn.addEventListener('click', () => {
-                premiumPortals.splice(idx, 1);
-                saveDataToLocal();
-                renderPremiumList();
-            });
-            div.appendChild(urlInput);
-            div.appendChild(formatSelect);
-            div.appendChild(delBtn);
-            premiumContainer.appendChild(div);
-        });
-        if (premiumPortals.length === 0) {
-            const emptyMsg = document.createElement('div');
-            emptyMsg.textContent = '✨ No premium portals yet. Click + Add';
-            emptyMsg.style.padding = '1rem';
-            emptyMsg.style.textAlign = 'center';
-            emptyMsg.style.color = 'var(--text-secondary)';
-            premiumContainer.appendChild(emptyMsg);
-        }
-    }
-    
-    function renderOtherList() {
-        otherContainer.innerHTML = "";
-        otherSites.forEach((item, idx) => {
-            const div = document.createElement('div');
-            div.className = 'url-item';
-            const urlInput = document.createElement('input');
-            urlInput.type = 'text';
-            urlInput.className = 'url-input';
-            urlInput.value = item.url;
-            urlInput.placeholder = 'https://example.com/other/';
-            urlInput.addEventListener('change', (e) => {
-                otherSites[idx].url = e.target.value;
-                saveDataToLocal();
-            });
-            const formatSelect = document.createElement('select');
-            formatSelect.className = 'format-select';
-            const formats = [
-                { value: 'hyphen', label: 'Hyphen (name-with-hyphen)' },
-                { value: 'plus', label: 'Plus (name+with+plus)' },
-                { value: 'percent20', label: '%20 (name%20with%20space)' }
-            ];
-            formats.forEach(f => {
-                const opt = document.createElement('option');
-                opt.value = f.value;
-                opt.textContent = f.label;
-                formatSelect.appendChild(opt);
-            });
-            formatSelect.value = item.format;
-            formatSelect.addEventListener('change', (e) => {
-                otherSites[idx].format = e.target.value;
-                saveDataToLocal();
-            });
-            const delBtn = document.createElement('button');
-            delBtn.textContent = '✖ Delete';
-            delBtn.className = 'delete-btn';
-            delBtn.addEventListener('click', () => {
-                otherSites.splice(idx, 1);
-                saveDataToLocal();
-                renderOtherList();
-            });
-            div.appendChild(urlInput);
-            div.appendChild(formatSelect);
-            div.appendChild(delBtn);
-            otherContainer.appendChild(div);
-        });
-        if (otherSites.length === 0) {
-            const emptyMsg = document.createElement('div');
-            emptyMsg.textContent = '🌍 No other sites yet. Click + Add';
-            emptyMsg.style.padding = '1rem';
-            emptyMsg.style.textAlign = 'center';
-            emptyMsg.style.color = 'var(--text-secondary)';
-            otherContainer.appendChild(emptyMsg);
-        }
-    }
-    
-    // open URLs based on category
-    function openUrlsWithActiveName(urlsArray, categoryName) {
-        let activeRaw = getActiveRawName();
-        if (!activeRaw || activeRaw.trim() === "") {
-            alert(`⚠️ No name entered and preset is empty. Please type a name or select a valid preset.`);
-            return false;
-        }
-        if (urlsArray.length === 0) {
-            alert(`📭 No ${categoryName} URLs configured. Add some first.`);
-            return false;
-        }
-        const confirmMsg = `Open ${urlsArray.length} ${categoryName} URL(s) with active name: "${activeRaw}"? (Each will open in new tab)`;
-        if (!confirm(confirmMsg)) return false;
-        
-        for (let entry of urlsArray) {
-            let baseUrl = entry.url.trim();
-            if (baseUrl === "") continue;
-            let formattedName = formatNameString(activeRaw, entry.format);
-            let finalUrl = baseUrl + formattedName;
-            // basic safety: if url doesn't have protocol, prepend https? but we respect as is
-            if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
-                finalUrl = 'https://' + finalUrl;
-            }
-            window.open(finalUrl, '_blank');
-        }
-        return true;
-    }
-    
-    // add preset logic
-    function addNewPreset() {
-        let newPreset = prompt("Enter new preset value (e.g., 'johnny' or 'demo123'):");
-        if (newPreset && newPreset.trim() !== "") {
-            newPreset = newPreset.trim();
-            if (!presetList.includes(newPreset)) {
-                presetList.push(newPreset);
-                saveDataToLocal();
-                renderPresetDropdown();
-                updateFormatPreview();
-            } else {
-                alert("Preset already exists.");
-            }
-        }
-    }
-    
-    // dark mode
-    function initDarkMode() {
-        const storedTheme = localStorage.getItem('theme');
-        if (storedTheme === 'dark') {
-            document.body.classList.add('dark');
-        } else if (storedTheme === 'light') {
-            document.body.classList.remove('dark');
-        } else {
-            // default: system? but we set light as default, but can check
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (prefersDark) document.body.classList.add('dark');
-        }
-    }
-    function toggleDarkMode() {
-        document.body.classList.toggle('dark');
-        const isDark = document.body.classList.contains('dark');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    }
-    
-    // ----- PIN LOCK / UNLOCK -----
-    function lockScreen() {
-        isUnlocked = false;
-        sessionStorage.removeItem('portal_unlocked');
-        pinModal.style.display = 'flex';
-        mainAppDiv.style.display = 'none';
-        pinInput.value = '';
-        pinErrorSpan.innerText = '';
-    }
-    
-    function unlockWithPin() {
-        const entered = pinInput.value;
-        if (entered === CORRECT_PIN) {
-            isUnlocked = true;
-            sessionStorage.setItem('portal_unlocked', 'true');
-            pinModal.style.display = 'none';
-            mainAppDiv.style.display = 'block';
-            pinErrorSpan.innerText = '';
-            // refresh UI fully after unlock
-            loadDataFromLocal();
-            renderPremiumList();
-            renderOtherList();
-            renderPresetDropdown();
-            updateFormatPreview();
-        } else {
-            pinErrorSpan.innerText = '❌ Incorrect PIN. Access denied.';
-        }
-    }
-    
-    function checkSession() {
-        const unlockedSession = sessionStorage.getItem('portal_unlocked');
-        if (unlockedSession === 'true') {
-            isUnlocked = true;
-            pinModal.style.display = 'none';
-            mainAppDiv.style.display = 'block';
-            loadDataFromLocal();
-            renderPremiumList();
-            renderOtherList();
-            renderPresetDropdown();
-            updateFormatPreview();
-        } else {
-            pinModal.style.display = 'flex';
-            mainAppDiv.style.display = 'none';
-        }
-    }
-    
-    // event listeners for dynamic content
-    function bindGlobalEvents() {
-        unlockBtn.addEventListener('click', unlockWithPin);
-        pinInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') unlockWithPin(); });
-        lockScreenBtn.addEventListener('click', lockScreen);
-        darkModeToggle.addEventListener('click', toggleDarkMode);
-        nameInput.addEventListener('input', () => { updateFormatPreview(); });
-        presetSelect.addEventListener('change', () => { updateFormatPreview(); });
-        addPresetBtn.addEventListener('click', addNewPreset);
-        
-        addPremiumBtn.addEventListener('click', () => {
-            premiumPortals.push({ url: "https://new-premium.com/entry/", format: "hyphen" });
-            saveDataToLocal();
-            renderPremiumList();
-        });
-        addOtherBtn.addEventListener('click', () => {
-            otherSites.push({ url: "https://new-other.site/page/", format: "plus" });
-            saveDataToLocal();
-            renderOtherList();
-        });
-        openPremiumBtn.addEventListener('click', () => {
-            openUrlsWithActiveName(premiumPortals, "Premium Portals");
-        });
-        openOtherBtn.addEventListener('click', () => {
-            openUrlsWithActiveName(otherSites, "Other Sites");
-        });
-    }
-    
-    // initial render after unlock but data ready: called inside checkSession and unlock
-    function fullRender() {
-        renderPremiumList();
-        renderOtherList();
+    renderPresetDropdown();
+  }
+
+  // Add new preset
+  function addPreset() {
+    let newPreset = prompt("Enter new preset value (e.g., 'team', 'demo'):");
+    if (newPreset && newPreset.trim() !== "") {
+      newPreset = newPreset.trim();
+      if (!presetList.includes(newPreset)) {
+        presetList.push(newPreset);
+        savePresets();
         renderPresetDropdown();
-        updateFormatPreview();
+        updatePreviewAndActive();
+      } else {
+        alert("Preset already exists.");
+      }
     }
-    
-    // override render calls after data loaded
-    const origRender = fullRender;
-    window.fullRender = fullRender;
-    
-    // on start
+  }
+
+  function removeCurrentPreset() {
+    const toRemove = presetSelect.value;
+    if (!toRemove) return;
+    if (toRemove === "xyz") {
+      alert("❌ Cannot remove 'xyz' — it's the required fallback preset.");
+      return;
+    }
+    const idx = presetList.indexOf(toRemove);
+    if (idx !== -1) {
+      presetList.splice(idx, 1);
+      savePresets();
+      renderPresetDropdown();
+      updatePreviewAndActive();
+    }
+  }
+
+  // =============== Render fixed URL lists (read-only, with format badge) ==========
+  function renderFixedUrls() {
+    // Render Premium portals
+    premiumFixedContainer.innerHTML = "";
+    PREMIUM_PORTALS_FIXED.forEach(item => {
+      const badge = document.createElement('div');
+      badge.className = 'url-badge';
+      badge.innerHTML = `
+        <span class="url-text">🔗 ${escapeHtml(item.url)}</span>
+        <span class="format-tag">${formatLabel(item.format)}</span>
+        <span style="font-size:0.7rem; opacity:0.7;">${escapeHtml(item.description)}</span>
+      `;
+      premiumFixedContainer.appendChild(badge);
+    });
+
+    // Render Other sites
+    otherFixedContainer.innerHTML = "";
+    OTHER_SITES_FIXED.forEach(item => {
+      const badge = document.createElement('div');
+      badge.className = 'url-badge';
+      badge.innerHTML = `
+        <span class="url-text">🌍 ${escapeHtml(item.url)}</span>
+        <span class="format-tag">${formatLabel(item.format)}</span>
+        <span style="font-size:0.7rem; opacity:0.7;">${escapeHtml(item.description)}</span>
+      `;
+      otherFixedContainer.appendChild(badge);
+    });
+  }
+
+  function formatLabel(fmt) {
+    if (fmt === 'hyphen') return 'hyphen (-)';
+    if (fmt === 'plus') return 'plus (+)';
+    if (fmt === 'percent20') return '%20';
+    return fmt;
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
+  }
+
+  // =============== OPEN URLs with active name ====================
+  function openUrlsWithActiveName(urlsArray, categoryName) {
+    let activeRaw = getActiveRawName();
+    if (!activeRaw || activeRaw.trim() === "") {
+      alert(`⚠️ No name entered and preset fallback is empty. Please type a name or add a valid preset.`);
+      return false;
+    }
+    if (urlsArray.length === 0) {
+      alert(`📭 No ${categoryName} URLs configured.`);
+      return false;
+    }
+    const confirmMsg = `Open ${urlsArray.length} ${categoryName} URL(s) with active name: "${activeRaw}"?\nEach will open in a new tab.`;
+    if (!confirm(confirmMsg)) return false;
+
+    for (let entry of urlsArray) {
+      let baseUrl = entry.url.trim();
+      if (baseUrl === "") continue;
+      let formattedName = formatNameString(activeRaw, entry.format);
+      let finalUrl = baseUrl + formattedName;
+      // ensure protocol
+      if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+        finalUrl = 'https://' + finalUrl;
+      }
+      window.open(finalUrl, '_blank');
+    }
+    return true;
+  }
+
+  // =============== DARK MODE ==================
+  function initDarkMode() {
+    const storedTheme = localStorage.getItem('theme');
+    if (storedTheme === 'dark') {
+      document.body.classList.add('dark');
+    } else if (storedTheme === 'light') {
+      document.body.classList.remove('dark');
+    } else {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (prefersDark) document.body.classList.add('dark');
+    }
+  }
+  function toggleDarkMode() {
+    document.body.classList.toggle('dark');
+    const isDark = document.body.classList.contains('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  }
+
+  // =============== PIN LOCK / UNLOCK ============
+  function lockScreen() {
+    isUnlocked = false;
+    sessionStorage.removeItem('portal_unlocked');
+    pinModal.style.display = 'flex';
+    mainAppDiv.style.display = 'none';
+    pinInput.value = '';
+    pinErrorSpan.innerText = '';
+  }
+
+  function unlockWithPin() {
+    const entered = pinInput.value;
+    if (entered === CORRECT_PIN) {
+      isUnlocked = true;
+      sessionStorage.setItem('portal_unlocked', 'true');
+      pinModal.style.display = 'none';
+      mainAppDiv.style.display = 'block';
+      pinErrorSpan.innerText = '';
+      // load all data and refresh UI
+      loadPresets();
+      renderFixedUrls();
+      updatePreviewAndActive();
+      // attach extra event listeners after unlock (already bound globally)
+    } else {
+      pinErrorSpan.innerText = '❌ Incorrect PIN. Access denied.';
+    }
+  }
+
+  function checkSession() {
+    const unlockedSession = sessionStorage.getItem('portal_unlocked');
+    if (unlockedSession === 'true') {
+      isUnlocked = true;
+      pinModal.style.display = 'none';
+      mainAppDiv.style.display = 'block';
+      loadPresets();
+      renderFixedUrls();
+      updatePreviewAndActive();
+    } else {
+      pinModal.style.display = 'flex';
+      mainAppDiv.style.display = 'none';
+    }
+  }
+
+  // =============== GLOBAL EVENT LISTENERS ============
+  function bindEvents() {
+    unlockBtn.addEventListener('click', unlockWithPin);
+    pinInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') unlockWithPin(); });
+    lockScreenBtn.addEventListener('click', lockScreen);
+    darkModeToggle.addEventListener('click', toggleDarkMode);
+    nameInput.addEventListener('input', () => updatePreviewAndActive());
+    presetSelect.addEventListener('change', () => updatePreviewAndActive());
+    addPresetBtn.addEventListener('click', addPreset);
+    removePresetBtn.addEventListener('click', removeCurrentPreset);
+
+    openPremiumBtn.addEventListener('click', () => {
+      openUrlsWithActiveName(PREMIUM_PORTALS_FIXED, "Premium Portals");
+    });
+    openOtherBtn.addEventListener('click', () => {
+      openUrlsWithActiveName(OTHER_SITES_FIXED, "Other Sites");
+    });
+  }
+
+  // extra protection: if someone tries to tamper with localStorage presets, it's fine
+  // also on name change, update preview
+
+  // Initialize everything
+  function init() {
     initDarkMode();
-    bindGlobalEvents();
+    bindEvents();
     checkSession();
-    // ensure data consistency: after unlock, the checkSession already loads data and renders
-    // but if session active, we have already called load+render; otherwise unlock does the same
-    // additional patch: when unlock, we call load and render
-    const originalUnlock = unlockWithPin;
-    window.unlockWithPin = unlockWithPin;
-    // override to also do full load+render after unlock
-    function patchedUnlock() {
-        if (pinInput.value === CORRECT_PIN) {
-            isUnlocked = true;
-            sessionStorage.setItem('portal_unlocked', 'true');
-            pinModal.style.display = 'none';
-            mainAppDiv.style.display = 'block';
-            loadDataFromLocal();
-            renderPremiumList();
-            renderOtherList();
-            renderPresetDropdown();
-            updateFormatPreview();
-            pinErrorSpan.innerText = '';
-        } else {
-            pinErrorSpan.innerText = '❌ Incorrect PIN. Access denied.';
-        }
-    }
-    unlockBtn.removeEventListener('click', unlockWithPin);
-    unlockBtn.addEventListener('click', patchedUnlock);
-    window.patchedUnlock = patchedUnlock;
-    // reassign for safety
-    window.pinInput = pinInput;
-    // also fix for lock re-render
-    const originalLock = lockScreen;
-    window.lockScreen = lockScreen;
-    // after lock, ensure data clears? no need
-    // also make sure nameInput and preset changes update preview correctly
-    nameInput.addEventListener('input', updateFormatPreview);
-    presetSelect.addEventListener('change', updateFormatPreview);
-    // final call if already unlocked after page refresh
-    if (sessionStorage.getItem('portal_unlocked') === 'true') {
-        loadDataFromLocal();
-        renderPremiumList();
-        renderOtherList();
-        renderPresetDropdown();
-        updateFormatPreview();
-    }
+  }
+
+  init();
 </script>
 </body>
 </html>
