@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Secure Portal · Dual Template Launcher</title>
+  <title>Secure Portal · Smart Launcher</title>
   <style>
     * {
       margin: 0;
@@ -239,16 +239,10 @@
       accent-color: var(--accent);
     }
 
-    .template-info {
-      flex: 1;
-      font-size: 0.8rem;
-      font-family: monospace;
-      word-break: break-all;
-      color: var(--text-secondary);
-    }
-
-    .template-info strong {
-      color: var(--accent);
+    .portal-label {
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: var(--text-primary);
     }
 
     .action-buttons {
@@ -348,8 +342,8 @@
   </div>
 
   <footer>
-    💡 Each portal uses two templates: <strong>name template</strong> (when you type a name) and <strong>preset template</strong> (when preset is used).<br>
-    <code>{value}</code> is replaced with formatted name/preset (hyphen, plus, or %20). Example: <code>/stars/{value}</code> → <code>/stars/john-doe</code>
+    💡 Each portal uses two URL templates (name / preset) but only the friendly name is shown.<br>
+    <code>{value}</code> is replaced with the formatted name/preset (hyphen, plus, or %20).
   </footer>
 </div>
 
@@ -358,28 +352,29 @@
   const CORRECT_PIN = "2407";
   let isUnlocked = false;
 
-  // ======================== DUAL TEMPLATE URLS ==================
-  // Each item: 
-  //   nameTemplate   - used when user entered a name (non-empty)
-  //   presetTemplate - used when no name and a preset is selected
-  //   format         - 'hyphen', 'plus', or 'percent20'
+  // ======================== DUAL TEMPLATE URLS WITH LABELS ======
+  // Each item: label (display name), nameTemplate, presetTemplate, format
   const PREMIUM_PORTALS = [
     { 
+      label: "Pre1 Portal",
       nameTemplate: "https://pre1.com/stars/{value}", 
       presetTemplate: "https://pre1.com/tag/{value}", 
       format: "hyphen" 
     },
     { 
+      label: "Pre2 Dashboard",
       nameTemplate: "https://pre2.com/user/{value}", 
       presetTemplate: "https://pre2.com/das/tag/{value}", 
       format: "plus" 
     },
     { 
+      label: "Premium3 Hub",
       nameTemplate: "https://premium3.net/profile/{value}", 
       presetTemplate: "https://premium3.net/category/{value}", 
       format: "percent20" 
     },
     { 
+      label: "VIP Dashboard",
       nameTemplate: "https://vip.dashboard.io/stars/{value}/xxy", 
       presetTemplate: "https://vip.dashboard.io/das/tag/{value}", 
       format: "hyphen" 
@@ -388,21 +383,25 @@
 
   const OTHER_SITES = [
     { 
+      label: "Site1 Community",
       nameTemplate: "https://site1.com/member/{value}", 
       presetTemplate: "https://site1.com/group/{value}", 
       format: "hyphen" 
     },
     { 
+      label: "Tools Other",
       nameTemplate: "https://tools.other.org/lookup?name={value}", 
       presetTemplate: "https://tools.other.org/tag?q={value}", 
       format: "plus" 
     },
     { 
+      label: "Extrasite XYZ",
       nameTemplate: "https://extrasite.xyz/find/{value}/details", 
       presetTemplate: "https://extrasite.xyz/tag/{value}", 
       format: "percent20" 
     },
     { 
+      label: "Community Net",
       nameTemplate: "https://community.net/user/{value}", 
       presetTemplate: "https://community.net/tag/{value}", 
       format: "hyphen" 
@@ -433,7 +432,7 @@
   const selectAllOtherBtn = document.getElementById('selectAllOther');
   const deselectAllOtherBtn = document.getElementById('deselectAllOther');
 
-  // Helper: format name/preset according to format type
+  // Helper: format value according to format type
   function formatValue(rawValue, formatType) {
     let trimmed = rawValue.trim();
     if (trimmed === "") return "";
@@ -445,7 +444,7 @@
     }
   }
 
-  // Get the active raw value (name if entered, otherwise selected preset)
+  // Get active value and its source (name or preset)
   function getActiveValue() {
     const nameValue = nameInput.value.trim();
     if (nameValue !== "") return { source: "name", value: nameValue };
@@ -517,7 +516,7 @@
     }
   }
 
-  // Render URL lists (show both templates for clarity)
+  // Render URL lists using friendly labels only
   function renderPremiumList() {
     premiumContainer.innerHTML = "";
     PREMIUM_PORTALS.forEach((item, idx) => {
@@ -527,12 +526,11 @@
       cb.type = 'checkbox';
       cb.className = 'premium-checkbox';
       cb.checked = true;
-      const infoSpan = document.createElement('span');
-      infoSpan.className = 'template-info';
-      infoSpan.innerHTML = `<strong>📛 Name:</strong> ${escapeHtml(item.nameTemplate)}<br>
-                            <strong>🏷️ Preset:</strong> ${escapeHtml(item.presetTemplate)}`;
+      const labelSpan = document.createElement('span');
+      labelSpan.className = 'portal-label';
+      labelSpan.textContent = item.label;
       div.appendChild(cb);
-      div.appendChild(infoSpan);
+      div.appendChild(labelSpan);
       premiumContainer.appendChild(div);
     });
   }
@@ -546,22 +544,12 @@
       cb.type = 'checkbox';
       cb.className = 'other-checkbox';
       cb.checked = true;
-      const infoSpan = document.createElement('span');
-      infoSpan.className = 'template-info';
-      infoSpan.innerHTML = `<strong>📛 Name:</strong> ${escapeHtml(item.nameTemplate)}<br>
-                            <strong>🏷️ Preset:</strong> ${escapeHtml(item.presetTemplate)}`;
+      const labelSpan = document.createElement('span');
+      labelSpan.className = 'portal-label';
+      labelSpan.textContent = item.label;
       div.appendChild(cb);
-      div.appendChild(infoSpan);
+      div.appendChild(labelSpan);
       otherContainer.appendChild(div);
-    });
-  }
-
-  function escapeHtml(str) {
-    return str.replace(/[&<>]/g, function(m) {
-      if (m === '&') return '&amp;';
-      if (m === '<') return '&lt;';
-      if (m === '>') return '&gt;';
-      return m;
     });
   }
 
@@ -609,7 +597,7 @@
       const entry = urlsArray[idx];
       if (!entry) continue;
       
-      // Choose template based on source (name or preset)
+      // Choose template based on source
       let template = (active.source === "name") ? entry.nameTemplate : entry.presetTemplate;
       if (!template || template.trim() === "") continue;
       
