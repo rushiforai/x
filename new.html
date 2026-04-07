@@ -351,6 +351,11 @@
       <button id="addPresetBtn" style="background: var(--surface-elevated); color: var(--text-primary); border:1px solid var(--border); padding:0.3rem 0.8rem; font-size:0.75rem;">➕ Add Preset</button>
       <button id="removePresetBtn" style="background: var(--surface-elevated); color: var(--text-primary); border:1px solid var(--border); padding:0.3rem 0.8rem; font-size:0.75rem;">✖ Remove selected</button>
     </div>
+    <!-- FIX: added preview box (required by JS) -->
+    <div class="preview-box">
+      <strong>🔍 Active name:</strong> <span id="activeNameDisplay">—</span><br>
+      <strong>📎 Formatted versions:</strong> <span id="previewText">—</span>
+    </div>
   </div>
 
   <!-- PREMIUM PORTALS with select/deselect all -->
@@ -390,7 +395,6 @@
   let isUnlocked = false;
 
   // ======================== FIXED URLS (predefined) =================
-  // Each item: { url, format, description }
   const PREMIUM_PORTALS = [
     { url: "https://pre1.com/good/", format: "hyphen", description: "pre1.com (hyphen)" },
     { url: "https://pre2.com/user/", format: "plus", description: "pre2.com (plus)" },
@@ -406,7 +410,7 @@
   ];
 
   // ======================== PRESETS ===============================
-  let presetList = ["xyz", "default", "guest"];   // "xyz" required
+  let presetList = ["xyz", "default", "guest"];
 
   // ======================== DOM elements ==========================
   const pinModal = document.getElementById('pinModal');
@@ -420,6 +424,7 @@
   const presetSelect = document.getElementById('presetSelect');
   const addPresetBtn = document.getElementById('addPresetBtn');
   const removePresetBtn = document.getElementById('removePresetBtn');
+  // FIX: these elements now exist in the HTML
   const activeNameSpan = document.getElementById('activeNameDisplay');
   const previewTextSpan = document.getElementById('previewText');
   const premiumContainer = document.getElementById('premiumListContainer');
@@ -430,9 +435,6 @@
   const deselectAllPremiumBtn = document.getElementById('deselectAllPremium');
   const selectAllOtherBtn = document.getElementById('selectAllOther');
   const deselectAllOtherBtn = document.getElementById('deselectAllOther');
-
-  // Storage for checkbox states (we'll manage via DOM but also keep selection map)
-  // We'll just read checkboxes at open time. For select/deselect we manipulate DOM.
 
   // Helper: format name according to format type
   function formatNameString(rawName, formatType) {
@@ -545,11 +547,13 @@
       const cb = document.createElement('input');
       cb.type = 'checkbox';
       cb.className = 'premium-checkbox';
-      cb.checked = true;  // default all selected
+      cb.checked = true;
       const infoDiv = document.createElement('div');
       infoDiv.className = 'url-info';
+      // Show URL + format badge for clarity (optional but helpful)
       infoDiv.innerHTML = `
         <span class="url-text">🔗 ${escapeHtml(item.url)}</span>
+        <span class="format-badge">${formatLabel(item.format)}</span>
       `;
       div.appendChild(cb);
       div.appendChild(infoDiv);
@@ -570,6 +574,7 @@
       infoDiv.className = 'url-info';
       infoDiv.innerHTML = `
         <span class="url-text">🌍 ${escapeHtml(item.url)}</span>
+        <span class="format-badge">${formatLabel(item.format)}</span>
       `;
       div.appendChild(cb);
       div.appendChild(infoDiv);
@@ -681,7 +686,6 @@
       pinModal.style.display = 'none';
       mainAppDiv.style.display = 'block';
       pinErrorSpan.innerText = '';
-      // Initialize all data and UI
       loadPresets();
       renderPremiumList();
       renderOtherList();
