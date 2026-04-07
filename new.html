@@ -200,8 +200,25 @@
       font-size: 0.9rem;
     }
 
+    /* SCROLLABLE LISTS */
     .urls-section {
       margin: 1rem 0 1rem 0;
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+
+    /* Custom scrollbar for modern browsers */
+    .urls-section::-webkit-scrollbar {
+      width: 6px;
+    }
+    .urls-section::-webkit-scrollbar-track {
+      background: var(--surface-elevated);
+      border-radius: 10px;
+    }
+    .urls-section::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 10px;
     }
 
     .select-all-bar {
@@ -315,7 +332,7 @@
     </div>
   </div>
 
-  <!-- PREMIUM PORTALS -->
+  <!-- PREMIUM PORTALS (scrollable) -->
   <div class="card">
     <div class="card-title">✨ Premium Portals</div>
     <div class="select-all-bar">
@@ -328,7 +345,7 @@
     </div>
   </div>
 
-  <!-- OTHER SITES -->
+  <!-- OTHER SITES (scrollable) -->
   <div class="card">
     <div class="card-title">🌐 Other Sites</div>
     <div class="select-all-bar">
@@ -342,7 +359,7 @@
   </div>
 
   <footer>
-    💡 Each portal uses two URL templates (name / preset) but only the friendly name is shown.<br>
+    💡 Scrollable lists – add as many portals as you need. Each uses separate name/preset URL templates.<br>
     <code>{value}</code> is replaced with the formatted name/preset (hyphen, plus, or %20).
   </footer>
 </div>
@@ -353,59 +370,24 @@
   let isUnlocked = false;
 
   // ======================== DUAL TEMPLATE URLS WITH LABELS ======
-  // Each item: label (display name), nameTemplate, presetTemplate, format
+  // Add as many items as you want – the container will scroll
   const PREMIUM_PORTALS = [
-    { 
-      label: "Pre1 Portal",
-      nameTemplate: "https://pre1.com/stars/{value}", 
-      presetTemplate: "https://pre1.com/tag/{value}", 
-      format: "hyphen" 
-    },
-    { 
-      label: "Pre2 Dashboard",
-      nameTemplate: "https://pre2.com/user/{value}", 
-      presetTemplate: "https://pre2.com/das/tag/{value}", 
-      format: "plus" 
-    },
-    { 
-      label: "Premium3 Hub",
-      nameTemplate: "https://premium3.net/profile/{value}", 
-      presetTemplate: "https://premium3.net/category/{value}", 
-      format: "percent20" 
-    },
-    { 
-      label: "VIP Dashboard",
-      nameTemplate: "https://vip.dashboard.io/stars/{value}/xxy", 
-      presetTemplate: "https://vip.dashboard.io/das/tag/{value}", 
-      format: "hyphen" 
-    }
+    { label: "Pre1 Portal", nameTemplate: "https://pre1.com/stars/{value}", presetTemplate: "https://pre1.com/tag/{value}", format: "hyphen" },
+    { label: "Pre2 Dashboard", nameTemplate: "https://pre2.com/user/{value}", presetTemplate: "https://pre2.com/das/tag/{value}", format: "plus" },
+    { label: "Premium3 Hub", nameTemplate: "https://premium3.net/profile/{value}", presetTemplate: "https://premium3.net/category/{value}", format: "percent20" },
+    { label: "VIP Dashboard", nameTemplate: "https://vip.dashboard.io/stars/{value}/xxy", presetTemplate: "https://vip.dashboard.io/das/tag/{value}", format: "hyphen" },
+    // Example extra items to demonstrate scrolling
+    { label: "Extra Premium 1", nameTemplate: "https://extra1.com/{value}", presetTemplate: "https://extra1.com/tag/{value}", format: "hyphen" },
+    { label: "Extra Premium 2", nameTemplate: "https://extra2.com/user/{value}", presetTemplate: "https://extra2.com/cat/{value}", format: "plus" }
   ];
 
   const OTHER_SITES = [
-    { 
-      label: "Site1 Community",
-      nameTemplate: "https://site1.com/member/{value}", 
-      presetTemplate: "https://site1.com/group/{value}", 
-      format: "hyphen" 
-    },
-    { 
-      label: "Tools Other",
-      nameTemplate: "https://tools.other.org/lookup?name={value}", 
-      presetTemplate: "https://tools.other.org/tag?q={value}", 
-      format: "plus" 
-    },
-    { 
-      label: "Extrasite XYZ",
-      nameTemplate: "https://extrasite.xyz/find/{value}/details", 
-      presetTemplate: "https://extrasite.xyz/tag/{value}", 
-      format: "percent20" 
-    },
-    { 
-      label: "Community Net",
-      nameTemplate: "https://community.net/user/{value}", 
-      presetTemplate: "https://community.net/tag/{value}", 
-      format: "hyphen" 
-    }
+    { label: "Site1 Community", nameTemplate: "https://site1.com/member/{value}", presetTemplate: "https://site1.com/group/{value}", format: "hyphen" },
+    { label: "Tools Other", nameTemplate: "https://tools.other.org/lookup?name={value}", presetTemplate: "https://tools.other.org/tag?q={value}", format: "plus" },
+    { label: "Extrasite XYZ", nameTemplate: "https://extrasite.xyz/find/{value}/details", presetTemplate: "https://extrasite.xyz/tag/{value}", format: "percent20" },
+    { label: "Community Net", nameTemplate: "https://community.net/user/{value}", presetTemplate: "https://community.net/tag/{value}", format: "hyphen" },
+    { label: "Extra Other 1", nameTemplate: "https://other1.com/{value}", presetTemplate: "https://other1.com/preset/{value}", format: "hyphen" },
+    { label: "Extra Other 2", nameTemplate: "https://other2.com/name/{value}", presetTemplate: "https://other2.com/tag/{value}", format: "percent20" }
   ];
 
   // ======================== PRESETS ===============================
@@ -516,7 +498,7 @@
     }
   }
 
-  // Render URL lists using friendly labels only
+  // Render scrollable lists (friendly labels only)
   function renderPremiumList() {
     premiumContainer.innerHTML = "";
     PREMIUM_PORTALS.forEach((item, idx) => {
@@ -597,7 +579,6 @@
       const entry = urlsArray[idx];
       if (!entry) continue;
       
-      // Choose template based on source
       let template = (active.source === "name") ? entry.nameTemplate : entry.presetTemplate;
       if (!template || template.trim() === "") continue;
       
