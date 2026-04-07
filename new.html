@@ -330,8 +330,8 @@
       <h1>⚡ Secret</h1>
     </div>
     <div class="header-actions">
-      <button id="darkModeToggle" class="icon-btn">🌓 Dark/Light</button>
-      <button id="lockScreenBtn" class="icon-btn">🔒 Lock</button>
+      <button id="darkModeToggle" class="icon-btn">🌓</button>
+      <button id="lockScreenBtn" class="icon-btn">🔒</button>
     </div>
   </div>
 
@@ -340,7 +340,6 @@
     <div class="card-title">📝 Enter Name</div>
     <div class="flex-row">
       <div class="input-group">
-<!--         <label>Enter Name (spaces allowed)</label> -->
         <input type="text" id="nameInput" placeholder="e.g., john doe" autocomplete="off">
       </div>
       <div class="input-group">
@@ -352,10 +351,6 @@
       <button id="addPresetBtn" style="background: var(--surface-elevated); color: var(--text-primary); border:1px solid var(--border); padding:0.3rem 0.8rem; font-size:0.75rem;">➕ Add Preset</button>
       <button id="removePresetBtn" style="background: var(--surface-elevated); color: var(--text-primary); border:1px solid var(--border); padding:0.3rem 0.8rem; font-size:0.75rem;">✖ Remove selected</button>
     </div>
-<!--     <div class="preview-box">
-      <strong>🔍 Active name:</strong> <span id="activeNameDisplay">—</span><br>
-      <strong>📎 Formatted versions:</strong> <span id="previewText">—</span>
-    </div> -->
   </div>
 
   <!-- PREMIUM PORTALS with select/deselect all -->
@@ -387,11 +382,6 @@
       <button id="openOtherBtn" class="btn-open">🔗 OPEN OTHER</button>
     </div>
   </div>
-
-<!--   <footer>
-    ✅ Each URL uses its own format (hyphen - , plus + , or %20). Only selected URLs will open.<br>
-    🔒 PIN: 2407 | Dark/Light mode | Presets stored locally.
-  </footer> -->
 </div>
 
 <script>
@@ -560,8 +550,6 @@
       infoDiv.className = 'url-info';
       infoDiv.innerHTML = `
         <span class="url-text">🔗 ${escapeHtml(item.url)}</span>
-        <span class="format-badge">${formatLabel(item.format)}</span>
-        <span style="font-size:0.7rem; opacity:0.7;">${escapeHtml(item.description)}</span>
       `;
       div.appendChild(cb);
       div.appendChild(infoDiv);
@@ -582,8 +570,6 @@
       infoDiv.className = 'url-info';
       infoDiv.innerHTML = `
         <span class="url-text">🌍 ${escapeHtml(item.url)}</span>
-        <span class="format-badge">${formatLabel(item.format)}</span>
-        <span style="font-size:0.7rem; opacity:0.7;">${escapeHtml(item.description)}</span>
       `;
       div.appendChild(cb);
       div.appendChild(infoDiv);
