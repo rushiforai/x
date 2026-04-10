@@ -495,11 +495,11 @@
           <button id="clearFilters" class="btn-outline btn">Clear Filters</button>
           <button id="mergeDuplicatesBtn" class="btn-outline btn">Merge Duplicates</button>
         </div>
-        <div class="table-wrapper" id="tableContainer"></div>
+        <div class="table-wrapper" id="tableContainer" align="center" ></div>
         <div class="chart-container">
           <canvas id="inquiryChart"></canvas>
         </div>
-        <div id="summaryStats"></div>
+        <!-- <div id="summaryStats"></div>
         <div class="simulator-card">
           <h3 style="font-weight:500;">Score Simulator</h3>
           <div class="simulator-control">
@@ -551,7 +551,7 @@
           </div>
           <button id="clearHistoryBtn" class="btn-outline btn" style="margin-top:8px;">Clear History</button>
         </div>
-      </div>
+      </div> -->
     </div>
     <script>
       pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.3.122/pdf.worker.min.js';
@@ -1347,7 +1347,7 @@ function attachSortListeners() {
             renderProfile();
             renderCurrentTab();
             resultsCard.classList.remove('hidden');
-            setStatus(`Loaded: ${hardInquiries.length} Hard Inquiries, ${softInquiries.length} Soft Inquiries`);
+            setStatus(`Report Says: ${hardInquiries.length} Hard Inquiries, ${softInquiries.length} Soft Inquiries`);
             hideProgress();
             setTimeout(() => updateHistoryChart(), 100);
           } catch (err) {
