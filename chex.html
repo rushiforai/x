@@ -277,52 +277,42 @@
             dateOfBirth: ""
         };
     
-        // Consumer ID: matches "Consumer ID 123 for Name" or "Consumer ID: 123"
-        let match = fullText.match(/Consumer\s+ID\s+(\d+)(?:\s+for\s+([^\n]+))?/i);
-        if (match) {
-            profileData.consumerId = match[1];
-            if (match[2]) profileData.consumerName = match[2].trim();
-        }
-        if (!profileData.consumerName) {
-            match = fullText.match(/Consumer\s+Name\s*:?\s*([^\n]+)/i);
-            if (match) profileData.consumerName = match[1].trim();
-        }
+        // Consumer ID: "CONSUMER ID" followed by a number (maybe on next line)
+        let match = fullText.match(/CONSUMER\s+ID\s*[\n\r]+\s*(\d+)/i);
+        if (!match) match = fullText.match(/Consumer\s+ID\s+(\d+)/i);
+        if (match) profileData.consumerId = match[1];
     
-        // Associated Names (semicolon separated, may have line break)
-        let assocMatch = fullText.match(/Associated\s+Names\s*:?\s*([\s\S]*?)(?=Addresses:|Phone\s+Numbers:|Email\s+Addresses:|Date\s+of\s+Birth:|$)/i);
-        if (assocMatch) {
-            let names = assocMatch[1].replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-            profileData.associatedNames = names;
-        }
+        // Consumer Name: "CONSUMER NAME" followed by name until newline or period
+        match = fullText.match(/CONSUMER\s+NAME\s*[\n\r]+\s*([A-Z\s]+?)(?=\s*(?:This report|\.|$))/i);
+        if (!match) match = fullText.match(/Consumer\s+Name\s*:?\s*([^\n]+)/i);
+        if (match) profileData.consumerName = match[1].trim();
     
-        // Addresses – capture multi-line until "Phone Numbers"
-        let addrMatch = fullText.match(/Addresses?\s*:?\s*([\s\S]*?)(?=Phone\s+Numbers|Email\s+Addresses|Date\s+of\s+Birth|$)/i);
+        // Associated Names: from "Associated Names:" until semicolon line end
+        match = fullText.match(/Associated\s+Names:\s*([^;]+(?:;[^;]+)*);?/i);
+        if (match) profileData.associatedNames = match[1].trim() + (match[1].endsWith(';') ? '' : ';');
+    
+        // Addresses: from "Addresses:" until next section (Phone Numbers)
+        let addrMatch = fullText.match(/Addresses:\s*([\s\S]*?)(?=Phone\s+Numbers:|Email\s+Addresses:|Date\s+of\s+Birth:|$)/i);
         if (addrMatch) {
             let addr = addrMatch[1]
-                .replace(/\n/g, ', ')      // replace newlines with commas
-                .replace(/\s+/g, ' ')      // collapse multiple spaces
-                .replace(/,\s*,/g, ',')    // remove duplicate commas
+                .replace(/\n/g, ', ')
+                .replace(/\s+/g, ' ')
+                .replace(/,\s*,/g, ',')
                 .trim();
-            profileData.addresses = addr.substring(0, 500);
+            profileData.addresses = addr;
         }
     
-        // Phone Numbers
-        match = fullText.match(/Phone\s+Numbers?\s*:?\s*([^\n]+)/i);
-        if (match) profileData.phoneNumbers = match[1].trim();
+        // Phone Numbers: capture until next section
+        match = fullText.match(/Phone\s+Numbers:\s*([^;]+(?:;[^;]+)*);?/i);
+        if (match) profileData.phoneNumbers = match[1].trim() + ';';
     
-        // Email Addresses
-        match = fullText.match(/Email\s+Addresses?\s*:?\s*([^\n]+)/i);
+        // Email Addresses: capture until next section or newline
+        match = fullText.match(/Email\s+Addresses:\s*([^\n]+)/i);
         if (match) profileData.emailAddresses = match[1].trim();
     
-        // Date of Birth
-        match = fullText.match(/Date\s+of\s+Birth\s*:?\s*([\d\/]+)/i);
+        // Date of Birth: capture date
+        match = fullText.match(/Date\s+of\s+Birth:\s*([\d\/]+)/i);
         if (match) profileData.dateOfBirth = match[1].trim();
-    
-        // Fallback: try to find any 3+ digit number if ID missing
-        if (!profileData.consumerId) {
-            let fallbackMatch = fullText.match(/\b(\d{5,})\b/);
-            if (fallbackMatch) profileData.consumerId = fallbackMatch[1];
-        }
     
         return profileData;
     }
