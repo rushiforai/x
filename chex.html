@@ -266,56 +266,58 @@
         return cleaned;
     }
 
-    function extractProfile(fullText) {
-        const profileData = {
-            consumerId: "",
-            consumerName: "",
-            associatedNames: "",
-            addresses: "",
-            phoneNumbers: "",
-            emailAddresses: "",
-            dateOfBirth: ""
-        };
-    
-        // Consumer ID: "CONSUMER ID" followed by a number (maybe on next line)
-        let match = fullText.match(/CONSUMER\s+ID\s*[\n\r]+\s*(\d+)/i);
-        if (!match) match = fullText.match(/Consumer\s+ID\s+(\d+)/i);
-        if (match) profileData.consumerId = match[1];
-    
-        // Consumer Name: "CONSUMER NAME" followed by name until newline or period
-        match = fullText.match(/CONSUMER\s+NAME\s*[\n\r]+\s*([A-Z\s]+?)(?=\s*(?:This report|\.|$))/i);
-        if (!match) match = fullText.match(/Consumer\s+Name\s*:?\s*([^\n]+)/i);
-        if (match) profileData.consumerName = match[1].trim();
-    
-        // Associated Names: from "Associated Names:" until semicolon line end
-        match = fullText.match(/Associated\s+Names:\s*([^;]+(?:;[^;]+)*);?/i);
-        if (match) profileData.associatedNames = match[1].trim() + (match[1].endsWith(';') ? '' : ';');
-    
-        // Addresses: from "Addresses:" until next section (Phone Numbers)
-        let addrMatch = fullText.match(/Addresses:\s*([\s\S]*?)(?=Phone\s+Numbers:|Email\s+Addresses:|Date\s+of\s+Birth:|$)/i);
-        if (addrMatch) {
-            let addr = addrMatch[1]
-                .replace(/\n/g, ', ')
-                .replace(/\s+/g, ' ')
-                .replace(/,\s*,/g, ',')
-                .trim();
-            profileData.addresses = addr;
-        }
-    
-        // Phone Numbers: capture until next section
-        match = fullText.match(/Phone\s+Numbers:\s*([^;]+(?:;[^;]+)*);?/i);
-        if (match) profileData.phoneNumbers = match[1].trim() + ';';
-    
-        // Email Addresses: capture until next section or newline
-        match = fullText.match(/Email\s+Addresses:\s*([^\n]+)/i);
-        if (match) profileData.emailAddresses = match[1].trim();
-    
-        // Date of Birth: capture date
-        match = fullText.match(/Date\s+of\s+Birth:\s*([\d\/]+)/i);
-        if (match) profileData.dateOfBirth = match[1].trim();
-    
-        return profileData;
+function extractProfile(fullText) {
+    const profileData = {
+        consumerId: "",
+        consumerName: "",
+        associatedNames: "",
+        addresses: "",
+        phoneNumbers: "",
+        emailAddresses: "",
+        dateOfBirth: ""
+    };
+
+    // CONSUMER ID: matches "CONSUMER ID" then a number (maybe on same line or next line)
+    let match = fullText.match(/CONSUMER\s+ID\s*[\r\n]+\s*(\d+)/i);
+    if (!match) match = fullText.match(/CONSUMER\s+ID\s+(\d+)/i);
+    if (match) profileData.consumerId = match[1];
+
+    // CONSUMER NAME: captures text after "CONSUMER NAME" until next section (e.g., "This report" or "Personal Information")
+    match = fullText.match(/CONSUMER\s+NAME\s*[\r\n]+\s*([A-Z\s]+?)(?=\s*(?:This report|Personal Information|\.|$))/i);
+    if (match) profileData.consumerName = match[1].trim();
+
+    // ASSOCIATED NAMES: captures everything after "Associated Names:" until the next line that starts with a field name
+    let assocMatch = fullText.match(/Associated\s+Names:\s*([^]*?)(?=\n\s*(?:Addresses:|Phone Numbers:|Email Addresses:|Date of Birth:|$))/i);
+    if (assocMatch) {
+        let names = assocMatch[1].replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+        profileData.associatedNames = names;
     }
+
+    // ADDRESSES: captures multi-line until next section
+    let addrMatch = fullText.match(/Addresses:\s*([\s\S]*?)(?=\n\s*(?:Phone Numbers:|Email Addresses:|Date of Birth:|$))/i);
+    if (addrMatch) {
+        let addr = addrMatch[1]
+            .replace(/\n/g, ', ')
+            .replace(/\s+/g, ' ')
+            .replace(/,\s*,/g, ',')
+            .trim();
+        profileData.addresses = addr;
+    }
+
+    // PHONE NUMBERS: captures until next section or semicolon terminated
+    match = fullText.match(/Phone\s+Numbers:\s*([^;\n]+(?:;[^;\n]+)*);?/i);
+    if (match) profileData.phoneNumbers = match[1].trim() + ';';
+
+    // EMAIL ADDRESSES: captures until newline
+    match = fullText.match(/Email\s+Addresses:\s*([^\n]+)/i);
+    if (match) profileData.emailAddresses = match[1].trim();
+
+    // DATE OF BIRTH: captures date after "Date of Birth:"
+    match = fullText.match(/Date\s+of\s+Birth:\s*([\d\/]+)/i);
+    if (match) profileData.dateOfBirth = match[1].trim();
+
+    return profileData;
+}
 
     function renderProfile() {
         if (!profileContainer) return;
