@@ -524,7 +524,7 @@
             return matchBank && matchDate;
         });
         const duplicatesSet = findDuplicates(filtered);
-        let html = `<table><thead><tr><th data-sort="bank_name">Name 🔽</th><th>Address</th><th>Phone</th><th>Date</th><th>Duplicate</th>`;
+        let html = `<table><thead><tr><th data-sort="bank_name">Name</th><th>Address</th><th>Phone</th><th>Date</th><th>Duplicate</th>`;
         if (currentTab === "soft") html += '<th>Original Inquirer</th><th>Original Inquirer Address</th>';
         html += `</thead><tbody>`;
         filtered.forEach((inq, idx) => {
