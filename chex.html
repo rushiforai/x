@@ -126,8 +126,8 @@
             <!-- Calibration slider (advanced) -->
             <div class="calibration-slider">
                 <label>🔧 Calibration factor (0.8 – 1.2): </label>
-                <input type="range" id="calibFactor" min="0.8" max="1.2" step="0.01" value="1.03">
-                <span id="calibValue">1.03</span>
+                <input type="range" id="calibFactor" min="0.8" max="1.2" step="0.01" value="1.00">
+                <span id="calibValue">1.00</span>
                 <button id="resetCalib" class="btn-outline btn" style="margin-left:12px;">Reset</button>
             </div>
 
@@ -151,7 +151,7 @@
     let scoreHistory = [];
     let currentFilterBank = "", currentFilterDate = "";
     let simExtraHard = 0, simExtraHard12 = 0;
-    let calibFactor = 1.03;   // Default fine-tuned from your data
+    let calibFactor = 1.00;   // Default fine-tuned from your data
 
     // DOM elements (same as before)
     const pdfInput = document.getElementById('pdfInput');
@@ -288,7 +288,7 @@
         } else {
             simResultDiv.innerHTML = "";
         }
-        if (simExtra6===0 && simExtra12===0 && calibFactor===1.03 && hardInquiries.length) {
+        if (simExtra6===0 && simExtra12===0 && calibFactor===1.00 && hardInquiries.length) {
             addToHistory(score);
         }
     }
@@ -503,11 +503,11 @@
         setStatus(`Calibration factor = ${calibFactor.toFixed(2)}`);
     }
     function resetCalibration() {
-        calibSlider.value = "1.03";
-        calibFactor = 1.03;
-        calibValueSpan.innerText = "1.03";
+        calibSlider.value = "1.00";
+        calibFactor = 1.00;
+        calibValueSpan.innerText = "1.00";
         updateChexScoreDisplay(simExtraHard, simExtraHard12);
-        setStatus("Calibration reset to default (1.03)");
+        setStatus("Calibration reset to default (1.00)");
     }
 
     // Event listeners
