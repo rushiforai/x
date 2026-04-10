@@ -283,36 +283,39 @@ function extractProfile(fullText) {
         profileData.consumerId = idForMatch[1];
         profileData.consumerName = idForMatch[2].trim();
     } else {
-        // Fallback: separate ID and NAME
         let idMatch = fullText.match(/Consumer\s+ID\s+(\d+)/i);
         if (idMatch) profileData.consumerId = idMatch[1];
-        
         let nameMatch = fullText.match(/Consumer\s+Name\s*:?\s*([A-Z\s]+?)(?=\s*\.|\s*\n|\s*This report)/i);
         if (nameMatch) profileData.consumerName = nameMatch[1].trim();
     }
 
-    // ASSOCIATED NAMES
-    let assocMatch = fullText.match(/Associated\s+Names:\s*([^A]+?)(?=Addresses:)/i);
+    // ASSOCIATED NAMES - fixed to capture until "Addresses:" regardless of line breaks
+    let assocMatch = fullText.match(/Associated\s+Names:\s*([\s\S]*?)(?=Addresses:)/i);
     if (assocMatch) {
-        let assoc = assocMatch[1].replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+        let assoc = assocMatch[1]
+            .replace(/\n/g, ' ')          // replace newlines with spaces
+            .replace(/\s+/g, ' ')         // collapse multiple spaces
+            .trim();
+        // Remove trailing colon or extra spaces
+        assoc = assoc.replace(/:\s*$/, '').trim();
         profileData.associatedNames = assoc;
     }
 
-    // ADDRESSES
+    // ADDRESSES (unchanged)
     let addrMatch = fullText.match(/Addresses:\s*([\s\S]*?)(?=Phone\s+Numbers:)/i);
     if (addrMatch) {
         let addr = addrMatch[1].replace(/\n/g, ', ').replace(/\s+/g, ' ').replace(/,\s*,/g, ',').trim();
         profileData.addresses = addr;
     }
 
-    // PHONE NUMBERS
+    // PHONE NUMBERS (unchanged)
     let phoneMatch = fullText.match(/Phone\s+Numbers:\s*([\s\S]*?)(?=Email\s+Addresses:)/i);
     if (phoneMatch) {
         let phones = phoneMatch[1].replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
         profileData.phoneNumbers = phones;
     }
 
-    // EMAIL ADDRESSES
+    // EMAIL ADDRESSES (unchanged)
     let emailMatch = fullText.match(/Email\s+Addresses:\s*([^\n]+?)(?=\s*Date\s+of\s+Birth:)/i);
     if (emailMatch) {
         profileData.emailAddresses = emailMatch[1].trim();
@@ -321,7 +324,7 @@ function extractProfile(fullText) {
         if (simpleEmail) profileData.emailAddresses = simpleEmail[1];
     }
 
-    // DATE OF BIRTH
+    // DATE OF BIRTH (unchanged)
     let dobMatch = fullText.match(/Date\s+of\s+Birth:\s*(\d{1,2}\/\d{1,2}\/\d{4})/i);
     if (dobMatch) profileData.dateOfBirth = dobMatch[1];
 
