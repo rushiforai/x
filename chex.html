@@ -522,22 +522,46 @@
             return results;
         }
         function parseSoftInquiriesSection(text) {
-            const blockPattern = /Inquirer:\s*(.*?)[;,\n]\s*(.*?)\s*Phone Number:\s*(.*?)[\s\n]+On Behalf Of:\s*(.*?)\s*Phone Number:\s*(.*?)[\s\n]+Inquiry Date:\s*(\d{2}\/\d{2}\/\d{4})/gi;
+            // Regex captures both Inquirer and On Behalf Of blocks with their own addresses and phones
+            const blockPattern = /Inquirer:\s*(.*?)[;,\n]\s*(.*?)\s*Phone Number:\s*(.*?)[\s\n]+On Behalf Of:\s*(.*?)[;,\n]\s*(.*?)\s*Phone Number:\s*(.*?)[\s\n]+Inquiry Date:\s*(\d{2}\/\d{2}\/\d{4})/gi;
             let results = [];
             let match;
             while ((match = blockPattern.exec(text)) !== null) {
-                let inquirerName = match[1].trim(), inquirerAddr = match[2].trim(), onBehalfName = match[4].trim(), onBehalfPhone = match[5].trim(), dateRaw = match[6].trim();
+                let inquirerName = match[1].trim();
+                let inquirerAddr = match[2].trim();
+                let inquirerPhone = match[3].trim();
+                let onBehalfName = match[4].trim();
+                let onBehalfAddr = match[5].trim();
+                let onBehalfPhone = match[6].trim();
+                let dateRaw = match[7].trim();
                 let normDate = normalizeDate(dateRaw);
                 let dateObj = normDate ? new Date(normDate) : null;
-                results.push({ bank_name: onBehalfName, bank_address: inquirerAddr, bank_phone: onBehalfPhone, inquiry_date: normDate || dateRaw, _dateObj: dateObj, original_inquirer: inquirerName });
+                results.push({
+                    bank_name: onBehalfName,               // Main entity (Credit Karma)
+                    bank_address: onBehalfAddr,            // Main entity's address
+                    bank_phone: onBehalfPhone,             // Main entity's phone
+                    inquiry_date: normDate || dateRaw,
+                    _dateObj: dateObj,
+                    original_inquirer: inquirerName,
+                    original_inquirer_address: inquirerAddr,
+                    original_inquirer_phone: inquirerPhone
+                });
             }
+            // Fallback for simple soft inquiries (no "On Behalf Of")
             if (results.length === 0) {
-                const simple = /Inquirer:\s*(.*?)[;,\n]\s*(.*?)\s*Phone Number:\s*(.*?)[\s\n]+Inquiry Date:\s*(\d{2}\/\d{2}\/\d{4})/gi;
-                while ((match = simple.exec(text)) !== null) {
+                const simplePattern = /Inquirer:\s*(.*?)[;,\n]\s*(.*?)\s*Phone Number:\s*(.*?)[\s\n]+Inquiry Date:\s*(\d{2}\/\d{2}\/\d{4})/gi;
+                while ((match = simplePattern.exec(text)) !== null) {
                     let bankName = match[1].trim(), address = match[2].trim(), phone = match[3].trim(), dateRaw = match[4].trim();
                     let normDate = normalizeDate(dateRaw);
                     let dateObj = normDate ? new Date(normDate) : null;
-                    results.push({ bank_name: bankName, bank_address: address, bank_phone: phone, inquiry_date: normDate || dateRaw, _dateObj: dateObj, original_inquirer: null });
+                    results.push({
+                        bank_name: bankName,
+                        bank_address: address,
+                        bank_phone: phone,
+                        inquiry_date: normDate || dateRaw,
+                        _dateObj: dateObj,
+                        original_inquirer: null
+                    });
                 }
             }
             return results;
