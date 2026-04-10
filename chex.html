@@ -837,7 +837,7 @@
 																									<th>Phone</th>
 																									<th>Date</th>
 																									<th>Duplicate</th>`;
-          if (currentTab === "soft") html += ' < th > Original Inquirer < /th> < th > Original Inquirer Address < /th>';
+          if (currentTab === "soft") html += ' <th> Original Inquirer </th> <th> Original Inquirer Address </th>';
           html += `
 																								</thead>
 																								<tbody>`;
@@ -990,7 +990,7 @@
           const totalExtra = extras.m1 + extras.m2 + extras.m3 + extras.m6 + extras.m12;
           if (totalExtra > 0) {
             simResultDiv.innerHTML = `
-																							<span class="status-badge">🔮 Simulated Score ${score} (${riskLevel})</span>`;
+																							<span class="status-badge">🔮 Simulated Score : ${score} (${riskLevel})</span>`;
           } else {
             simResultDiv.innerHTML = "";
           }
@@ -1127,7 +1127,7 @@
 																											<th>Phone</th>
 																											<th>Date</th>
 																											<th>Duplicate</th>`;
-          if (currentTab === "soft") html += ' < th > Original Inquirer < /th> < th > Original Inquirer Address < /th>';
+          if (currentTab === "soft") html += ' <th> Original Inquirer </th> <th> Original Inquirer Address </th>';
           html += `
 																										</thead>
 																										<tbody>`;
