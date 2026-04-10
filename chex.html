@@ -266,87 +266,96 @@
         return cleaned;
     }
 
-function extractProfile(fullText) {
-    const profileData = {
-        consumerId: "",
-        consumerName: "",
-        associatedNames: "",
-        addresses: "",
-        phoneNumbers: "",
-        emailAddresses: "",
-        dateOfBirth: ""
-    };
-
-    // CONSUMER ID and NAME from "Consumer ID 123 for NAME"
-    let idForMatch = fullText.match(/Consumer\s+ID\s+(\d+)\s+for\s+([A-Z\s]+?)(?=\s*\.|\s*\n|\s*This report)/i);
-    if (idForMatch) {
-        profileData.consumerId = idForMatch[1];
-        profileData.consumerName = idForMatch[2].trim();
-    } else {
-        let idMatch = fullText.match(/Consumer\s+ID\s+(\d+)/i);
-        if (idMatch) profileData.consumerId = idMatch[1];
-        let nameMatch = fullText.match(/Consumer\s+Name\s*:?\s*([A-Z\s]+?)(?=\s*\.|\s*\n|\s*This report)/i);
-        if (nameMatch) profileData.consumerName = nameMatch[1].trim();
+    function extractProfile(fullText) {
+        const profileData = {
+            consumerId: "",
+            consumerName: "",
+            associatedNames: "",
+            addresses: "",
+            phoneNumbers: "",
+            emailAddresses: "",
+            dateOfBirth: ""
+        };
+    
+        // CONSUMER ID and NAME from "Consumer ID 123 for NAME"
+        let idForMatch = fullText.match(/Consumer\s+ID\s+(\d+)\s+for\s+([A-Z\s]+?)(?=\s*\.|\s*\n|\s*This report)/i);
+        if (idForMatch) {
+            profileData.consumerId = idForMatch[1];
+            profileData.consumerName = idForMatch[2].trim();
+        } else {
+            let idMatch = fullText.match(/Consumer\s+ID\s+(\d+)/i);
+            if (idMatch) profileData.consumerId = idMatch[1];
+            let nameMatch = fullText.match(/Consumer\s+Name\s*:?\s*([A-Z\s]+?)(?=\s*\.|\s*\n|\s*This report)/i);
+            if (nameMatch) profileData.consumerName = nameMatch[1].trim();
+        }
+    
+        // ASSOCIATED NAMES - fixed to capture until "Addresses:" regardless of line breaks
+        let assocMatch = fullText.match(/Associated\s+Names:\s*([\s\S]*?)(?=Addresses:)/i);
+        if (assocMatch) {
+            let assoc = assocMatch[1]
+                .replace(/\n/g, ' ')          // replace newlines with spaces
+                .replace(/\s+/g, ' ')         // collapse multiple spaces
+                .trim();
+            // Remove trailing colon or extra spaces
+            assoc = assoc.replace(/:\s*$/, '').trim();
+            profileData.associatedNames = assoc;
+        }
+    
+        // ADDRESSES (unchanged)
+        let addrMatch = fullText.match(/Addresses:\s*([\s\S]*?)(?=Phone\s+Numbers:)/i);
+        if (addrMatch) {
+            let addr = addrMatch[1].replace(/\n/g, ', ').replace(/\s+/g, ' ').replace(/,\s*,/g, ',').trim();
+            profileData.addresses = addr;
+        }
+    
+        // PHONE NUMBERS (unchanged)
+        let phoneMatch = fullText.match(/Phone\s+Numbers:\s*([\s\S]*?)(?=Email\s+Addresses:)/i);
+        if (phoneMatch) {
+            let phones = phoneMatch[1].replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+            profileData.phoneNumbers = phones;
+        }
+    
+        // EMAIL ADDRESSES (unchanged)
+        let emailMatch = fullText.match(/Email\s+Addresses:\s*([^\n]+?)(?=\s*Date\s+of\s+Birth:)/i);
+        if (emailMatch) {
+            profileData.emailAddresses = emailMatch[1].trim();
+        } else {
+            let simpleEmail = fullText.match(/Email\s+Addresses:\s*([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i);
+            if (simpleEmail) profileData.emailAddresses = simpleEmail[1];
+        }
+    
+        // DATE OF BIRTH (unchanged)
+        let dobMatch = fullText.match(/Date\s+of\s+Birth:\s*(\d{1,2}\/\d{1,2}\/\d{4})/i);
+        if (dobMatch) profileData.dateOfBirth = dobMatch[1];
+    
+        return profileData;
     }
-
-    // ASSOCIATED NAMES - fixed to capture until "Addresses:" regardless of line breaks
-    let assocMatch = fullText.match(/Associated\s+Names:\s*([\s\S]*?)(?=Addresses:)/i);
-    if (assocMatch) {
-        let assoc = assocMatch[1]
-            .replace(/\n/g, ' ')          // replace newlines with spaces
-            .replace(/\s+/g, ' ')         // collapse multiple spaces
-            .trim();
-        // Remove trailing colon or extra spaces
-        assoc = assoc.replace(/:\s*$/, '').trim();
-        profileData.associatedNames = assoc;
-    }
-
-    // ADDRESSES (unchanged)
-    let addrMatch = fullText.match(/Addresses:\s*([\s\S]*?)(?=Phone\s+Numbers:)/i);
-    if (addrMatch) {
-        let addr = addrMatch[1].replace(/\n/g, ', ').replace(/\s+/g, ' ').replace(/,\s*,/g, ',').trim();
-        profileData.addresses = addr;
-    }
-
-    // PHONE NUMBERS (unchanged)
-    let phoneMatch = fullText.match(/Phone\s+Numbers:\s*([\s\S]*?)(?=Email\s+Addresses:)/i);
-    if (phoneMatch) {
-        let phones = phoneMatch[1].replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-        profileData.phoneNumbers = phones;
-    }
-
-    // EMAIL ADDRESSES (unchanged)
-    let emailMatch = fullText.match(/Email\s+Addresses:\s*([^\n]+?)(?=\s*Date\s+of\s+Birth:)/i);
-    if (emailMatch) {
-        profileData.emailAddresses = emailMatch[1].trim();
-    } else {
-        let simpleEmail = fullText.match(/Email\s+Addresses:\s*([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i);
-        if (simpleEmail) profileData.emailAddresses = simpleEmail[1];
-    }
-
-    // DATE OF BIRTH (unchanged)
-    let dobMatch = fullText.match(/Date\s+of\s+Birth:\s*(\d{1,2}\/\d{1,2}\/\d{4})/i);
-    if (dobMatch) profileData.dateOfBirth = dobMatch[1];
-
-    return profileData;
-}
     function renderProfile() {
         if (!profileContainer) return;
+        
+        // Helper to convert semicolons to line breaks
+        function formatValue(value) {
+            if (!value) return '—';
+            // Replace semicolons followed by optional spaces with <br>
+            return value.replace(/;\s*/g, ';<br>');
+        }
+        
         const fields = [
             { label: "Consumer ID", value: profile.consumerId, icon: "badge" },
             { label: "Consumer Name", value: profile.consumerName, icon: "person" },
-            { label: "Associated Names", value: profile.associatedNames, icon: "group" },
+            { label: "Associated Names", value: formatValue(profile.associatedNames), icon: "group" },
             { label: "Addresses", value: profile.addresses, icon: "home" },
-            { label: "Phone Numbers", value: profile.phoneNumbers, icon: "call" },
+            { label: "Phone Numbers", value: formatValue(profile.phoneNumbers), icon: "call" },
             { label: "Email Addresses", value: profile.emailAddresses, icon: "email" },
             { label: "Date of Birth", value: profile.dateOfBirth, icon: "cake" }
         ];
+        
         let html = '';
         fields.forEach(f => {
             html += `
                 <div class="profile-field">
                     <div class="profile-label"><span class="material-symbols-outlined" style="font-size:16px; vertical-align:middle;">${f.icon}</span> ${f.label}</div>
-                    <div class="profile-value">${escapeHtml(f.value) || '—'}</div>
+                    <div class="profile-value">${f.value === '—' ? '—' : escapeHtml(f.value)}</div>
                 </div>
             `;
         });
