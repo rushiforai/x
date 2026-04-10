@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ChexScore™ v2 | Customer Profile + Multi‑Session</title>
+    <title>KYCR</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.3.122/pdf.min.js"></script>
@@ -78,11 +78,11 @@
     <div class="card">
         <div class="card-header">
             <span class="material-symbols-outlined">credit_score</span>
-            <h2>ChexScore™ v2 (Hard Inquiries Only – Improved)</h2>
+            <h2>Know Your Chex Report</h2>
         </div>
         <div id="uploadZone" class="upload-zone">
             <span class="material-symbols-outlined upload-icon">cloud_upload</span>
-            <div class="upload-text">Click or drag PDF (credit report)</div>
+            <div class="upload-text">Click to Upload or drag PDF</div>
         </div>
         <input type="file" id="pdfInput" accept=".pdf" class="file-input" />
         <div class="progress-bar-container hidden" id="progressContainer">
@@ -99,14 +99,14 @@
         
         <div class="session-manager">
             <button id="toggleSessionPanel" class="session-toggle-btn">
-                <span>📂 Manage Sessions</span>
+                <span>Manage Sessions</span>
                 <span class="material-symbols-outlined">expand_more</span>
             </button>
             <div id="sessionPanel" class="session-panel hidden">
                 <div id="sessionsList"></div>
                 <div class="save-session-input">
-                    <input type="text" id="newSessionName" placeholder="Session name (e.g., PDF5 - Apr 2026)">
-                    <button id="saveCurrentSessionBtn" class="btn-outline btn">Save Current</button>
+                    <input type="text" id="newSessionName" placeholder=" Enter Session Name to Save (default: PDF Name)">
+                    <button id="saveCurrentSessionBtn" class="btn-outline btn">Save</button>
                 </div>
                 <div style="margin-top: 12px;">
                     <button id="deleteAllSessionsBtn" class="btn-danger btn">Delete All Sessions</button>
@@ -124,13 +124,22 @@
         <div class="profile-grid" id="profileContainer"></div>
     </div>
 
+    <div id="chexscoreContainer" class="chexscore-card">
+        <div>
+            <div style="font-size:0.9rem; opacity:0.8;">Estimated ChexScore™</div>
+            <div class="score-number" id="chexScoreValue">---</div>
+            <div class="risk-level" id="chexRiskLevel">---</div>
+        </div>
+        <div><span class="material-symbols-outlined" style="font-size:40px;">analytics</span></div>
+    </div>
+
     <div id="resultsCard" class="card hidden">
         <div class="tabs" id="tabs">
             <button class="tab-btn active" data-type="hard">Hard Inquiries (Viewed by Others)</button>
             <button class="tab-btn" data-type="soft">Soft Inquiries (Viewed Only by You)</button>
         </div>
         <div class="filter-bar">
-            <input type="text" id="filterBank" placeholder="Filter by entity name" class="filter-input">
+            <input type="text" id="filterBank" placeholder="Filter by Name" class="filter-input">
             <input type="text" id="filterDate" placeholder="Filter by date (MM/DD/YYYY)" class="filter-input">
             <button id="clearFilters" class="btn-outline btn">Clear Filters</button>
             <button id="mergeDuplicatesBtn" class="btn-outline btn">Merge Duplicates</button>
@@ -140,25 +149,15 @@
             <canvas id="inquiryChart"></canvas>
         </div>
         <div id="summaryStats"></div>
-        
-        <div id="chexscoreContainer" class="chexscore-card">
-            <div>
-                <div style="font-size:0.9rem; opacity:0.8;">Estimated ChexScore™</div>
-                <div class="score-number" id="chexScoreValue">---</div>
-                <div class="risk-level" id="chexRiskLevel">---</div>
-                <div class="disclaimer" style="font-size:0.7rem;">*Calibrated with your 7 PDFs (v2)</div>
-            </div>
-            <div><span class="material-symbols-outlined" style="font-size:40px;">analytics</span></div>
-        </div>
 
         <div class="simulator-card">
-            <h3 style="font-weight:500;">🎮 What‑If Simulator</h3>
+            <h3 style="font-weight:500;">Score Simulator</h3>
             <div class="simulator-control">
-                <div><label>➕ Last 1 month:</label><br><input type="range" id="simExtra1m" min="0" max="20" value="0" step="1"><span id="simExtra1mVal">0</span></div>
-                <div><label>➕ Last 2 months:</label><br><input type="range" id="simExtra2m" min="0" max="20" value="0" step="1"><span id="simExtra2mVal">0</span></div>
-                <div><label>➕ Last 3 months:</label><br><input type="range" id="simExtra3m" min="0" max="20" value="0" step="1"><span id="simExtra3mVal">0</span></div>
-                <div><label>➕ Last 6 months:</label><br><input type="range" id="simExtra6m" min="0" max="20" value="0" step="1"><span id="simExtra6mVal">0</span></div>
-                <div><label>➕ Last 12 months:</label><br><input type="range" id="simExtra12m" min="0" max="20" value="0" step="1"><span id="simExtra12mVal">0</span></div>
+                <div><label>Last 1 month:</label><br><input type="range" id="simExtra1m" min="0" max="20" value="0" step="1"><span id="simExtra1mVal">0</span></div>
+                <div><label>Last 2 months:</label><br><input type="range" id="simExtra2m" min="0" max="20" value="0" step="1"><span id="simExtra2mVal">0</span></div>
+                <div><label>Last 3 months:</label><br><input type="range" id="simExtra3m" min="0" max="20" value="0" step="1"><span id="simExtra3mVal">0</span></div>
+                <div><label>Last 6 months:</label><br><input type="range" id="simExtra6m" min="0" max="20" value="0" step="1"><span id="simExtra6mVal">0</span></div>
+                <div><label>Last 12 months:</label><br><input type="range" id="simExtra12m" min="0" max="20" value="0" step="1"><span id="simExtra12mVal">0</span></div>
             </div>
             <div style="margin-top: 8px;">
                 <button id="applySimulation" class="btn-outline btn">Simulate</button>
@@ -167,13 +166,13 @@
             <div id="simResult" style="margin-top: 8px; font-size:0.9rem;"></div>
             
             <div class="calibration-slider">
-                <label>🔧 Calibration factor (0.8 – 1.2): </label>
+                <label>Calibration factor (0.8 – 1.2): </label>
                 <input type="range" id="calibFactor" min="0.8" max="1.2" step="0.01" value="1.00">
                 <span id="calibValue">1.00</span>
                 <button id="resetCalib" class="btn-outline btn" style="margin-left:12px;">Reset</button>
             </div>
 
-            <h3 style="font-weight:500; margin-top:20px;">📊 Score History (last 10)</h3>
+            <h3 style="font-weight:500; margin-top:20px;">📊 Score History</h3>
             <div class="history-chart"><canvas id="scoreHistoryChart" width="400" height="150"></canvas></div>
             <button id="clearHistoryBtn" class="btn-outline btn" style="margin-top:8px;">Clear History</button>
         </div>
@@ -525,11 +524,11 @@
             return matchBank && matchDate;
         });
         const duplicatesSet = findDuplicates(filtered);
-        let html = `<table><thead><tr><th data-sort="bank_name">Entity Name 🔽</th><th>Address</th><th>Phone</th><th>Date</th><th>Duplicate</th>`;
+        let html = `<table><thead><tr><th data-sort="bank_name">Name 🔽</th><th>Address</th><th>Phone</th><th>Date</th><th>Duplicate</th>`;
         if (currentTab === "soft") html += '<th>Original Inquirer</th><th>Original Inquirer Address</th>';
         html += `</thead><tbody>`;
         filtered.forEach((inq, idx) => {
-            const isDup = duplicatesSet.has(idx) ? "⚠️ Yes" : "";
+            const isDup = duplicatesSet.has(idx) ? "Yes" : "";
             const dupClass = duplicatesSet.has(idx) ? "duplicate-row" : "";
             html += `<tr class="${dupClass}">
                 <td>${escapeHtml(inq.bank_name)}</td>
@@ -546,7 +545,7 @@
         html += `</tbody></table><div>Total: ${filtered.length} inquiries (${duplicatesSet.size} duplicate entries)</div>`;
         tableContainer.innerHTML = html;
         const stats = computeCumulativeStats(currentTab === "hard" ? hardInquiries : []);
-        summaryStatsDiv.innerHTML = `<div class="status-badge">📊 Cumulative Hard: 1m:${stats.last1Month} | 2m:${stats.last2Months} | 3m:${stats.last3Months} | 6m:${stats.last6Months} | 12m:${stats.last12Months} | 24m:${stats.last24Months}</div>`;
+        summaryStatsDiv.innerHTML = `<div class="status-badge">📊 Cumulative Hard Inquires: 1m: ${stats.last1Month} | 2m: ${stats.last2Months} | 3m: ${stats.last3Months} | 6m: ${stats.last6Months} | 12m: ${stats.last12Months} | 24m:${stats.last24Months}</div>`;
         updateChart(stats);
         updateChexScoreDisplay(simExtras);
     }
