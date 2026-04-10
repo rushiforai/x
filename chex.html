@@ -294,17 +294,24 @@ function extractProfile(fullText) {
     let idMatch = fullText.match(/CONSUMER\s+ID\s+(\d+)/i);
     if (idMatch) profileData.consumerId = idMatch[1];
 
-    // CONSUMER NAME – capture from "CONSUMER NAME" until a period or "This report"
-    let nameStart = fullText.search(/CONSUMER\s+NAME/i);
-    if (nameStart !== -1) {
-        let afterName = fullText.substring(nameStart + 14); // skip "CONSUMER NAME"
-        let nameEnd = afterName.search(/\.|\s+This report|\s+Personal Information|\s+Associated Names/i);
-        if (nameEnd === -1) nameEnd = afterName.length;
-        let nameRaw = afterName.substring(0, nameEnd);
-        nameRaw = nameRaw.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-        // Remove any trailing punctuation
-        nameRaw = nameRaw.replace(/[.,;]$/, '');
-        profileData.consumerName = nameRaw;
+    // CONSUMER NAME - improved extraction
+    let nameMatch = fullText.match(/CONSUMER\s+NAME\s+([A-Z][A-Z\s]+?)(?=\s*\.|\s+This report|\s+Personal Information|\s+Associated Names)/i);
+    if (nameMatch) {
+        profileData.consumerName = nameMatch[1].trim();
+    } else {
+        // Fallback: find "CONSUMER NAME" and take the next line/word until newline or period
+        let nameStart = fullText.search(/CONSUMER\s+NAME/i);
+        if (nameStart !== -1) {
+            let remaining = fullText.substring(nameStart + 13);
+            let endIdx = remaining.search(/\.|\n\s*\n|\s+This report|\s+Personal Information/);
+            if (endIdx === -1) endIdx = remaining.length;
+            let rawName = remaining.substring(0, endIdx).replace(/\n/g, ' ').trim();
+            // Remove any trailing punctuation
+            rawName = rawName.replace(/[.,;]$/, '');
+            if (rawName.length > 0 && rawName.match(/[A-Z]/)) {
+                profileData.consumerName = rawName;
+            }
+        }
     }
 
     // ASSOCIATED NAMES – capture from "Associated Names:" until "Addresses:"
