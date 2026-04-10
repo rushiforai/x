@@ -193,7 +193,8 @@
         addresses: "",
         phoneNumbers: "",
         emailAddresses: "",
-        dateOfBirth: ""
+        dateOfBirth: "",
+        dateOfReport: ""
     };
     let currentTab = "hard";
     let chartInstance = null, historyChart = null;
@@ -274,7 +275,8 @@
             addresses: "",
             phoneNumbers: "",
             emailAddresses: "",
-            dateOfBirth: ""
+            dateOfBirth: "",
+            dateOfReport: ""
         };
     
         // CONSUMER ID and NAME from "Consumer ID 123 for NAME"
@@ -327,6 +329,16 @@
         // DATE OF BIRTH (unchanged)
         let dobMatch = fullText.match(/Date\s+of\s+Birth:\s*(\d{1,2}\/\d{1,2}\/\d{4})/i);
         if (dobMatch) profileData.dateOfBirth = dobMatch[1];
+
+            // DATE OF REPORT – find first date near the beginning of the PDF (before Consumer ID)
+        let reportDateMatch = fullText.match(/^[\s\S]{0,500}?(\d{2}\/\d{2}\/\d{4})/im);
+        if (!reportDateMatch) {
+            // Fallback: look for any date before "Consumer ID"
+            let beforeConsumer = fullText.split(/Consumer\s+ID/i)[0];
+            let dateInHeader = beforeConsumer.match(/\b(\d{2}\/\d{2}\/\d{4})\b/);
+            if (dateInHeader) reportDateMatch = dateInHeader;
+        }
+        if (reportDateMatch) profileData.dateOfReport = reportDateMatch[1];
     
         return profileData;
     }
@@ -350,7 +362,8 @@
             { label: "Addresses", value: profile.addresses, icon: "home" },
             { label: "Phone Numbers", value: formatValue(profile.phoneNumbers), icon: "call" },
             { label: "Email Addresses", value: profile.emailAddresses, icon: "email" },
-            { label: "Date of Birth", value: profile.dateOfBirth, icon: "cake" }
+            { label: "Date of Birth", value: profile.dateOfBirth, icon: "cake" },
+            { label: "Date of Report", value: profile.dateOfReport, icon: "calendar_month" }
         ];
         
         let html = '';
@@ -751,7 +764,11 @@
         };
         hardInquiries = restoreDates(session.hardInquiries);
         softInquiries = restoreDates(session.softInquiries);
-        profile = session.profile || { consumerId:"", consumerName:"", associatedNames:"", addresses:"", phoneNumbers:"", emailAddresses:"", dateOfBirth:"" };
+        profile = session.profile || { 
+            consumerId: "", consumerName: "", associatedNames: "", 
+            addresses: "", phoneNumbers: "", emailAddresses: "", 
+            dateOfBirth: "", dateOfReport: "" 
+        };
         scoreHistory = session.scoreHistory || [];
         currentFilterBank = ""; currentFilterDate = "";
         filterBankInput.value = ""; filterDateInput.value = "";
