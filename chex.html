@@ -758,8 +758,7 @@
           if (!value) return '—';
           // First escape HTML to prevent XSS
           let escaped = escapeHtml(value);
-          // Then replace semicolons followed by optional spaces with ;
-          <br>
+          // Then replace semicolons followed by optional spaces with ;<br>
             return escaped.replace(/;\s*/g, ' <br> ');
             }
           const fields = [{
