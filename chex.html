@@ -277,58 +277,48 @@ function extractProfile(fullText) {
         dateOfBirth: ""
     };
 
-    // CONSUMER ID - looks for "CONSUMER ID" followed by a number
-    let idMatch = fullText.match(/CONSUMER\s+ID\s+(\d+)/i);
-    if (idMatch) profileData.consumerId = idMatch[1];
+    // CONSUMER ID
+    let match = fullText.match(/CONSUMER\s+ID\s+(\d+)/i);
+    if (match) profileData.consumerId = match[1];
 
-    // CONSUMER NAME - looks for "CONSUMER NAME" then name until newline or period
-    let nameMatch = fullText.match(/CONSUMER\s+NAME\s+([A-Z\s]+?)(?=\s*(?:\.|This report|Personal Information))/i);
-    if (nameMatch) profileData.consumerName = nameMatch[1].trim();
+    // CONSUMER NAME - capture uppercase name until a period or "This report"
+    match = fullText.match(/CONSUMER\s+NAME\s+([A-Z][A-Z\s]+?)(?=\s*\.|\s+This report|\s+Personal Information)/i);
+    if (match) profileData.consumerName = match[1].trim();
 
-    // ASSOCIATED NAMES - extract between "Associated Names:" and "Addresses:"
+    // ASSOCIATED NAMES - capture until next field (Addresses:)
     let assocMatch = fullText.match(/Associated\s+Names:\s*([^A]+?)(?=Addresses:)/i);
     if (assocMatch) {
         let assoc = assocMatch[1].replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
         profileData.associatedNames = assoc;
     }
 
-    // ADDRESSES - extract between "Addresses:" and "Phone Numbers:"
+    // ADDRESSES - capture until Phone Numbers:
     let addrMatch = fullText.match(/Addresses:\s*([\s\S]*?)(?=Phone\s+Numbers:)/i);
     if (addrMatch) {
-        let addr = addrMatch[1]
-            .replace(/\n/g, ', ')
-            .replace(/\s+/g, ' ')
-            .replace(/,\s*,/g, ',')
-            .trim();
-        // Remove any trailing "Phone Numbers:" leftover
-        addr = addr.replace(/Phone\s+Numbers:.*$/, '').trim();
+        let addr = addrMatch[1].replace(/\n/g, ', ').replace(/\s+/g, ' ').replace(/,\s*,/g, ',').trim();
         profileData.addresses = addr;
     }
 
-    // PHONE NUMBERS - extract between "Phone Numbers:" and "Email Addresses:"
-    let phoneMatch = fullText.match(/Phone\s+Numbers:\s*([^E]+?)(?=Email\s+Addresses:)/i);
+    // PHONE NUMBERS - capture until Email Addresses:
+    let phoneMatch = fullText.match(/Phone\s+Numbers:\s*([\s\S]*?)(?=Email\s+Addresses:)/i);
     if (phoneMatch) {
         let phones = phoneMatch[1].replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
         profileData.phoneNumbers = phones;
     }
 
-    // EMAIL ADDRESSES - extract between "Email Addresses:" and "Date of Birth:"
-    let emailMatch = fullText.match(/Email\s+Addresses:\s*([^\n]+)/i);
+    // EMAIL ADDRESSES - capture until Date of Birth: (excludes DOB)
+    let emailMatch = fullText.match(/Email\s+Addresses:\s*([^\n]+?)(?=\s*Date\s+of\s+Birth:)/i);
     if (emailMatch) {
         profileData.emailAddresses = emailMatch[1].trim();
+    } else {
+        // Fallback: just extract email pattern
+        let simpleEmail = fullText.match(/Email\s+Addresses:\s*([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i);
+        if (simpleEmail) profileData.emailAddresses = simpleEmail[1];
     }
 
-    // DATE OF BIRTH - extract after "Date of Birth:"
-    let dobMatch = fullText.match(/Date\s+of\s+Birth:\s*([\d\/]+)/i);
-    if (dobMatch) {
-        profileData.dateOfBirth = dobMatch[1].trim();
-    }
-
-    // Fallback: if consumer name is empty, try to get it from "CONSUMER NAME" with different pattern
-    if (!profileData.consumerName) {
-        let fallbackName = fullText.match(/CONSUMER\s+NAME\s+([A-Z\s]+)(?=\s*\.)/i);
-        if (fallbackName) profileData.consumerName = fallbackName[1].trim();
-    }
+    // DATE OF BIRTH
+    let dobMatch = fullText.match(/Date\s+of\s+Birth:\s*(\d{1,2}\/\d{1,2}\/\d{4})/i);
+    if (dobMatch) profileData.dateOfBirth = dobMatch[1];
 
     return profileData;
 }
