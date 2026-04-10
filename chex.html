@@ -3,27 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Inquiry Extractor | Material 3</title>
+    <title>Credit Inquiry Analyzer | Material 3</title>
     <!-- Material 3 Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
-    <!-- pdf.js library -->
+    <!-- Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.3.122/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #f5f5f7;
             font-family: 'Roboto', sans-serif;
             padding: 24px 16px;
             color: #1e1e2f;
         }
-
-        /* Material 3 color scheme */
         :root {
             --md-primary: #6750a4;
             --md-primary-light: #eaddff;
@@ -32,26 +27,16 @@
             --md-outline: #79747e;
             --md-on-surface: #1e1e2f;
             --md-on-surface-variant: #49454e;
-            --md-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 2px 2px rgba(0,0,0,0.06);
-            --md-shadow-medium: 0 4px 8px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
             --md-elevation-1: 0 1px 2px 0 rgba(0,0,0,0.05), 0 1px 3px 0 rgba(0,0,0,0.1);
         }
-
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        /* cards */
+        .container { max-width: 1400px; margin: 0 auto; }
         .card {
             background: var(--md-surface);
             border-radius: 28px;
             padding: 24px 20px;
             box-shadow: var(--md-elevation-1);
-            transition: box-shadow 0.2s ease;
             margin-bottom: 24px;
         }
-
         .card-header {
             display: flex;
             align-items: center;
@@ -60,51 +45,21 @@
             border-bottom: 1px solid #e9e9ef;
             padding-bottom: 12px;
         }
-
-        .card-header .material-symbols-outlined {
-            font-size: 28px;
-            color: var(--md-primary);
-        }
-
-        .card-header h2 {
-            font-size: 1.5rem;
-            font-weight: 500;
-            letter-spacing: 0;
-            color: var(--md-on-surface);
-        }
-
-        /* file zone */
+        .card-header .material-symbols-outlined { font-size: 28px; color: var(--md-primary); }
+        .card-header h2 { font-size: 1.5rem; font-weight: 500; }
         .upload-zone {
             border: 2px dashed #cac4d0;
             border-radius: 28px;
             padding: 32px 20px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.2s;
             background: #fefbff;
             margin-bottom: 20px;
         }
-
-        .upload-zone:hover {
-            border-color: var(--md-primary);
-            background: #f9f6ff;
-        }
-
-        .upload-icon {
-            font-size: 48px;
-            color: var(--md-primary);
-        }
-
-        .upload-text {
-            margin-top: 12px;
-            font-weight: 500;
-            color: var(--md-on-surface-variant);
-        }
-
-        .file-input {
-            display: none;
-        }
-
+        .upload-zone:hover { border-color: var(--md-primary); background: #f9f6ff; }
+        .upload-icon { font-size: 48px; color: var(--md-primary); }
+        .file-input { display: none; }
         .btn {
             background: var(--md-primary);
             color: white;
@@ -112,34 +67,14 @@
             padding: 10px 24px;
             border-radius: 100px;
             font-weight: 500;
-            font-size: 0.875rem;
-            font-family: inherit;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             cursor: pointer;
-            transition: opacity 0.2s, background 0.2s;
-            box-shadow: none;
+            transition: 0.2s;
         }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--md-outline);
-            color: var(--md-primary);
-        }
-
-        .btn-outline:hover {
-            background: #ede7f6;
-        }
-
-        .btn:hover {
-            background: #4f378b;
-        }
-
-        .btn:active {
-            transform: scale(0.97);
-        }
-
+        .btn-outline { background: transparent; border: 1px solid var(--md-outline); color: var(--md-primary); }
+        .btn-outline:hover { background: #ede7f6; }
         .status-badge {
             background: #e8def8;
             border-radius: 100px;
@@ -151,443 +86,380 @@
             align-items: center;
             gap: 6px;
         }
-
-        /* summary panel */
-        .summary-grid {
-            background: #f3edf7;
-            border-radius: 24px;
-            padding: 16px;
-            margin: 20px 0;
-        }
-
-        .stats-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 12px;
+        .progress-bar-container {
             margin: 16px 0;
-        }
-
-        .stat-item {
-            background: white;
-            border-radius: 20px;
-            padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            box-shadow: var(--md-shadow);
-        }
-
-        .stat-label {
-            font-weight: 500;
-            color: var(--md-on-surface-variant);
-        }
-
-        .stat-number {
-            font-size: 1.6rem;
-            font-weight: 600;
-            color: var(--md-primary);
-            line-height: 1;
-        }
-
-        .copy-btn {
-            background: var(--md-primary-light);
-            color: #381e72;
+            background: #e3e1e6;
             border-radius: 100px;
-            padding: 8px 16px;
-            font-weight: 500;
+            height: 8px;
+            overflow: hidden;
+        }
+        .progress-bar { width: 0%; height: 100%; background: var(--md-primary); transition: width 0.2s; }
+        .tabs {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid #e3e1e6;
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            background: none;
             border: none;
+            padding: 12px 20px;
+            font-weight: 500;
             cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.875rem;
-            transition: background 0.2s;
-        }
-
-        .copy-btn:hover {
-            background: #d9cbfe;
-        }
-
-        .download-link {
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #e8f0fe;
-            color: #0b3b5f;
-            padding: 8px 20px;
-            border-radius: 100px;
-            font-weight: 500;
-            margin-top: 12px;
-        }
-
-        hr {
-            margin: 16px 0;
-            border: none;
-            border-top: 1px solid #e3e1e6;
-        }
-
-        .loading {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            padding: 16px;
-            color: var(--md-primary);
-        }
-
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #e0e0e0;
-            border-top: 2px solid var(--md-primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .error-message {
-            background: #ffdad6;
-            color: #b3261e;
-            border-radius: 16px;
-            padding: 12px 16px;
-            margin-top: 16px;
-            font-size: 0.875rem;
-        }
-
-        footer {
-            text-align: center;
-            font-size: 0.75rem;
             color: var(--md-on-surface-variant);
-            margin-top: 32px;
+            border-radius: 100px 100px 0 0;
         }
-
-        @media (max-width: 640px) {
-            .card {
-                padding: 16px;
-            }
-            .stats-list {
-                grid-template-columns: 1fr 1fr;
-            }
+        .tab-btn.active { background: var(--md-primary-light); color: #381e72; }
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 16px 0;
+            align-items: center;
         }
+        .filter-input {
+            padding: 8px 12px;
+            border-radius: 100px;
+            border: 1px solid var(--md-outline);
+            font-family: inherit;
+            flex: 1;
+            min-width: 150px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+            overflow-x: auto;
+            display: block;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px 8px;
+            border-bottom: 1px solid #e9e9ef;
+        }
+        th { cursor: pointer; background: #faf9fc; }
+        .duplicate-row { background-color: #fff3e0; }
+        .action-group { display: flex; gap: 12px; flex-wrap: wrap; margin: 16px 0; }
+        .chart-container { max-width: 600px; margin: 20px 0; }
+        .hidden { display: none; }
+        .error-message { background: #ffdad6; color: #b3261e; border-radius: 16px; padding: 12px; margin-top: 16px; }
+        @media (max-width: 640px) { .card { padding: 16px; } th, td { font-size: 0.8rem; } }
     </style>
 </head>
 <body>
 <div class="container">
-    <!-- Header card -->
     <div class="card">
-        <div class="card-header">
-            <span class="material-symbols-outlined">description</span>
-            <h2>Inquiry Extractor</h2>
-        </div>
-        <p style="margin-bottom: 20px; color: #49454e;">Upload a credit report PDF to extract <strong>“Inquiries Viewed By Others”</strong> section. Generate CSV summary & copy timeline stats.</p>
-
-        <!-- File upload zone -->
+        <div class="card-header"><span class="material-symbols-outlined">credit_score</span><h2>Credit Inquiry Analyzer</h2></div>
         <div id="uploadZone" class="upload-zone">
             <span class="material-symbols-outlined upload-icon">cloud_upload</span>
-            <div class="upload-text">Click or drag to upload PDF</div>
-            <div style="font-size: 0.75rem; margin-top: 8px;">Accepts .pdf files</div>
+            <div class="upload-text">Click or drag PDF</div>
         </div>
         <input type="file" id="pdfInput" accept=".pdf" class="file-input" />
-
-        <div id="statusArea" class="status-badge" style="display: inline-flex; margin-top: 8px;">
-            <span class="material-symbols-outlined" style="font-size: 16px;">info</span>
-            <span id="statusText">Ready</span>
-        </div>
+        <div class="progress-bar-container hidden" id="progressContainer"><div id="progressBar" class="progress-bar"></div></div>
+        <div id="statusArea" class="status-badge"><span class="material-symbols-outlined" style="font-size:16px">info</span><span id="statusText">Ready</span></div>
         <div id="errorContainer"></div>
+        <div class="action-group">
+            <button id="saveSessionBtn" class="btn-outline btn"><span class="material-symbols-outlined">save</span> Save Session</button>
+            <button id="loadSessionBtn" class="btn-outline btn"><span class="material-symbols-outlined">restore</span> Load Last Session</button>
+            <button id="exportExcelBtn" class="btn-outline btn"><span class="material-symbols-outlined">table_view</span> Export Excel</button>
+        </div>
     </div>
 
-    <!-- Results card: CSV download + summary -->
     <div id="resultsCard" class="card hidden">
-        <div class="card-header">
-            <span class="material-symbols-outlined">analytics</span>
-            <h2>Extracted Data</h2>
+        <div class="tabs" id="tabs">
+            <button class="tab-btn active" data-type="hard">Hard Inquiries (Viewed by Others)</button>
+            <button class="tab-btn" data-type="soft">Soft Inquiries (Viewed Only by You)</button>
         </div>
-        <div>
-            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;">
-                <span class="status-badge"><span class="material-symbols-outlined" style="font-size: 16px;">check_circle</span> Inquiries parsed successfully</span>
-                <a id="downloadLink" style="display: none;" class="download-link"><span class="material-symbols-outlined">download</span> Download CSV</a>
-            </div>
-            <div id="summaryContainer"></div>
+        <div class="filter-bar">
+            <input type="text" id="filterBank" placeholder="Filter by bank name" class="filter-input">
+            <input type="text" id="filterDate" placeholder="Filter by date (MM/DD/YYYY)" class="filter-input">
+            <button id="clearFilters" class="btn-outline btn">Clear Filters</button>
+            <button id="mergeDuplicatesBtn" class="btn-outline btn">Merge Selected Duplicates</button>
         </div>
+        <div id="tableContainer" style="overflow-x: auto;"></div>
+        <div class="chart-container"><canvas id="inquiryChart"></canvas></div>
+        <div id="summaryStats"></div>
     </div>
-    <footer>Material 3 UI • Uses pdf.js to parse credit report inquiries</footer>
 </div>
 
 <script>
-    // Configure pdf.js worker
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.3.122/pdf.worker.min.js';
+    // ---------- Global state ----------
+    let hardInquiries = [];      // "Inquiries Viewed By Others"
+    let softInquiries = [];      // "Inquiries Viewed Only By You"
+    let currentTab = "hard";
+    let chartInstance = null;
+    let currentFilterBank = "", currentFilterDate = "";
 
     // DOM elements
     const pdfInput = document.getElementById('pdfInput');
     const uploadZone = document.getElementById('uploadZone');
-    const statusTextSpan = document.getElementById('statusText');
-    const errorContainer = document.getElementById('errorContainer');
+    const statusSpan = document.getElementById('statusText');
+    const errorDiv = document.getElementById('errorContainer');
     const resultsCard = document.getElementById('resultsCard');
-    const downloadLink = document.getElementById('downloadLink');
-    const summaryContainer = document.getElementById('summaryContainer');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressBar = document.getElementById('progressBar');
+    const saveBtn = document.getElementById('saveSessionBtn');
+    const loadBtn = document.getElementById('loadSessionBtn');
+    const exportExcelBtn = document.getElementById('exportExcelBtn');
+    const filterBankInput = document.getElementById('filterBank');
+    const filterDateInput = document.getElementById('filterDate');
+    const clearFiltersBtn = document.getElementById('clearFilters');
+    const mergeDuplicatesBtn = document.getElementById('mergeDuplicatesBtn');
+    const tableContainer = document.getElementById('tableContainer');
+    const summaryStatsDiv = document.getElementById('summaryStats');
 
-    // Helper: clear previous errors
-    function clearErrors() {
-        errorContainer.innerHTML = '';
-    }
+    // Helper: show error
+    function showError(msg) { errorDiv.innerHTML = `<div class="error-message"><span class="material-symbols-outlined">error</span> ${msg}</div>`; statusSpan.innerText = "Error"; }
+    function clearError() { errorDiv.innerHTML = ""; }
+    function setStatus(text, isLoading = false) { statusSpan.innerText = text; }
 
-    function showError(msg) {
-        clearErrors();
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'error-message';
-        errorDiv.innerHTML = `<span class="material-symbols-outlined" style="font-size: 18px; vertical-align: middle;">error</span> ${msg}`;
-        errorContainer.appendChild(errorDiv);
-        statusTextSpan.innerText = 'Error';
-        resultsCard.classList.add('hidden');
-    }
+    // Progress
+    function updateProgress(percent) { progressContainer.classList.remove('hidden'); progressBar.style.width = `${percent}%`; }
+    function hideProgress() { progressContainer.classList.add('hidden'); progressBar.style.width = '0%'; }
 
-    function setStatus(text, isLoading = false) {
-        statusTextSpan.innerText = text;
-        if (isLoading) {
-            const loaderSpan = document.getElementById('statusText');
-            // optional: visual effect but we keep simple
-        }
-    }
-
-    // CSV escape helper
-    function escapeCSV(str) {
-        if (str === undefined || str === null) return '""';
-        let cleaned = String(str).replace(/"/g, '""');
-        return `"${cleaned}"`;
-    }
-
-    // Date parsing: input MM/DD/YYYY
-    function parseInquiryDate(dateStr) {
+    // ---------- Date normalization (MM/DD/YYYY) ----------
+    function normalizeDate(dateStr) {
         if (!dateStr) return null;
-        const parts = dateStr.split('/');
-        if (parts.length === 3) {
-            // month/day/year
-            return new Date(parseInt(parts[2],10), parseInt(parts[0],10)-1, parseInt(parts[1],10));
+        let cleaned = dateStr.trim();
+        // try MM/DD/YYYY
+        let parts = cleaned.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+        if (parts) {
+            let m = parseInt(parts[1],10), d = parseInt(parts[2],10), y = parseInt(parts[3],10);
+            if (m>=1 && m<=12 && d>=1 && d<=31) return `${m.toString().padStart(2,'0')}/${d.toString().padStart(2,'0')}/${y}`;
         }
-        return null;
+        // try DD/MM/YYYY
+        parts = cleaned.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+        if(parts){
+            let d=parseInt(parts[1],10), m=parseInt(parts[2],10), y=parseInt(parts[3],10);
+            if(m>=1 && m<=12 && d>=1 && d<=31) return `${m.toString().padStart(2,'0')}/${d.toString().padStart(2,'0')}/${y}`;
+        }
+        // try "Jan 15, 2025"
+        const months = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+        let match = cleaned.match(/([A-Za-z]{3})\s+(\d{1,2}),?\s+(\d{4})/i);
+        if(match){
+            let mon = months[match[1].toLowerCase()];
+            if(mon) return `${mon.toString().padStart(2,'0')}/${match[2].padStart(2,'0')}/${match[3]}`;
+        }
+        return null; // invalid
     }
 
-    // Generate summary stats based on cumulative months (as original logic)
-    function generateSummaryStats(inquiries) {
-        const now = new Date();
-        // Reset to midnight for fairness
-        now.setHours(0,0,0,0);
-        const oneMonthAgo = new Date(now); oneMonthAgo.setMonth(now.getMonth() - 1);
-        const twoMonthsAgo = new Date(now); twoMonthsAgo.setMonth(now.getMonth() - 2);
-        const threeMonthsAgo = new Date(now); threeMonthsAgo.setMonth(now.getMonth() - 3);
-        const sixMonthsAgo = new Date(now); sixMonthsAgo.setMonth(now.getMonth() - 6);
-        const twelveMonthsAgo = new Date(now); twelveMonthsAgo.setMonth(now.getMonth() - 12);
-        const twentyFourMonthsAgo = new Date(now); twentyFourMonthsAgo.setMonth(now.getMonth() - 24);
-
-        let last1Month = 0, last2Months = 0, last3Months = 0, last6Months = 0, last12Months = 0, last24Months = 0;
-
-        inquiries.forEach(inq => {
-            const dateObj = parseInquiryDate(inq.inquiry_date);
-            if (!dateObj) return;
-            if (dateObj >= oneMonthAgo) last1Month++;
-            if (dateObj >= twoMonthsAgo) last2Months++;
-            if (dateObj >= threeMonthsAgo) last3Months++;
-            if (dateObj >= sixMonthsAgo) last6Months++;
-            if (dateObj >= twelveMonthsAgo) last12Months++;
-            if (dateObj >= twentyFourMonthsAgo) last24Months++;
+    // ---------- Duplicate detection (same bank name + phone) ----------
+    function findDuplicates(inquiries) {
+        const map = new Map();
+        inquiries.forEach((inq, idx) => {
+            const key = `${inq.bank_name}|${inq.bank_phone}`;
+            if (!map.has(key)) map.set(key, []);
+            map.get(key).push(idx);
         });
-
-        return { last1Month, last2Months, last3Months, last6Months, last12Months, last24Months };
+        const duplicateIndices = new Set();
+        for (let indices of map.values()) { if (indices.length > 1) indices.forEach(i => duplicateIndices.add(i)); }
+        return duplicateIndices;
     }
 
-    // Display summary with material design and copy button
-    function renderSummaryUI(stats) {
-        const { last1Month, last2Months, last3Months, last6Months, last12Months, last24Months } = stats;
-        const summaryHtml = `
-            <div class="summary-grid">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-                    <h3 style="font-weight: 500; margin: 0;">📊 Inquiry Timeline (Cumulative)</h3>
-                    <button id="copySummaryBtn" class="copy-btn">
-                        <span class="material-symbols-outlined" style="font-size: 18px;">content_copy</span> Copy Summary
-                    </button>
-                </div>
-                <div class="stats-list">
-                    <div class="stat-item"><span class="stat-label">Last 1 month</span><span class="stat-number">${last1Month}</span></div>
-                    <div class="stat-item"><span class="stat-label">Last 2 months</span><span class="stat-number">${last2Months}</span></div>
-                    <div class="stat-item"><span class="stat-label">Last 3 months</span><span class="stat-number">${last3Months}</span></div>
-                    <div class="stat-item"><span class="stat-label">Last 6 months</span><span class="stat-number">${last6Months}</span></div>
-                    <div class="stat-item"><span class="stat-label">Last 12 months</span><span class="stat-number">${last12Months}</span></div>
-                    <div class="stat-item"><span class="stat-label">Last 24 months</span><span class="stat-number">${last24Months}</span></div>
-                </div>
-                <div style="font-size: 0.75rem; color:#625b71; margin-top: 8px;">* Counts include inquiries from the last N months (cumulative).</div>
-            </div>
-        `;
-        summaryContainer.innerHTML = summaryHtml;
-
-        // attach copy event
-        const copyBtn = document.getElementById('copySummaryBtn');
-        if (copyBtn) {
-            copyBtn.addEventListener('click', () => {
-                const summaryText = `${last1Month}/1, ${last2Months}/2, ${last3Months}/3, ${last6Months}/6, ${last12Months}/12, ${last24Months}/24`;
-                navigator.clipboard.writeText(summaryText).then(() => {
-                    // optional temporary feedback
-                    const originalText = copyBtn.innerHTML;
-                    copyBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;">check</span> Copied!';
-                    setTimeout(() => {
-                        copyBtn.innerHTML = originalText;
-                    }, 1500);
-                }).catch(() => {
-                    alert("Failed to copy summary.");
-                });
-            });
+    // Merge duplicates: keep first, remove others (simple)
+    function mergeDuplicates(inquiries) {
+        const map = new Map();
+        for (let inq of inquiries) {
+            const key = `${inq.bank_name}|${inq.bank_phone}`;
+            if (!map.has(key)) map.set(key, { ...inq, count: 1 });
+            else { let existing = map.get(key); existing.count++; }
         }
+        return Array.from(map.values()).map(({count, ...rest}) => rest);
     }
 
-    // Core PDF processing function
-    async function processPDF(file) {
-        clearErrors();
-        setStatus("Loading PDF...", true);
-        resultsCard.classList.add('hidden');
-        downloadLink.style.display = 'none';
+    // ---------- Cumulative stats (same as before) ----------
+    function computeCumulativeStats(inquiries) {
+        const now = new Date(); now.setHours(0,0,0,0);
+        const cutoffs = [1,2,3,6,12,24].map(m => { let d=new Date(now); d.setMonth(now.getMonth()-m); return d; });
+        let counts = [0,0,0,0,0,0];
+        inquiries.forEach(inq => {
+            let dateObj = inq._dateObj || (inq.inquiry_date ? new Date(normalizeDate(inq.inquiry_date)) : null);
+            if (!dateObj || isNaN(dateObj)) return;
+            for(let i=0; i<cutoffs.length; i++) if(dateObj >= cutoffs[i]) counts[i]++;
+        });
+        return { last1Month:counts[0], last2Months:counts[1], last3Months:counts[2], last6Months:counts[3], last12Months:counts[4], last24Months:counts[5] };
+    }
 
+    // Render table + chart + summary
+    function renderCurrentTab() {
+        let data = currentTab === "hard" ? hardInquiries : softInquiries;
+        // Apply filters
+        let filtered = data.filter(inq => {
+            let matchBank = !currentFilterBank || inq.bank_name.toLowerCase().includes(currentFilterBank.toLowerCase());
+            let matchDate = !currentFilterDate || (inq.inquiry_date && inq.inquiry_date.includes(currentFilterDate));
+            return matchBank && matchDate;
+        });
+        const duplicatesSet = findDuplicates(filtered);
+        // Build HTML table
+        let html = `<table><thead><tr><th data-sort="bank_name">Bank Name 🔽</th><th data-sort="bank_address">Address</th><th data-sort="bank_phone">Phone</th><th data-sort="inquiry_date">Date</th><th>Duplicate</th></tr></thead><tbody>`;
+        filtered.forEach((inq, idx) => {
+            const isDup = duplicatesSet.has(idx) ? "⚠️ Yes" : "";
+            const dupClass = duplicatesSet.has(idx) ? "duplicate-row" : "";
+            html += `<tr class="${dupClass}"><td>${escapeHtml(inq.bank_name)}</td><td>${escapeHtml(inq.bank_address)}</td><td>${escapeHtml(inq.bank_phone)}</td><td>${inq.inquiry_date || ''}</td><td>${isDup}</td></tr>`;
+        });
+        html += `</tbody></table><div>Total: ${filtered.length} inquiries (${duplicatesSet.size} duplicate entries)</div>`;
+        tableContainer.innerHTML = html;
+        // attach sorting
+        document.querySelectorAll('th[data-sort]').forEach(th => {
+            th.addEventListener('click', () => sortTable(th.dataset.sort, filtered));
+        });
+        // stats and chart
+        const stats = computeCumulativeStats(filtered);
+        summaryStatsDiv.innerHTML = `<div class="status-badge" style="margin-top:12px">📊 Cumulative: 1m:${stats.last1Month} | 2m:${stats.last2Months} | 3m:${stats.last3Months} | 6m:${stats.last6Months} | 12m:${stats.last12Months} | 24m:${stats.last24Months}</div>`;
+        updateChart(stats);
+    }
+
+    function sortTable(field, filteredData) {
+        let sorted = [...filteredData];
+        sorted.sort((a,b) => (a[field] || '').localeCompare(b[field] || ''));
+        // re-render with sorted order - simplistic: re-render full but keep filter
+        let data = currentTab === "hard" ? hardInquiries : softInquiries;
+        let filtered = data.filter(inq => {
+            let matchBank = !currentFilterBank || inq.bank_name.toLowerCase().includes(currentFilterBank.toLowerCase());
+            let matchDate = !currentFilterDate || (inq.inquiry_date && inq.inquiry_date.includes(currentFilterDate));
+            return matchBank && matchDate;
+        });
+        filtered.sort((a,b) => (a[field] || '').localeCompare(b[field] || ''));
+        const duplicatesSet = findDuplicates(filtered);
+        let html = `<table><thead><tr><th data-sort="bank_name">Bank Name 🔽</th><th>Address</th><th>Phone</th><th>Date</th><th>Duplicate</th></tr></thead><tbody>`;
+        filtered.forEach((inq, idx) => {
+            const isDup = duplicatesSet.has(idx) ? "⚠️ Yes" : "";
+            html += `<tr class="${duplicatesSet.has(idx) ? 'duplicate-row' : ''}"><td>${escapeHtml(inq.bank_name)}</td><td>${escapeHtml(inq.bank_address)}</td><td>${escapeHtml(inq.bank_phone)}</td><td>${inq.inquiry_date}</td><td>${isDup}</td></tr>`;
+        });
+        html += `</tbody></table><div>Total: ${filtered.length}</div>`;
+        tableContainer.innerHTML = html;
+        document.querySelectorAll('th[data-sort]').forEach(th => th.addEventListener('click', () => sortTable(th.dataset.sort, filtered)));
+    }
+
+    function updateChart(stats) {
+        const ctx = document.getElementById('inquiryChart').getContext('2d');
+        if(chartInstance) chartInstance.destroy();
+        chartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: { labels: ['1 month','2 months','3 months','6 months','12 months','24 months'],
+                     datasets: [{ label: 'Cumulative Inquiries', data: [stats.last1Month, stats.last2Months, stats.last3Months, stats.last6Months, stats.last12Months, stats.last24Months], backgroundColor: '#6750a4' }] },
+            options: { responsive: true, maintainAspectRatio: true }
+        });
+    }
+
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+    // ---------- Extract both sections with auto-detect (feature 10) ----------
+    async function extractFromPDF(arrayBuffer) {
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        let fullText = '';
+        for (let i = 0; i < pdf.numPages; i++) {
+            const page = await pdf.getPage(i+1);
+            const content = await page.getTextContent();
+            fullText += content.items.map(item => item.str).join(' ') + '\n';
+            updateProgress(Math.round(((i+1)/pdf.numPages)*100));
+        }
+        // possible headings variations
+        const hardPatterns = [/Inquiries Viewed By Others/i, /Hard Inquiries/i, /Inquiries Shared With Others/i];
+        const softPatterns = [/Inquiries Viewed Only By You/i, /Soft Inquiries/i, /Inquiries Viewed Only By Consumer/i];
+        let hardSection = "", softSection = "";
+        for(let pat of hardPatterns) { let match = fullText.match(new RegExp(`(${pat.source})([\\s\\S]*?)(?=${softPatterns.map(p=>p.source).join('|')}|$)`, 'i')); if(match) { hardSection = match[2]; break; } }
+        for(let pat of softPatterns) { let match = fullText.match(new RegExp(`(${pat.source})([\\s\\S]*?)(?=${hardPatterns.map(p=>p.source).join('|')}|$)`, 'i')); if(match) { softSection = match[2]; break; } }
+        if(!hardSection && !softSection) throw new Error("Could not detect inquiry sections.");
+        const inquiryRegex = /Inquirer:\s*(.*?)[;,\n]\s*(.*?)\s*Phone Number:\s*(.*?)(?:\n|\r|,|\s)*Inquiry Date:\s*(\d{2}\/\d{2}\/\d{4})/gi;
+        function parseSection(text) {
+            let results = [];
+            let m;
+            while((m = inquiryRegex.exec(text)) !== null) {
+                let bankName = m[1].trim(), address = m[2].trim(), phone = m[3].trim(), dateRaw = m[4].trim();
+                let normDate = normalizeDate(dateRaw);
+                let dateObj = normDate ? new Date(normDate) : null;
+                results.push({ bank_name: bankName, bank_address: address, bank_phone: phone, inquiry_date: normDate || dateRaw, _dateObj: dateObj });
+            }
+            return results;
+        }
+        let hard = hardSection ? parseSection(hardSection) : [];
+        let soft = softSection ? parseSection(softSection) : [];
+        return { hard, soft };
+    }
+
+    // Main processing
+    async function processPDF(file) {
+        clearError(); setStatus("Reading PDF..."); updateProgress(0);
+        resultsCard.classList.add('hidden');
         try {
             const arrayBuffer = await file.arrayBuffer();
-            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-            let fullText = '';
-
-            // Extract text page by page
-            for (let i = 0; i < pdf.numPages; i++) {
-                const page = await pdf.getPage(i + 1);
-                const textContent = await page.getTextContent();
-                const pageText = textContent.items.map(item => item.str).join(' ');
-                fullText += pageText + '\n';
-                // update status occasionally
-                if ((i + 1) % 5 === 0) setStatus(`Extracting page ${i+1}/${pdf.numPages}`, true);
-            }
-
-            setStatus("Parsing inquiries...", true);
-
-            // Improved pattern: find section "Inquiries Viewed By Others" until next major heading or end
-            const sectionPattern = /Inquiries Viewed By Others([\s\S]*?)(?=Inquiries Viewed Only By You|$)/i;
-            const sectionMatch = fullText.match(sectionPattern);
-            if (!sectionMatch) {
-                throw new Error("Could not locate 'Inquiries Viewed By Others' section in the PDF. Make sure the report contains that heading.");
-            }
-
-            const inquiriesSection = sectionMatch[1];
-            // More flexible regex: matches "Inquirer: some bank name ; address Phone Number: xxx Inquiry Date: mm/dd/yyyy"
-            // original pattern but with tolerance for newlines/spaces.
-            const inquiryPattern = /Inquirer:\s*(.*?)[;,\n]\s*(.*?)\s*Phone Number:\s*(.*?)(?:\n|\r|,|\s)*Inquiry Date:\s*(\d{2}\/\d{2}\/\d{4})/gi;
-            const inquiries = [];
-            let match;
-
-            while ((match = inquiryPattern.exec(inquiriesSection)) !== null) {
-                let bankName = match[1].trim();
-                let bankAddress = match[2].trim();
-                let bankPhone = match[3].trim();
-                let inquiryDate = match[4].trim();
-
-                // Additional clean up: if address includes "Phone Number" mistakenly, trim
-                if (bankAddress.toLowerCase().includes('phone number')) {
-                    bankAddress = bankAddress.replace(/Phone Number.*$/i, '').trim();
-                }
-                inquiries.push({
-                    bank_name: bankName,
-                    bank_address: bankAddress,
-                    bank_phone: bankPhone,
-                    inquiry_date: inquiryDate
-                });
-            }
-
-            if (inquiries.length === 0) {
-                throw new Error("No inquiries found in the section. The pattern may not match your PDF layout. Check if 'Inquirer: ... Phone Number: ... Inquiry Date:' format exists.");
-            }
-
-            // Generate CSV content with proper escaping
-            const csvRows = [];
-            csvRows.push(['bank_name', 'bank_address', 'bank_phone', 'inquiry_date'].map(escapeCSV).join(','));
-            for (const inq of inquiries) {
-                csvRows.push([
-                    escapeCSV(inq.bank_name),
-                    escapeCSV(inq.bank_address),
-                    escapeCSV(inq.bank_phone),
-                    escapeCSV(inq.inquiry_date)
-                ].join(','));
-            }
-            const csvContent = csvRows.join('\n');
-
-            // Create blob and show download link
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            downloadLink.href = url;
-            downloadLink.download = `inquiries_viewed_by_others_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.csv`;
-            downloadLink.style.display = 'inline-flex';
-
-            // Generate stats and render summary
-            const stats = generateSummaryStats(inquiries);
-            renderSummaryUI(stats);
-
-            // Show results card
+            const { hard, soft } = await extractFromPDF(arrayBuffer);
+            if(hard.length===0 && soft.length===0) throw new Error("No inquiries found in any section.");
+            hardInquiries = hard.map(i => ({ ...i, inquiry_date: i.inquiry_date || '' }));
+            softInquiries = soft.map(i => ({ ...i, inquiry_date: i.inquiry_date || '' }));
+            currentFilterBank = ""; currentFilterDate = "";
+            if(filterBankInput) filterBankInput.value = "";
+            if(filterDateInput) filterDateInput.value = "";
+            renderCurrentTab();
             resultsCard.classList.remove('hidden');
-            setStatus(`Success: ${inquiries.length} inquiries extracted`);
-            // Scroll to results
-            resultsCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } catch (err) {
-            console.error(err);
-            showError(err.message || "Failed to process PDF. Ensure it's a valid credit report with the expected format.");
-            setStatus("Failed");
-            resultsCard.classList.add('hidden');
-        }
+            setStatus(`Loaded: ${hardInquiries.length} hard, ${softInquiries.length} soft inquiries`);
+            hideProgress();
+        } catch(err) { showError(err.message); hideProgress(); }
     }
 
-    // Trigger processing on file select
-    pdfInput.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (!file) return;
-        if (file.type !== 'application/pdf') {
-            showError("Please select a valid PDF file.");
-            pdfInput.value = '';
-            setStatus("Invalid file");
-            return;
-        }
-        processPDF(file);
-    });
-
-    // Click on upload zone triggers file input
-    uploadZone.addEventListener('click', () => {
-        pdfInput.click();
-    });
-
-    // Drag & drop enhancement
-    uploadZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadZone.style.borderColor = '#6750a4';
-        uploadZone.style.background = '#f3edf7';
-    });
-    uploadZone.addEventListener('dragleave', () => {
-        uploadZone.style.borderColor = '#cac4d0';
-        uploadZone.style.background = '#fefbff';
-    });
-    uploadZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadZone.style.borderColor = '#cac4d0';
-        uploadZone.style.background = '#fefbff';
-        const files = e.dataTransfer.files;
-        if (files.length > 0 && files[0].type === 'application/pdf') {
-            pdfInput.files = files;
-            processPDF(files[0]);
-        } else {
-            showError("Drop a valid PDF file.");
-        }
-    });
-
-    // reset file input after error to allow re-upload same file if needed (optional)
-    function resetFileInput() {
-        pdfInput.value = '';
+    // Session storage (feature 9)
+    function saveSession() {
+        const data = { hard: hardInquiries, soft: softInquiries, timestamp: new Date().toISOString() };
+        localStorage.setItem('creditInquirySession', JSON.stringify(data));
+        setStatus("Session saved");
     }
+    function loadSession() {
+        const raw = localStorage.getItem('creditInquirySession');
+        if(!raw) { showError("No saved session found."); return; }
+        try {
+            const data = JSON.parse(raw);
+            hardInquiries = data.hard || [];
+            softInquiries = data.soft || [];
+            currentFilterBank = ""; currentFilterDate = "";
+            if(filterBankInput) filterBankInput.value = "";
+            if(filterDateInput) filterDateInput.value = "";
+            renderCurrentTab();
+            resultsCard.classList.remove('hidden');
+            setStatus(`Session loaded (${hardInquiries.length} hard, ${softInquiries.length} soft)`);
+        } catch(e) { showError("Failed to load session"); }
+    }
+
+    // Export to Excel (feature 5)
+    function exportToExcel() {
+        const hardSheet = XLSX.utils.json_to_sheet(hardInquiries);
+        const softSheet = XLSX.utils.json_to_sheet(softInquiries);
+        const stats = computeCumulativeStats(hardInquiries);
+        const statsSheet = XLSX.utils.json_to_sheet([stats]);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, hardSheet, "Hard Inquiries");
+        XLSX.utils.book_append_sheet(wb, softSheet, "Soft Inquiries");
+        XLSX.utils.book_append_sheet(wb, statsSheet, "Summary");
+        XLSX.writeFile(wb, `credit_inquiries_${new Date().toISOString().slice(0,19)}.xlsx`);
+    }
+
+    // Event listeners
+    uploadZone.addEventListener('click', () => pdfInput.click());
+    pdfInput.addEventListener('change', (e) => { if(e.target.files.length) processPDF(e.target.files[0]); });
+    saveBtn.addEventListener('click', saveSession);
+    loadBtn.addEventListener('click', loadSession);
+    exportExcelBtn.addEventListener('click', exportToExcel);
+    clearFiltersBtn.addEventListener('click', () => { currentFilterBank=""; currentFilterDate=""; filterBankInput.value=""; filterDateInput.value=""; renderCurrentTab(); });
+    filterBankInput.addEventListener('input', (e) => { currentFilterBank = e.target.value; renderCurrentTab(); });
+    filterDateInput.addEventListener('input', (e) => { currentFilterDate = e.target.value; renderCurrentTab(); });
+    mergeDuplicatesBtn.addEventListener('click', () => {
+        if(currentTab === "hard") { hardInquiries = mergeDuplicates(hardInquiries); }
+        else { softInquiries = mergeDuplicates(softInquiries); }
+        renderCurrentTab();
+        setStatus("Duplicates merged");
+    });
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentTab = btn.dataset.type;
+            renderCurrentTab();
+        });
+    });
+    // drag & drop
+    uploadZone.addEventListener('dragover', (e) => e.preventDefault());
+    uploadZone.addEventListener('drop', (e) => { e.preventDefault(); const file = e.dataTransfer.files[0]; if(file && file.type==='application/pdf') processPDF(file); else showError("Drop a PDF file"); });
 </script>
 </body>
 </html>
