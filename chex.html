@@ -1165,7 +1165,7 @@ function attachSortListeners() {
 																									<div>Total: ${filtered.length} inquiries (${duplicatesSet.size} duplicate entries)</div>`;
           tableContainer.innerHTML = html;
           // Attach sorting event listeners to table headers
-          attachSortListener();
+          attachSortListeners();
           const stats = computeCumulativeStats(currentTab === "hard" ? hardInquiries : []);
           summaryStatsDiv.innerHTML = `
 																									<div class="status-badge">📊 Cumulative Hard Inquires: 1m: ${stats.last1Month} | 2m: ${stats.last2Months} | 3m: ${stats.last3Months} | 6m: ${stats.last6Months} | 12m: ${stats.last12Months} | 24m:${stats.last24Months}</div>`;
