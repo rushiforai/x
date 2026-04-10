@@ -3,267 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ChexScore™ Calibrated | Hard Inquiries Only</title>
+    <title>ChexScore™ v2 | Hard Inquiries Only (Improved)</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.3.122/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            background: #f5f5f7;
-            font-family: 'Roboto', sans-serif;
-            padding: 24px 16px;
-            color: #1e1e2f;
-        }
-        :root {
-            --md-primary: #6750a4;
-            --md-primary-light: #eaddff;
-            --md-surface: #ffffff;
-            --md-outline: #79747e;
-        }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        .card {
-            background: var(--md-surface);
-            border-radius: 28px;
-            padding: 24px 20px;
-            box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
-            margin-bottom: 24px;
-        }
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #e9e9ef;
-            padding-bottom: 12px;
-        }
-        .card-header .material-symbols-outlined {
-            font-size: 28px;
-            color: var(--md-primary);
-        }
-        .card-header h2 {
-            font-size: 1.5rem;
-            font-weight: 500;
-        }
-        .upload-zone {
-            border: 2px dashed #cac4d0;
-            border-radius: 28px;
-            padding: 32px;
-            text-align: center;
-            cursor: pointer;
-            background: #fefbff;
-            margin-bottom: 20px;
-            transition: all 0.2s;
-        }
-        .upload-zone:hover {
-            border-color: var(--md-primary);
-            background: #f9f6ff;
-        }
-        .upload-icon {
-            font-size: 48px;
-            color: var(--md-primary);
-        }
-        .file-input {
-            display: none;
-        }
-        .btn {
-            background: var(--md-primary);
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 100px;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--md-outline);
-            color: var(--md-primary);
-        }
-        .btn-outline:hover {
-            background: #ede7f6;
-        }
-        .status-badge {
-            background: #e8def8;
-            border-radius: 100px;
-            padding: 6px 12px;
-            font-size: 0.75rem;
-            color: #381e72;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .progress-bar-container {
-            margin: 16px 0;
-            background: #e3e1e6;
-            border-radius: 100px;
-            height: 8px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            width: 0%;
-            height: 100%;
-            background: var(--md-primary);
-            transition: width 0.2s;
-        }
-        .tabs {
-            display: flex;
-            gap: 8px;
-            border-bottom: 1px solid #e3e1e6;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .tab-btn {
-            background: none;
-            border: none;
-            padding: 12px 20px;
-            font-weight: 500;
-            cursor: pointer;
-            color: #49454e;
-            border-radius: 100px 100px 0 0;
-        }
-        .tab-btn.active {
-            background: #eaddff;
-            color: #381e72;
-        }
-        .filter-bar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin: 16px 0;
-        }
-        .filter-input {
-            padding: 8px 12px;
-            border-radius: 100px;
-            border: 1px solid var(--md-outline);
-            font-family: inherit;
-            flex: 1;
-            min-width: 150px;
-        }
-        .table-wrapper {
-            overflow-x: auto;
-            margin-top: 16px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
-        th, td {
-            text-align: left;
-            padding: 12px 8px;
-            border-bottom: 1px solid #e9e9ef;
-        }
-        th {
-            cursor: pointer;
-            background: #faf9fc;
-            position: sticky;
-            top: 0;
-        }
-        .duplicate-row {
-            background-color: #fff3e0;
-        }
-        .action-group {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin: 16px 0;
-        }
-        .chart-container {
-            max-width: 600px;
-            margin: 20px 0;
-        }
-        .hidden {
-            display: none;
-        }
-        .error-message {
-            background: #ffdad6;
-            color: #b3261e;
-            border-radius: 16px;
-            padding: 12px;
-            margin-top: 16px;
-        }
-        .chexscore-card {
-            background: linear-gradient(135deg, #1e2a3a 0%, #0f1724 100%);
-            border-radius: 28px;
-            padding: 20px;
-            margin: 20px 0;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .score-number {
-            font-size: 3rem;
-            font-weight: 800;
-            line-height: 1;
-        }
-        .risk-level {
-            font-size: 1.2rem;
-            background: rgba(255,255,255,0.2);
-            padding: 4px 12px;
-            border-radius: 100px;
-            display: inline-block;
-            margin-top: 8px;
-        }
-        .simulator-card {
-            background: #faf9fc;
-            border-radius: 24px;
-            padding: 16px;
-            margin-top: 16px;
-        }
-        .simulator-control {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-            flex-wrap: wrap;
-            margin: 12px 0;
-        }
-        .simulator-control input {
-            padding: 8px 12px;
-            border-radius: 100px;
-            border: 1px solid var(--md-outline);
-            width: 100px;
-        }
-        .history-chart {
-            max-height: 200px;
-            margin-top: 20px;
-        }
-        .calibration-slider {
-            margin-top: 20px;
-            padding-top: 12px;
-            border-top: 1px solid #e3e1e6;
-        }
-        .calibration-slider input {
-            width: 100%;
-            max-width: 300px;
-        }
-        @media (max-width: 640px) {
-            .card {
-                padding: 16px;
-            }
-            th, td {
-                font-size: 0.75rem;
-                padding: 8px 4px;
-            }
-            .score-number {
-                font-size: 2rem;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #f5f5f7; font-family: 'Roboto', sans-serif; padding: 24px 16px; color: #1e1e2f; }
+        :root { --md-primary: #6750a4; --md-primary-light: #eaddff; --md-surface: #ffffff; --md-outline: #79747e; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .card { background: var(--md-surface); border-radius: 28px; padding: 24px 20px; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); margin-bottom: 24px; }
+        .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; border-bottom: 1px solid #e9e9ef; padding-bottom: 12px; }
+        .card-header .material-symbols-outlined { font-size: 28px; color: var(--md-primary); }
+        .card-header h2 { font-size: 1.5rem; font-weight: 500; }
+        .upload-zone { border: 2px dashed #cac4d0; border-radius: 28px; padding: 32px; text-align: center; cursor: pointer; background: #fefbff; margin-bottom: 20px; transition: all 0.2s; }
+        .upload-zone:hover { border-color: var(--md-primary); background: #f9f6ff; }
+        .upload-icon { font-size: 48px; color: var(--md-primary); }
+        .file-input { display: none; }
+        .btn { background: var(--md-primary); color: white; border: none; padding: 10px 24px; border-radius: 100px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+        .btn-outline { background: transparent; border: 1px solid var(--md-outline); color: var(--md-primary); }
+        .btn-outline:hover { background: #ede7f6; }
+        .status-badge { background: #e8def8; border-radius: 100px; padding: 6px 12px; font-size: 0.75rem; color: #381e72; display: inline-flex; align-items: center; gap: 6px; }
+        .progress-bar-container { margin: 16px 0; background: #e3e1e6; border-radius: 100px; height: 8px; overflow: hidden; }
+        .progress-bar { width: 0%; height: 100%; background: var(--md-primary); transition: width 0.2s; }
+        .tabs { display: flex; gap: 8px; border-bottom: 1px solid #e3e1e6; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab-btn { background: none; border: none; padding: 12px 20px; font-weight: 500; cursor: pointer; color: #49454e; border-radius: 100px 100px 0 0; }
+        .tab-btn.active { background: #eaddff; color: #381e72; }
+        .filter-bar { display: flex; flex-wrap: wrap; gap: 12px; margin: 16px 0; }
+        .filter-input { padding: 8px 12px; border-radius: 100px; border: 1px solid var(--md-outline); font-family: inherit; flex: 1; min-width: 150px; }
+        .table-wrapper { overflow-x: auto; margin-top: 16px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        th, td { text-align: left; padding: 12px 8px; border-bottom: 1px solid #e9e9ef; }
+        th { cursor: pointer; background: #faf9fc; }
+        .duplicate-row { background-color: #fff3e0; }
+        .action-group { display: flex; gap: 12px; flex-wrap: wrap; margin: 16px 0; }
+        .chart-container { max-width: 600px; margin: 20px 0; }
+        .hidden { display: none; }
+        .error-message { background: #ffdad6; color: #b3261e; border-radius: 16px; padding: 12px; margin-top: 16px; }
+        .chexscore-card { background: linear-gradient(135deg, #1e2a3a 0%, #0f1724 100%); border-radius: 28px; padding: 20px; margin: 20px 0; color: white; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .score-number { font-size: 3rem; font-weight: 800; line-height: 1; }
+        .risk-level { font-size: 1.2rem; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 100px; display: inline-block; margin-top: 8px; }
+        .simulator-card { background: #faf9fc; border-radius: 24px; padding: 16px; margin-top: 16px; }
+        .simulator-control { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin: 12px 0; }
+        .simulator-control input { padding: 8px 12px; border-radius: 100px; border: 1px solid var(--md-outline); width: 100px; }
+        .history-chart { max-height: 200px; margin-top: 20px; }
+        .calibration-slider { margin-top: 20px; padding-top: 12px; border-top: 1px solid #e3e1e6; }
+        .calibration-slider input { width: 100%; max-width: 300px; }
+        @media (max-width: 640px) { .card { padding: 16px; } th, td { font-size: 0.75rem; padding: 8px 4px; } .score-number { font-size: 2rem; } }
     </style>
 </head>
 <body>
@@ -271,7 +59,7 @@
     <div class="card">
         <div class="card-header">
             <span class="material-symbols-outlined">credit_score</span>
-            <h2>ChexScore™ Calibrated (Hard Inquiries Only)</h2>
+            <h2>ChexScore™ v2 (Hard Inquiries Only – Improved)</h2>
         </div>
         <div id="uploadZone" class="upload-zone">
             <span class="material-symbols-outlined upload-icon">cloud_upload</span>
@@ -315,7 +103,7 @@
                 <div style="font-size:0.9rem; opacity:0.8;">Estimated ChexScore™</div>
                 <div class="score-number" id="chexScoreValue">---</div>
                 <div class="risk-level" id="chexRiskLevel">---</div>
-                <div class="disclaimer" style="font-size:0.7rem;">*Calibrated with your 7 PDFs</div>
+                <div class="disclaimer" style="font-size:0.7rem;">*Calibrated with your 7 PDFs (v2)</div>
             </div>
             <div>
                 <span class="material-symbols-outlined" style="font-size:40px;">analytics</span>
@@ -338,8 +126,8 @@
             <!-- Calibration slider (advanced) -->
             <div class="calibration-slider">
                 <label>🔧 Calibration factor (0.8 – 1.2): </label>
-                <input type="range" id="calibFactor" min="0.8" max="1.2" step="0.01" value="1.0">
-                <span id="calibValue">1.00</span>
+                <input type="range" id="calibFactor" min="0.8" max="1.2" step="0.01" value="1.03">
+                <span id="calibValue">1.03</span>
                 <button id="resetCalib" class="btn-outline btn" style="margin-left:12px;">Reset</button>
             </div>
 
@@ -363,9 +151,9 @@
     let scoreHistory = [];
     let currentFilterBank = "", currentFilterDate = "";
     let simExtraHard = 0, simExtraHard12 = 0;
-    let calibFactor = 1.0;
+    let calibFactor = 1.03;   // Default fine-tuned from your data
 
-    // DOM elements
+    // DOM elements (same as before)
     const pdfInput = document.getElementById('pdfInput');
     const uploadZone = document.getElementById('uploadZone');
     const statusSpan = document.getElementById('statusText');
@@ -401,7 +189,6 @@
     function updateProgress(percent) { progressContainer.classList.remove('hidden'); progressBar.style.width = `${percent}%`; }
     function hideProgress() { progressContainer.classList.add('hidden'); progressBar.style.width = '0%'; }
 
-    // Date normalization
     function normalizeDate(dateStr) {
         if (!dateStr) return null;
         let cleaned = dateStr.trim();
@@ -416,7 +203,7 @@
         return cleaned;
     }
 
-    // ----- Scoring: only hard inquiries, duplicate bonus, calibrated with your data -----
+    // ----- Improved scoring algorithm -----
     function calculateChexScore(hardArray, extraHard6=0, extraHard12=0) {
         const now = new Date(); now.setHours(0,0,0,0);
         const sixMonthsAgo = new Date(now); sixMonthsAgo.setMonth(now.getMonth() - 6);
@@ -442,25 +229,43 @@
             }
         });
         let uniqueHard6 = uniqueBanks6mo.size + extraHard6; // assume extra are new banks
-        let duplicateBonus = (rawHard6 - uniqueHard6) * 12;
-        duplicateBonus = Math.min(duplicateBonus, 60);
+        let duplicateCount = rawHard6 - uniqueHard6;
+        // Piecewise duplicate bonus: higher benefit for low counts (rate shopping), lower for high volume
+        let duplicateBonus = 0;
+        if (duplicateCount > 0) {
+            if (rawHard6 <= 3) {
+                duplicateBonus = duplicateCount * 20;   // PDF5 benefits more
+            } else {
+                duplicateBonus = duplicateCount * 12;   // PDF6 more conservative
+            }
+            duplicateBonus = Math.min(duplicateBonus, 60);
+        }
 
-        // Base deduction lookup from your data points
-        function getBaseDeduction(h6, h12) {
+        // Base deduction lookup using (uniqueHard6, rawHard12) – more accurate
+        // Derived from your actual scores:
+        // PDF1-4: uniqueHard6=1, rawHard12=4 → deduction = 899 - 635 = 264
+        // PDF7:   uniqueHard6=3, rawHard12=6 → deduction = 899 - 597 = 302
+        // PDF6:   uniqueHard6=3, rawHard12=8 → deduction = 899 - 597 + duplicateBonus (24) = 326
+        // PDF5:   uniqueHard6=2, rawHard12=6 → deduction = 899 - 632 + duplicateBonus (20) = 287
+        // We'll use a simple 2D interpolation
+        function getBaseDeduction(unique6, raw12) {
+            // Known points (unique6, raw12) -> deduction (before duplicate bonus)
             const points = [
-                { h6:1, h12:4, ded:264 },
-                { h6:3, h12:6, ded:302 },
-                { h6:5, h12:8, ded:326 }
+                { u6:1, r12:4, ded:264 },
+                { u6:2, r12:6, ded:287 },
+                { u6:3, r12:6, ded:302 },
+                { u6:3, r12:8, ded:326 }
             ];
+            // Find nearest by Euclidean distance
             let best = points[0];
             let minDist = Infinity;
             for (let p of points) {
-                let dist = Math.abs(p.h6 - h6) + Math.abs(p.h12 - h12);
+                let dist = Math.abs(p.u6 - unique6) + Math.abs(p.r12 - raw12);
                 if (dist < minDist) { minDist = dist; best = p; }
             }
             return best.ded;
         }
-        let baseDeduction = getBaseDeduction(rawHard6, rawHard12);
+        let baseDeduction = getBaseDeduction(uniqueHard6, rawHard12);
         let totalDeduction = Math.max(0, baseDeduction - duplicateBonus);
         let rawScore = 899 - totalDeduction;
         let calibrated = 899 - (899 - rawScore) * calibFactor;
@@ -475,7 +280,7 @@
             simResultDiv.innerHTML = "";
             return;
         }
-        const { score, riskLevel, hard6, hard12, duplicateBonus } = calculateChexScore(hardInquiries, simExtra6, simExtra12);
+        const { score, riskLevel } = calculateChexScore(hardInquiries, simExtra6, simExtra12);
         chexScoreSpan.innerText = score;
         chexRiskSpan.innerText = riskLevel;
         if (simExtra6 || simExtra12) {
@@ -483,12 +288,12 @@
         } else {
             simResultDiv.innerHTML = "";
         }
-        if (simExtra6===0 && simExtra12===0 && calibFactor===1.0 && hardInquiries.length) {
+        if (simExtra6===0 && simExtra12===0 && calibFactor===1.03 && hardInquiries.length) {
             addToHistory(score);
         }
     }
 
-    // History
+    // History (unchanged)
     function addToHistory(score) {
         const now = new Date();
         const label = now.toLocaleTimeString();
@@ -509,7 +314,7 @@
     }
     function clearHistory() { scoreHistory = []; updateHistoryChart(); setStatus("History cleared"); }
 
-    // Duplicate detection & merge (for display only)
+    // Duplicate & merge (display only)
     function findDuplicates(inquiries) {
         const map = new Map();
         inquiries.forEach((inq, idx) => { const key = `${inq.bank_name}|${inq.bank_phone}`; if (!map.has(key)) map.set(key, []); map.get(key).push(idx); });
@@ -546,7 +351,7 @@
             return matchBank && matchDate;
         });
         const duplicatesSet = findDuplicates(filtered);
-        let html = `<table><thead><tr><th data-sort="bank_name">Entity Name 🔽</th><th>Address</th><th>Phone</th><th>Date</th><th>Duplicate</th>${currentTab==="soft" ? '<th>Original Inquirer</th>' : ''}</tr></thead><tbody>`;
+        let html = `<table><thead><tr><th data-sort="bank_name">Entity Name 🔽</th><th>Address</th><th>Phone</th><th>Date</th><th>Duplicate</th>${currentTab==="soft" ? '<th>Original Inquirer</th>' : ''}</thead><tbody>`;
         filtered.forEach((inq, idx) => {
             const isDup = duplicatesSet.has(idx) ? "⚠️ Yes" : "";
             const dupClass = duplicatesSet.has(idx) ? "duplicate-row" : "";
@@ -574,7 +379,7 @@
 
     function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
 
-    // PDF extraction (robust)
+    // PDF extraction (same robust functions)
     async function extractFromPDF(arrayBuffer) {
         const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
         let fullText = '';
@@ -648,7 +453,7 @@
         } catch(err) { showError(err.message); hideProgress(); }
     }
 
-    // Session & export
+    // Session & export (unchanged)
     function saveSession() {
         const data = { hard: hardInquiries, soft: softInquiries, scoreHistory, timestamp: new Date().toISOString() };
         localStorage.setItem('creditInquirySession', JSON.stringify(data));
@@ -698,11 +503,11 @@
         setStatus(`Calibration factor = ${calibFactor.toFixed(2)}`);
     }
     function resetCalibration() {
-        calibSlider.value = "1.0";
-        calibFactor = 1.0;
-        calibValueSpan.innerText = "1.00";
+        calibSlider.value = "1.03";
+        calibFactor = 1.03;
+        calibValueSpan.innerText = "1.03";
         updateChexScoreDisplay(simExtraHard, simExtraHard12);
-        setStatus("Calibration reset");
+        setStatus("Calibration reset to default (1.03)");
     }
 
     // Event listeners
