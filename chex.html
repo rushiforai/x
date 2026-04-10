@@ -266,7 +266,7 @@
         return cleaned;
     }
 
-    // Profile extraction from full text
+        // Profile extraction from full text
     function extractProfile(fullText) {
         const profileData = {
             consumerId: "",
@@ -277,31 +277,48 @@
             emailAddresses: "",
             dateOfBirth: ""
         };
-        // Consumer ID
-        let match = fullText.match(/Consumer\s+ID[:\s]+([^\n]+)/i);
-        if (match) profileData.consumerId = match[1].trim();
-        // Consumer Name
-        match = fullText.match(/Consumer\s+Name[:\s]+([^\n]+)/i);
+    
+        // Consumer ID: matches "Consumer ID 123" or "Consumer ID: 123" or "ID: 123"
+        let match = fullText.match(/Consumer\s+ID\s*:?\s*(\d+)/i);
+        if (!match) match = fullText.match(/ID\s*:?\s*(\d+)/i);
+        if (match) profileData.consumerId = match[1];
+    
+        // Consumer Name (if explicitly labeled)
+        match = fullText.match(/Consumer\s+Name\s*:?\s*([^\n]+)/i);
         if (match) profileData.consumerName = match[1].trim();
-        // Associated Names
-        match = fullText.match(/Associated\s+Names[:\s]+([^\n]+)/i);
+    
+        // Associated Names (semicolon separated list)
+        match = fullText.match(/Associated\s+Names\s*:?\s*([^\n]+)/i);
         if (match) profileData.associatedNames = match[1].trim();
-        // Addresses (multi-line)
-        let addrMatch = fullText.match(/Addresses?:?\s*([\s\S]*?)(?=Phone\s+Numbers?:|Email\s+Addresses?:|Date\s+of\s+Birth:|$)/i);
+    
+        // Addresses – capture from "Addresses:" until next section (Phone Numbers, Email, etc.)
+        let addrMatch = fullText.match(/Addresses?\s*:?\s*([\s\S]*?)(?=Phone\s+Numbers|Email\s+Addresses|Date\s+of\s+Birth|$)/i);
         if (addrMatch) {
-            let addr = addrMatch[1].trim().replace(/\n/g, ', ');
+            let addr = addrMatch[1]
+                .replace(/\n/g, ', ')      // replace newlines with commas
+                .replace(/\s+/g, ' ')      // collapse multiple spaces
+                .trim();
             profileData.addresses = addr.substring(0, 500);
         }
+    
         // Phone Numbers
-        match = fullText.match(/Phone\s+Numbers?:?\s*([^\n]+)/i);
+        match = fullText.match(/Phone\s+Numbers?\s*:?\s*([^\n]+)/i);
         if (match) profileData.phoneNumbers = match[1].trim();
+    
         // Email Addresses
-        match = fullText.match(/Email\s+Addresses?:?\s*([^\n]+)/i);
+        match = fullText.match(/Email\s+Addresses?\s*:?\s*([^\n]+)/i);
         if (match) profileData.emailAddresses = match[1].trim();
+    
         // Date of Birth
-        match = fullText.match(/Date\s+of\s+Birth[:\s]+([\d\/]+)/i);
+        match = fullText.match(/Date\s+of\s+Birth\s*:?\s*([\d\/]+)/i);
         if (match) profileData.dateOfBirth = match[1].trim();
-        
+    
+        // Fallback: if no Consumer ID found, try to find any 3+ digit number near the top of the report
+        if (!profileData.consumerId) {
+            let fallbackMatch = fullText.match(/\b(\d{3,})\b/);
+            if (fallbackMatch) profileData.consumerId = fallbackMatch[1];
+        }
+    
         return profileData;
     }
 
