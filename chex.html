@@ -202,6 +202,7 @@
     let simExtras = { m1:0, m2:0, m3:0, m6:0, m12:0 };
     let calibFactor = 1.00;
     let currentPDFName = "";
+    let sortDirection = 'asc'; // 'asc' or 'desc'
 
     // DOM elements
     const pdfInput = document.getElementById('pdfInput');
@@ -378,42 +379,58 @@
         profileCard.classList.remove('hidden');
     }
 
-    function sortTable(field) {
-        let data = currentTab === "hard" ? hardInquiries : softInquiries;
-        let filtered = data.filter(inq => {
-            let matchBank = !currentFilterBank || inq.bank_name.toLowerCase().includes(currentFilterBank.toLowerCase());
-            let matchDate = !currentFilterDate || (inq.inquiry_date && inq.inquiry_date.includes(currentFilterDate));
-            return matchBank && matchDate;
-        });
-        filtered.sort((a, b) => {
-            let valA = (a[field] || '').toLowerCase();
-            let valB = (b[field] || '').toLowerCase();
-            if (valA < valB) return -1;
-            if (valA > valB) return 1;
-            return 0;
-        });
-        const duplicatesSet = findDuplicates(filtered);
-        let html = `<table><thead><tr><th>Name</th><th>Address</th><th>Phone</th><th>Date</th><th>Duplicate</th>`;
-        if (currentTab === "soft") html += '<th>Original Inquirer</th><th>Original Inquirer Address</th>';
-        html += `</thead><tbody>`;
-        filtered.forEach((inq, idx) => {
-            const isDup = duplicatesSet.has(idx) ? "Yes" : "";
-            const dupClass = duplicatesSet.has(idx) ? "duplicate-row" : "";
-            html += `<tr class="${dupClass}">
-                <td>${escapeHtml(inq.bank_name)}</td>
-                <td>${escapeHtml(inq.bank_address)}</td>
-                <td>${escapeHtml(inq.bank_phone)}</td>
-                <td>${inq.inquiry_date || ''}</td>
-                <td>${isDup}</td>`;
-            if (currentTab === "soft") {
-                html += `<td>${escapeHtml(inq.original_inquirer || '')}</td>`;
-                html += `<td>${escapeHtml(inq.original_inquirer_address || '')}</td>`;
-            }
-            html += `</tr>`;
-        });
-        html += `</tbody></table><div>Total: ${filtered.length} inquiries (${duplicatesSet.size} duplicate entries)</div>`;
-        tableContainer.innerHTML = html;
-    }
+function sortTableByName(direction) {
+    let data = currentTab === "hard" ? hardInquiries : softInquiries;
+    let filtered = data.filter(inq => {
+        let matchBank = !currentFilterBank || inq.bank_name.toLowerCase().includes(currentFilterBank.toLowerCase());
+        let matchDate = !currentFilterDate || (inq.inquiry_date && inq.inquiry_date.includes(currentFilterDate));
+        return matchBank && matchDate;
+    });
+    filtered.sort((a, b) => {
+        let valA = (a.bank_name || '').toLowerCase();
+        let valB = (b.bank_name || '').toLowerCase();
+        if (direction === 'asc') {
+            return valA < valB ? -1 : valA > valB ? 1 : 0;
+        } else {
+            return valA > valB ? -1 : valA < valB ? 1 : 0;
+        }
+    });
+    const duplicatesSet = findDuplicates(filtered);
+    let html = `<table><thead><tr><th>Name ${direction === 'asc' ? '▲' : '▼'}</th><th>Address</th><th>Phone</th><th>Date</th><th>Duplicate</th>`;
+    if (currentTab === "soft") html += '<th>Original Inquirer</th><th>Original Inquirer Address</th>';
+    html += `</thead><tbody>`;
+    filtered.forEach((inq, idx) => {
+        const isDup = duplicatesSet.has(idx) ? "Yes" : "";
+        const dupClass = duplicatesSet.has(idx) ? "duplicate-row" : "";
+        html += `<tr class="${dupClass}">
+            <td>${escapeHtml(inq.bank_name)}</td>
+            <td>${escapeHtml(inq.bank_address)}</td>
+            <td>${escapeHtml(inq.bank_phone)}</td>
+            <td>${inq.inquiry_date || ''}</td>
+            <td>${isDup}</td>`;
+        if (currentTab === "soft") {
+            html += `<td>${escapeHtml(inq.original_inquirer || '')}</td>`;
+            html += `<td>${escapeHtml(inq.original_inquirer_address || '')}</td>`;
+        }
+        html += `</tr>`;
+    });
+    html += `</tbody></table><div>Total: ${filtered.length} inquiries (${duplicatesSet.size} duplicate entries)</div>`;
+    tableContainer.innerHTML = html;
+    // Re-attach the sort listener to the new header
+    attachSortListener();
+}
+    function attachSortListener() {
+    const firstHeader = document.querySelector('#tableContainer th:first-child');
+    if (!firstHeader) return;
+    // Remove any existing listener by cloning and replacing
+    const newHeader = firstHeader.cloneNode(true);
+    firstHeader.parentNode.replaceChild(newHeader, firstHeader);
+    newHeader.style.cursor = 'pointer';
+    newHeader.addEventListener('click', () => {
+        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+        sortTableByName(sortDirection);
+    });
+}
 
     // Scoring algorithm (unchanged)
     function calculateChexScore(hardArray, extras = { m1:0, m2:0, m3:0, m6:0, m12:0 }) {
@@ -581,14 +598,7 @@
         html += `</tbody></table><div>Total: ${filtered.length} inquiries (${duplicatesSet.size} duplicate entries)</div>`;
         tableContainer.innerHTML = html;
                 // Attach sorting event listeners to table headers
-        const headers = document.querySelectorAll('#tableContainer th');
-        const fieldNames = ['bank_name', 'bank_address', 'bank_phone', 'inquiry_date'];
-        headers.forEach((th, idx) => {
-            if (idx < fieldNames.length) {
-                th.style.cursor = 'pointer';
-                th.addEventListener('click', () => sortTable(fieldNames[idx]));
-            }
-        });
+           attachSortListener();
         const stats = computeCumulativeStats(currentTab === "hard" ? hardInquiries : []);
         summaryStatsDiv.innerHTML = `<div class="status-badge">📊 Cumulative Hard Inquires: 1m: ${stats.last1Month} | 2m: ${stats.last2Months} | 3m: ${stats.last3Months} | 6m: ${stats.last6Months} | 12m: ${stats.last12Months} | 24m:${stats.last24Months}</div>`;
         updateChart(stats);
