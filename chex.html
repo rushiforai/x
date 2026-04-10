@@ -277,43 +277,81 @@ function extractProfile(fullText) {
         dateOfBirth: ""
     };
 
+    // Helper to extract text between two labels
+    function extractBetween(text, startLabel, endLabel) {
+        const startIdx = text.search(new RegExp(startLabel, 'i'));
+        if (startIdx === -1) return "";
+        let startPos = startIdx + startLabel.length;
+        let endIdx = text.search(new RegExp(endLabel, 'i'));
+        if (endIdx === -1 || endIdx <= startPos) endIdx = text.length;
+        let extracted = text.substring(startPos, endIdx);
+        // Clean up: replace newlines with spaces, collapse multiple spaces
+        extracted = extracted.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+        return extracted;
+    }
+
     // CONSUMER ID
-    let match = fullText.match(/CONSUMER\s+ID\s+(\d+)/i);
-    if (match) profileData.consumerId = match[1];
+    let idMatch = fullText.match(/CONSUMER\s+ID\s+(\d+)/i);
+    if (idMatch) profileData.consumerId = idMatch[1];
 
-    // CONSUMER NAME - capture uppercase name until a period or "This report"
-    match = fullText.match(/CONSUMER\s+NAME\s+([A-Z][A-Z\s]+?)(?=\s*\.|\s+This report|\s+Personal Information)/i);
-    if (match) profileData.consumerName = match[1].trim();
-
-    // ASSOCIATED NAMES - capture until next field (Addresses:)
-    let assocMatch = fullText.match(/Associated\s+Names:\s*([^A]+?)(?=Addresses:)/i);
-    if (assocMatch) {
-        let assoc = assocMatch[1].replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-        profileData.associatedNames = assoc;
+    // CONSUMER NAME – capture from "CONSUMER NAME" until a period or "This report"
+    let nameStart = fullText.search(/CONSUMER\s+NAME/i);
+    if (nameStart !== -1) {
+        let afterName = fullText.substring(nameStart + 14); // skip "CONSUMER NAME"
+        let nameEnd = afterName.search(/\.|\s+This report|\s+Personal Information|\s+Associated Names/i);
+        if (nameEnd === -1) nameEnd = afterName.length;
+        let nameRaw = afterName.substring(0, nameEnd);
+        nameRaw = nameRaw.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+        // Remove any trailing punctuation
+        nameRaw = nameRaw.replace(/[.,;]$/, '');
+        profileData.consumerName = nameRaw;
     }
 
-    // ADDRESSES - capture until Phone Numbers:
-    let addrMatch = fullText.match(/Addresses:\s*([\s\S]*?)(?=Phone\s+Numbers:)/i);
-    if (addrMatch) {
-        let addr = addrMatch[1].replace(/\n/g, ', ').replace(/\s+/g, ' ').replace(/,\s*,/g, ',').trim();
-        profileData.addresses = addr;
+    // ASSOCIATED NAMES – capture from "Associated Names:" until "Addresses:"
+    let assocStart = fullText.search(/Associated\s+Names:/i);
+    if (assocStart !== -1) {
+        let afterAssoc = fullText.substring(assocStart + 17);
+        let assocEnd = afterAssoc.search(/Addresses:|Phone Numbers:|Email Addresses:|Date of Birth:/i);
+        if (assocEnd === -1) assocEnd = afterAssoc.length;
+        let assocRaw = afterAssoc.substring(0, assocEnd);
+        assocRaw = assocRaw.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+        profileData.associatedNames = assocRaw;
     }
 
-    // PHONE NUMBERS - capture until Email Addresses:
-    let phoneMatch = fullText.match(/Phone\s+Numbers:\s*([\s\S]*?)(?=Email\s+Addresses:)/i);
-    if (phoneMatch) {
-        let phones = phoneMatch[1].replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-        profileData.phoneNumbers = phones;
+    // ADDRESSES
+    let addrStart = fullText.search(/Addresses:/i);
+    if (addrStart !== -1) {
+        let afterAddr = fullText.substring(addrStart + 9);
+        let addrEnd = afterAddr.search(/Phone\s+Numbers:|Email\s+Addresses:|Date\s+of\s+Birth:/i);
+        if (addrEnd === -1) addrEnd = afterAddr.length;
+        let addrRaw = afterAddr.substring(0, addrEnd);
+        addrRaw = addrRaw.replace(/\n/g, ', ').replace(/\s+/g, ' ').replace(/,\s*,/g, ',').trim();
+        profileData.addresses = addrRaw;
     }
 
-    // EMAIL ADDRESSES - capture until Date of Birth: (excludes DOB)
-    let emailMatch = fullText.match(/Email\s+Addresses:\s*([^\n]+?)(?=\s*Date\s+of\s+Birth:)/i);
-    if (emailMatch) {
-        profileData.emailAddresses = emailMatch[1].trim();
-    } else {
-        // Fallback: just extract email pattern
-        let simpleEmail = fullText.match(/Email\s+Addresses:\s*([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i);
-        if (simpleEmail) profileData.emailAddresses = simpleEmail[1];
+    // PHONE NUMBERS
+    let phoneStart = fullText.search(/Phone\s+Numbers:/i);
+    if (phoneStart !== -1) {
+        let afterPhone = fullText.substring(phoneStart + 14);
+        let phoneEnd = afterPhone.search(/Email\s+Addresses:|Date\s+of\s+Birth:/i);
+        if (phoneEnd === -1) phoneEnd = afterPhone.length;
+        let phoneRaw = afterPhone.substring(0, phoneEnd);
+        phoneRaw = phoneRaw.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+        profileData.phoneNumbers = phoneRaw;
+    }
+
+    // EMAIL ADDRESSES
+    let emailStart = fullText.search(/Email\s+Addresses:/i);
+    if (emailStart !== -1) {
+        let afterEmail = fullText.substring(emailStart + 16);
+        let emailEnd = afterEmail.search(/Date\s+of\s+Birth:|Reported Information|\n\n/i);
+        if (emailEnd === -1) emailEnd = afterEmail.length;
+        let emailRaw = afterEmail.substring(0, emailEnd);
+        emailRaw = emailRaw.replace(/\n/g, ' ').trim();
+        // Extract actual email pattern
+        let emailMatch = emailRaw.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+        if (emailMatch) profileData.emailAddresses = emailMatch[0];
+        else profileData.emailAddresses = emailRaw;
     }
 
     // DATE OF BIRTH
