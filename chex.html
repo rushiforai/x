@@ -277,44 +277,58 @@ function extractProfile(fullText) {
         dateOfBirth: ""
     };
 
-    // CONSUMER ID: matches "CONSUMER ID" then a number (maybe on same line or next line)
-    let match = fullText.match(/CONSUMER\s+ID\s*[\r\n]+\s*(\d+)/i);
-    if (!match) match = fullText.match(/CONSUMER\s+ID\s+(\d+)/i);
-    if (match) profileData.consumerId = match[1];
+    // CONSUMER ID - looks for "CONSUMER ID" followed by a number
+    let idMatch = fullText.match(/CONSUMER\s+ID\s+(\d+)/i);
+    if (idMatch) profileData.consumerId = idMatch[1];
 
-    // CONSUMER NAME: captures text after "CONSUMER NAME" until next section (e.g., "This report" or "Personal Information")
-    match = fullText.match(/CONSUMER\s+NAME\s*[\r\n]+\s*([A-Z\s]+?)(?=\s*(?:This report|Personal Information|\.|$))/i);
-    if (match) profileData.consumerName = match[1].trim();
+    // CONSUMER NAME - looks for "CONSUMER NAME" then name until newline or period
+    let nameMatch = fullText.match(/CONSUMER\s+NAME\s+([A-Z\s]+?)(?=\s*(?:\.|This report|Personal Information))/i);
+    if (nameMatch) profileData.consumerName = nameMatch[1].trim();
 
-    // ASSOCIATED NAMES: captures everything after "Associated Names:" until the next line that starts with a field name
-    let assocMatch = fullText.match(/Associated\s+Names:\s*([^]*?)(?=\n\s*(?:Addresses:|Phone Numbers:|Email Addresses:|Date of Birth:|$))/i);
+    // ASSOCIATED NAMES - extract between "Associated Names:" and "Addresses:"
+    let assocMatch = fullText.match(/Associated\s+Names:\s*([^A]+?)(?=Addresses:)/i);
     if (assocMatch) {
-        let names = assocMatch[1].replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-        profileData.associatedNames = names;
+        let assoc = assocMatch[1].replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+        profileData.associatedNames = assoc;
     }
 
-    // ADDRESSES: captures multi-line until next section
-    let addrMatch = fullText.match(/Addresses:\s*([\s\S]*?)(?=\n\s*(?:Phone Numbers:|Email Addresses:|Date of Birth:|$))/i);
+    // ADDRESSES - extract between "Addresses:" and "Phone Numbers:"
+    let addrMatch = fullText.match(/Addresses:\s*([\s\S]*?)(?=Phone\s+Numbers:)/i);
     if (addrMatch) {
         let addr = addrMatch[1]
             .replace(/\n/g, ', ')
             .replace(/\s+/g, ' ')
             .replace(/,\s*,/g, ',')
             .trim();
+        // Remove any trailing "Phone Numbers:" leftover
+        addr = addr.replace(/Phone\s+Numbers:.*$/, '').trim();
         profileData.addresses = addr;
     }
 
-    // PHONE NUMBERS: captures until next section or semicolon terminated
-    match = fullText.match(/Phone\s+Numbers:\s*([^;\n]+(?:;[^;\n]+)*);?/i);
-    if (match) profileData.phoneNumbers = match[1].trim() + ';';
+    // PHONE NUMBERS - extract between "Phone Numbers:" and "Email Addresses:"
+    let phoneMatch = fullText.match(/Phone\s+Numbers:\s*([^E]+?)(?=Email\s+Addresses:)/i);
+    if (phoneMatch) {
+        let phones = phoneMatch[1].replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+        profileData.phoneNumbers = phones;
+    }
 
-    // EMAIL ADDRESSES: captures until newline
-    match = fullText.match(/Email\s+Addresses:\s*([^\n]+)/i);
-    if (match) profileData.emailAddresses = match[1].trim();
+    // EMAIL ADDRESSES - extract between "Email Addresses:" and "Date of Birth:"
+    let emailMatch = fullText.match(/Email\s+Addresses:\s*([^\n]+)/i);
+    if (emailMatch) {
+        profileData.emailAddresses = emailMatch[1].trim();
+    }
 
-    // DATE OF BIRTH: captures date after "Date of Birth:"
-    match = fullText.match(/Date\s+of\s+Birth:\s*([\d\/]+)/i);
-    if (match) profileData.dateOfBirth = match[1].trim();
+    // DATE OF BIRTH - extract after "Date of Birth:"
+    let dobMatch = fullText.match(/Date\s+of\s+Birth:\s*([\d\/]+)/i);
+    if (dobMatch) {
+        profileData.dateOfBirth = dobMatch[1].trim();
+    }
+
+    // Fallback: if consumer name is empty, try to get it from "CONSUMER NAME" with different pattern
+    if (!profileData.consumerName) {
+        let fallbackName = fullText.match(/CONSUMER\s+NAME\s+([A-Z\s]+)(?=\s*\.)/i);
+        if (fallbackName) profileData.consumerName = fallbackName[1].trim();
+    }
 
     return profileData;
 }
