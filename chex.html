@@ -25,6 +25,8 @@
         .btn { background: var(--md-primary); color: white; border: none; padding: 10px 24px; border-radius: 100px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
         .btn-outline { background: transparent; border: 1px solid var(--md-outline); color: var(--md-primary); }
         .btn-outline:hover { background: #ede7f6; }
+        .btn-danger { background: #dc3545; color: white; border: none; }
+        .btn-danger:hover { background: #b02a37; }
         .status-badge { background: #e8def8; border-radius: 100px; padding: 6px 12px; font-size: 0.75rem; color: #381e72; display: inline-flex; align-items: center; gap: 6px; }
         .progress-bar-container { margin: 16px 0; background: #e3e1e6; border-radius: 100px; height: 8px; overflow: hidden; }
         .progress-bar { width: 0%; height: 100%; background: var(--md-primary); transition: width 0.2s; }
@@ -77,6 +79,7 @@
         <div class="action-group">
             <button id="saveSessionBtn" class="btn-outline btn"><span class="material-symbols-outlined">save</span> Save Session</button>
             <button id="loadSessionBtn" class="btn-outline btn"><span class="material-symbols-outlined">restore</span> Load Last Session</button>
+            <button id="deleteSessionBtn" class="btn-danger btn"><span class="material-symbols-outlined">delete</span> Delete Saved Sessions</button>
             <button id="exportExcelBtn" class="btn-outline btn"><span class="material-symbols-outlined">table_view</span> Export Excel</button>
         </div>
     </div>
@@ -151,9 +154,9 @@
     let scoreHistory = [];
     let currentFilterBank = "", currentFilterDate = "";
     let simExtraHard = 0, simExtraHard12 = 0;
-    let calibFactor = 1.00;   // Default fine-tuned from your data
+    let calibFactor = 1.00;
 
-    // DOM elements (same as before)
+    // DOM elements
     const pdfInput = document.getElementById('pdfInput');
     const uploadZone = document.getElementById('uploadZone');
     const statusSpan = document.getElementById('statusText');
@@ -163,6 +166,7 @@
     const progressBar = document.getElementById('progressBar');
     const saveBtn = document.getElementById('saveSessionBtn');
     const loadBtn = document.getElementById('loadSessionBtn');
+    const deleteSessionBtn = document.getElementById('deleteSessionBtn');
     const exportExcelBtn = document.getElementById('exportExcelBtn');
     const filterBankInput = document.getElementById('filterBank');
     const filterDateInput = document.getElementById('filterDate');
@@ -203,7 +207,7 @@
         return cleaned;
     }
 
-    // ----- Improved scoring algorithm -----
+    // Improved scoring algorithm
     function calculateChexScore(hardArray, extraHard6=0, extraHard12=0) {
         const now = new Date(); now.setHours(0,0,0,0);
         const sixMonthsAgo = new Date(now); sixMonthsAgo.setMonth(now.getMonth() - 6);
@@ -220,7 +224,6 @@
         rawHard6 += extraHard6;
         rawHard12 += extraHard12;
 
-        // Unique banks within 6 months (for duplicate bonus)
         const uniqueBanks6mo = new Set();
         hardArray.forEach(inq => {
             let dateObj = inq._dateObj || (inq.inquiry_date ? new Date(normalizeDate(inq.inquiry_date)) : null);
@@ -228,35 +231,25 @@
                 uniqueBanks6mo.add(inq.bank_name);
             }
         });
-        let uniqueHard6 = uniqueBanks6mo.size + extraHard6; // assume extra are new banks
+        let uniqueHard6 = uniqueBanks6mo.size + extraHard6;
         let duplicateCount = rawHard6 - uniqueHard6;
-        // Piecewise duplicate bonus: higher benefit for low counts (rate shopping), lower for high volume
         let duplicateBonus = 0;
         if (duplicateCount > 0) {
             if (rawHard6 <= 3) {
-                duplicateBonus = duplicateCount * 20;   // PDF5 benefits more
+                duplicateBonus = duplicateCount * 20;
             } else {
-                duplicateBonus = duplicateCount * 12;   // PDF6 more conservative
+                duplicateBonus = duplicateCount * 12;
             }
             duplicateBonus = Math.min(duplicateBonus, 60);
         }
 
-        // Base deduction lookup using (uniqueHard6, rawHard12) – more accurate
-        // Derived from your actual scores:
-        // PDF1-4: uniqueHard6=1, rawHard12=4 → deduction = 899 - 635 = 264
-        // PDF7:   uniqueHard6=3, rawHard12=6 → deduction = 899 - 597 = 302
-        // PDF6:   uniqueHard6=3, rawHard12=8 → deduction = 899 - 597 + duplicateBonus (24) = 326
-        // PDF5:   uniqueHard6=2, rawHard12=6 → deduction = 899 - 632 + duplicateBonus (20) = 287
-        // We'll use a simple 2D interpolation
         function getBaseDeduction(unique6, raw12) {
-            // Known points (unique6, raw12) -> deduction (before duplicate bonus)
             const points = [
                 { u6:1, r12:4, ded:264 },
                 { u6:2, r12:6, ded:287 },
                 { u6:3, r12:6, ded:302 },
                 { u6:3, r12:8, ded:326 }
             ];
-            // Find nearest by Euclidean distance
             let best = points[0];
             let minDist = Infinity;
             for (let p of points) {
@@ -288,12 +281,12 @@
         } else {
             simResultDiv.innerHTML = "";
         }
-        if (simExtra6===0 && simExtra12===0 && calibFactor===1.00 && hardInquiries.length) {
+        if (simExtra6===0 && simExtra12===0 && Math.abs(calibFactor - 1.00) < 0.01 && hardInquiries.length) {
             addToHistory(score);
         }
     }
 
-    // History (unchanged)
+    // History functions
     function addToHistory(score) {
         const now = new Date();
         const label = now.toLocaleTimeString();
@@ -314,7 +307,7 @@
     }
     function clearHistory() { scoreHistory = []; updateHistoryChart(); setStatus("History cleared"); }
 
-    // Duplicate & merge (display only)
+    // Duplicate detection & merge
     function findDuplicates(inquiries) {
         const map = new Map();
         inquiries.forEach((inq, idx) => { const key = `${inq.bank_name}|${inq.bank_phone}`; if (!map.has(key)) map.set(key, []); map.get(key).push(idx); });
@@ -359,7 +352,7 @@
             if (currentTab === "soft") html += `<td>${escapeHtml(inq.original_inquirer || '')}</td>`;
             html += `</tr>`;
         });
-        html += `</tbody></table><div>Total: ${filtered.length} inquiries (${duplicatesSet.size} duplicate entries)</div>`;
+        html += `</tbody><table><div>Total: ${filtered.length} inquiries (${duplicatesSet.size} duplicate entries)</div>`;
         tableContainer.innerHTML = html;
         const stats = computeCumulativeStats(currentTab === "hard" ? hardInquiries : []);
         summaryStatsDiv.innerHTML = `<div class="status-badge">📊 Cumulative Hard: 1m:${stats.last1Month} | 2m:${stats.last2Months} | 3m:${stats.last3Months} | 6m:${stats.last6Months} | 12m:${stats.last12Months} | 24m:${stats.last24Months}</div>`;
@@ -379,7 +372,7 @@
 
     function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
 
-    // PDF extraction (same robust functions)
+    // PDF extraction (unchanged, robust)
     async function extractFromPDF(arrayBuffer) {
         const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
         let fullText = '';
@@ -453,7 +446,7 @@
         } catch(err) { showError(err.message); hideProgress(); }
     }
 
-    // Session & export (unchanged)
+    // Session management with delete functionality
     function saveSession() {
         const data = { hard: hardInquiries, soft: softInquiries, scoreHistory, timestamp: new Date().toISOString() };
         localStorage.setItem('creditInquirySession', JSON.stringify(data));
@@ -461,7 +454,7 @@
     }
     function loadSession() {
         const raw = localStorage.getItem('creditInquirySession');
-        if(!raw) { showError("No saved session."); return; }
+        if(!raw) { showError("No saved session found."); return; }
         try {
             const data = JSON.parse(raw);
             hardInquiries = data.hard || []; softInquiries = data.soft || [];
@@ -475,6 +468,25 @@
             setStatus(`Session loaded (${hardInquiries.length} hard, ${softInquiries.length} soft)`);
         } catch(e) { showError("Failed load session"); }
     }
+    function deleteSession() {
+        if (confirm("Are you sure you want to delete all saved sessions? This will also clear any loaded data from this session. The current PDF data will be lost.")) {
+            localStorage.removeItem('creditInquirySession');
+            // Optionally reset the current state to empty
+            hardInquiries = [];
+            softInquiries = [];
+            scoreHistory = [];
+            currentFilterBank = ""; currentFilterDate = "";
+            filterBankInput.value = ""; filterDateInput.value = "";
+            simExtraHard=0; simExtraHard12=0;
+            simExtraHardInput.value="0"; simExtraHard12Input.value="0";
+            renderCurrentTab();
+            updateHistoryChart();
+            resultsCard.classList.add('hidden');
+            setStatus("All saved sessions deleted. You can upload a new PDF.");
+            clearError();
+        }
+    }
+
     function exportToExcel() {
         const hardSheet = XLSX.utils.json_to_sheet(hardInquiries.map(({_dateObj, ...rest}) => rest));
         const softSheet = XLSX.utils.json_to_sheet(softInquiries.map(({_dateObj, ...rest}) => rest));
@@ -515,6 +527,7 @@
     pdfInput.addEventListener('change', (e) => { if(e.target.files.length) processPDF(e.target.files[0]); });
     saveBtn.addEventListener('click', saveSession);
     loadBtn.addEventListener('click', loadSession);
+    deleteSessionBtn.addEventListener('click', deleteSession);
     exportExcelBtn.addEventListener('click', exportToExcel);
     clearFiltersBtn.addEventListener('click', () => { currentFilterBank=""; currentFilterDate=""; filterBankInput.value=""; filterDateInput.value=""; renderCurrentTab(); });
     filterBankInput.addEventListener('input', (e) => { currentFilterBank = e.target.value; renderCurrentTab(); });
