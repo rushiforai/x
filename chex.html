@@ -504,7 +504,7 @@ function sortTableByName(direction) {
         chexRiskSpan.innerText = riskLevel;
         const totalExtra = extras.m1 + extras.m2 + extras.m3 + extras.m6 + extras.m12;
         if (totalExtra > 0) {
-            simResultDiv.innerHTML = `<span class="status-badge">🔮 Sim: +${extras.m1}/1m, +${extras.m2}/2m, +${extras.m3}/3m, +${extras.m6}/6m, +${extras.m12}/12m → Score ${score} (${riskLevel})</span>`;
+            simResultDiv.innerHTML = `<span class="status-badge">🔮 Simulated Score ${score} (${riskLevel})</span>`;
         } else {
             simResultDiv.innerHTML = "";
         }
@@ -709,7 +709,7 @@ function sortTableByName(direction) {
             renderProfile();
             renderCurrentTab();
             resultsCard.classList.remove('hidden');
-            setStatus(`Loaded: ${hardInquiries.length} hard, ${softInquiries.length} soft (soft ignored for score)`);
+            setStatus(`Loaded: ${hardInquiries.length} Hard Inquiries, ${softInquiries.length} Soft Inquiries`);
             hideProgress();
             setTimeout(() => updateHistoryChart(), 100);
         } catch(err) { showError(err.message); hideProgress(); }
