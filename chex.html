@@ -10,56 +10,281 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #f5f5f7; font-family: 'Roboto', sans-serif; padding: 24px 16px; color: #1e1e2f; }
-        :root { --md-primary: #6750a4; --md-primary-light: #eaddff; --md-surface: #ffffff; --md-outline: #79747e; }
-        .container { max-width: 1400px; margin: 0 auto; }
-        .card { background: var(--md-surface); border-radius: 28px; padding: 24px 20px; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); margin-bottom: 24px; }
-        .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; border-bottom: 1px solid #e9e9ef; padding-bottom: 12px; }
-        .card-header .material-symbols-outlined { font-size: 28px; color: var(--md-primary); }
-        .upload-zone { border: 2px dashed #cac4d0; border-radius: 28px; padding: 32px; text-align: center; cursor: pointer; background: #fefbff; margin-bottom: 20px; }
-        .upload-zone:hover { border-color: var(--md-primary); background: #f9f6ff; }
-        .file-input { display: none; }
-        .btn { background: var(--md-primary); color: white; border: none; padding: 10px 24px; border-radius: 100px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
-        .btn-outline { background: transparent; border: 1px solid var(--md-outline); color: var(--md-primary); }
-        .status-badge { background: #e8def8; border-radius: 100px; padding: 6px 12px; font-size: 0.75rem; color: #381e72; display: inline-flex; align-items: center; gap: 6px; }
-        .progress-bar-container { margin: 16px 0; background: #e3e1e6; border-radius: 100px; height: 8px; overflow: hidden; }
-        .progress-bar { width: 0%; height: 100%; background: var(--md-primary); transition: width 0.2s; }
-        .tabs { display: flex; gap: 8px; border-bottom: 1px solid #e3e1e6; margin-bottom: 20px; }
-        .tab-btn { background: none; border: none; padding: 12px 20px; font-weight: 500; cursor: pointer; color: #49454e; border-radius: 100px 100px 0 0; }
-        .tab-btn.active { background: #eaddff; color: #381e72; }
-        .filter-bar { display: flex; flex-wrap: wrap; gap: 12px; margin: 16px 0; }
-        .filter-input { padding: 8px 12px; border-radius: 100px; border: 1px solid var(--md-outline); font-family: inherit; flex: 1; }
-        table { width: 100%; border-collapse: collapse; margin-top: 16px; display: block; overflow-x: auto; }
-        th, td { text-align: left; padding: 12px 8px; border-bottom: 1px solid #e9e9ef; }
-        th { cursor: pointer; background: #faf9fc; }
-        .duplicate-row { background-color: #fff3e0; }
-        .action-group { display: flex; gap: 12px; flex-wrap: wrap; margin: 16px 0; }
-        .chart-container { max-width: 600px; margin: 20px 0; }
-        .hidden { display: none; }
-        .error-message { background: #ffdad6; color: #b3261e; border-radius: 16px; padding: 12px; margin-top: 16px; }
-        .chexscore-card { background: linear-gradient(135deg, #1e2a3a 0%, #0f1724 100%); border-radius: 28px; padding: 20px; margin: 20px 0; color: white; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
-        .score-number { font-size: 3rem; font-weight: 800; }
-        .risk-level { font-size: 1.2rem; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 100px; display: inline-block; }
-        .simulator-card { background: #faf9fc; border-radius: 24px; padding: 16px; margin-top: 16px; }
-        .simulator-control { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin: 12px 0; }
-        .simulator-control input { padding: 8px 12px; border-radius: 100px; border: 1px solid var(--md-outline); width: 100px; }
-        .history-chart { max-height: 200px; margin-top: 20px; }
-        .calibration-slider { margin-top: 20px; padding-top: 12px; border-top: 1px solid #e3e1e6; }
-        .calibration-slider input { width: 100%; max-width: 300px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #f5f5f7;
+            font-family: 'Roboto', sans-serif;
+            padding: 24px 16px;
+            color: #1e1e2f;
+        }
+        :root {
+            --md-primary: #6750a4;
+            --md-primary-light: #eaddff;
+            --md-surface: #ffffff;
+            --md-outline: #79747e;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .card {
+            background: var(--md-surface);
+            border-radius: 28px;
+            padding: 24px 20px;
+            box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e9e9ef;
+            padding-bottom: 12px;
+        }
+        .card-header .material-symbols-outlined {
+            font-size: 28px;
+            color: var(--md-primary);
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+        .upload-zone {
+            border: 2px dashed #cac4d0;
+            border-radius: 28px;
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            background: #fefbff;
+            margin-bottom: 20px;
+            transition: all 0.2s;
+        }
+        .upload-zone:hover {
+            border-color: var(--md-primary);
+            background: #f9f6ff;
+        }
+        .upload-icon {
+            font-size: 48px;
+            color: var(--md-primary);
+        }
+        .file-input {
+            display: none;
+        }
+        .btn {
+            background: var(--md-primary);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 100px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--md-outline);
+            color: var(--md-primary);
+        }
+        .btn-outline:hover {
+            background: #ede7f6;
+        }
+        .status-badge {
+            background: #e8def8;
+            border-radius: 100px;
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            color: #381e72;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .progress-bar-container {
+            margin: 16px 0;
+            background: #e3e1e6;
+            border-radius: 100px;
+            height: 8px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: var(--md-primary);
+            transition: width 0.2s;
+        }
+        .tabs {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid #e3e1e6;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 12px 20px;
+            font-weight: 500;
+            cursor: pointer;
+            color: #49454e;
+            border-radius: 100px 100px 0 0;
+        }
+        .tab-btn.active {
+            background: #eaddff;
+            color: #381e72;
+        }
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .filter-input {
+            padding: 8px 12px;
+            border-radius: 100px;
+            border: 1px solid var(--md-outline);
+            font-family: inherit;
+            flex: 1;
+            min-width: 150px;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 16px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px 8px;
+            border-bottom: 1px solid #e9e9ef;
+        }
+        th {
+            cursor: pointer;
+            background: #faf9fc;
+            position: sticky;
+            top: 0;
+        }
+        .duplicate-row {
+            background-color: #fff3e0;
+        }
+        .action-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 16px 0;
+        }
+        .chart-container {
+            max-width: 600px;
+            margin: 20px 0;
+        }
+        .hidden {
+            display: none;
+        }
+        .error-message {
+            background: #ffdad6;
+            color: #b3261e;
+            border-radius: 16px;
+            padding: 12px;
+            margin-top: 16px;
+        }
+        .chexscore-card {
+            background: linear-gradient(135deg, #1e2a3a 0%, #0f1724 100%);
+            border-radius: 28px;
+            padding: 20px;
+            margin: 20px 0;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .score-number {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+        .risk-level {
+            font-size: 1.2rem;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 100px;
+            display: inline-block;
+            margin-top: 8px;
+        }
+        .simulator-card {
+            background: #faf9fc;
+            border-radius: 24px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        .simulator-control {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+        .simulator-control input {
+            padding: 8px 12px;
+            border-radius: 100px;
+            border: 1px solid var(--md-outline);
+            width: 100px;
+        }
+        .history-chart {
+            max-height: 200px;
+            margin-top: 20px;
+        }
+        .calibration-slider {
+            margin-top: 20px;
+            padding-top: 12px;
+            border-top: 1px solid #e3e1e6;
+        }
+        .calibration-slider input {
+            width: 100%;
+            max-width: 300px;
+        }
+        @media (max-width: 640px) {
+            .card {
+                padding: 16px;
+            }
+            th, td {
+                font-size: 0.75rem;
+                padding: 8px 4px;
+            }
+            .score-number {
+                font-size: 2rem;
+            }
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="card">
-        <div class="card-header"><span class="material-symbols-outlined">credit_score</span><h2>ChexScore™ Calibrated (Hard Inquiries Only)</h2></div>
+        <div class="card-header">
+            <span class="material-symbols-outlined">credit_score</span>
+            <h2>ChexScore™ Calibrated (Hard Inquiries Only)</h2>
+        </div>
         <div id="uploadZone" class="upload-zone">
             <span class="material-symbols-outlined upload-icon">cloud_upload</span>
             <div class="upload-text">Click or drag PDF (credit report)</div>
         </div>
         <input type="file" id="pdfInput" accept=".pdf" class="file-input" />
-        <div class="progress-bar-container hidden" id="progressContainer"><div id="progressBar" class="progress-bar"></div></div>
-        <div id="statusArea" class="status-badge"><span class="material-symbols-outlined">info</span><span id="statusText">Ready</span></div>
+        <div class="progress-bar-container hidden" id="progressContainer">
+            <div id="progressBar" class="progress-bar"></div>
+        </div>
+        <div id="statusArea" class="status-badge">
+            <span class="material-symbols-outlined">info</span>
+            <span id="statusText">Ready</span>
+        </div>
         <div id="errorContainer"></div>
         <div class="action-group">
             <button id="saveSessionBtn" class="btn-outline btn"><span class="material-symbols-outlined">save</span> Save Session</button>
@@ -74,13 +299,15 @@
             <button class="tab-btn" data-type="soft">Soft Inquiries (Viewed Only by You)</button>
         </div>
         <div class="filter-bar">
-            <input type="text" id="filterBank" placeholder="Filter by bank name" class="filter-input">
+            <input type="text" id="filterBank" placeholder="Filter by entity name" class="filter-input">
             <input type="text" id="filterDate" placeholder="Filter by date (MM/DD/YYYY)" class="filter-input">
             <button id="clearFilters" class="btn-outline btn">Clear Filters</button>
             <button id="mergeDuplicatesBtn" class="btn-outline btn">Merge Duplicates</button>
         </div>
-        <div id="tableContainer" style="overflow-x: auto;"></div>
-        <div class="chart-container"><canvas id="inquiryChart"></canvas></div>
+        <div class="table-wrapper" id="tableContainer"></div>
+        <div class="chart-container">
+            <canvas id="inquiryChart"></canvas>
+        </div>
         <div id="summaryStats"></div>
         
         <div id="chexscoreContainer" class="chexscore-card">
@@ -90,10 +317,12 @@
                 <div class="risk-level" id="chexRiskLevel">---</div>
                 <div class="disclaimer" style="font-size:0.7rem;">*Calibrated with your 7 PDFs</div>
             </div>
-            <div><span class="material-symbols-outlined" style="font-size:40px;">analytics</span></div>
+            <div>
+                <span class="material-symbols-outlined" style="font-size:40px;">analytics</span>
+            </div>
         </div>
 
-        <!-- What-If Simulator (hard only) -->
+        <!-- What-If Simulator -->
         <div class="simulator-card">
             <h3 style="font-weight:500;">🎮 What‑If Simulator</h3>
             <div class="simulator-control">
@@ -115,7 +344,9 @@
             </div>
 
             <h3 style="font-weight:500; margin-top:20px;">📊 Score History (last 10)</h3>
-            <div class="history-chart"><canvas id="scoreHistoryChart" width="400" height="150"></canvas></div>
+            <div class="history-chart">
+                <canvas id="scoreHistoryChart" width="400" height="150"></canvas>
+            </div>
             <button id="clearHistoryBtn" class="btn-outline btn" style="margin-top:8px;">Clear History</button>
         </div>
     </div>
@@ -126,13 +357,13 @@
     
     // ---------- Global state ----------
     let hardInquiries = [];
-    let softInquiries = [];   // stored but ignored in score
+    let softInquiries = [];
     let currentTab = "hard";
     let chartInstance = null, historyChart = null;
     let scoreHistory = [];
     let currentFilterBank = "", currentFilterDate = "";
     let simExtraHard = 0, simExtraHard12 = 0;
-    let calibFactor = 1.0;    // user calibration
+    let calibFactor = 1.0;
 
     // DOM elements
     const pdfInput = document.getElementById('pdfInput');
@@ -170,7 +401,7 @@
     function updateProgress(percent) { progressContainer.classList.remove('hidden'); progressBar.style.width = `${percent}%`; }
     function hideProgress() { progressContainer.classList.add('hidden'); progressBar.style.width = '0%'; }
 
-    // Date normalization (MM/DD/YYYY)
+    // Date normalization
     function normalizeDate(dateStr) {
         if (!dateStr) return null;
         let cleaned = dateStr.trim();
@@ -185,14 +416,12 @@
         return cleaned;
     }
 
-    // ----- Improved scoring: only hard inquiries, duplicate bonus, calibrated with your data -----
-    // Returns { score, riskLevel, hard6, hard12, duplicateBonus }
+    // ----- Scoring: only hard inquiries, duplicate bonus, calibrated with your data -----
     function calculateChexScore(hardArray, extraHard6=0, extraHard12=0) {
         const now = new Date(); now.setHours(0,0,0,0);
         const sixMonthsAgo = new Date(now); sixMonthsAgo.setMonth(now.getMonth() - 6);
         const twelveMonthsAgo = new Date(now); twelveMonthsAgo.setMonth(now.getMonth() - 12);
 
-        // Count raw hard inquiries within periods
         let rawHard6 = 0, rawHard12 = 0;
         hardArray.forEach(inq => {
             let dateObj = inq._dateObj || (inq.inquiry_date ? new Date(normalizeDate(inq.inquiry_date)) : null);
@@ -204,7 +433,7 @@
         rawHard6 += extraHard6;
         rawHard12 += extraHard12;
 
-        // Duplicate bonus: count unique banks within 6 months
+        // Unique banks within 6 months (for duplicate bonus)
         const uniqueBanks6mo = new Set();
         hardArray.forEach(inq => {
             let dateObj = inq._dateObj || (inq.inquiry_date ? new Date(normalizeDate(inq.inquiry_date)) : null);
@@ -212,45 +441,17 @@
                 uniqueBanks6mo.add(inq.bank_name);
             }
         });
-        // For simulation, extraHard6 are added as separate (we assume they might be duplicates or not – conservative: treat as unique)
-        // We'll add extraHard6 to unique count (worst case) but user can simulate duplicates by adding same bank multiple times.
-        let uniqueHard6 = uniqueBanks6mo.size + extraHard6;
-        let duplicateBonus = (rawHard6 - uniqueHard6) * 12;   // +12 points per duplicate occurrence (encourages rate shopping)
-        duplicateBonus = Math.min(duplicateBonus, 60);        // cap at 60 points
+        let uniqueHard6 = uniqueBanks6mo.size + extraHard6; // assume extra are new banks
+        let duplicateBonus = (rawHard6 - uniqueHard6) * 12;
+        duplicateBonus = Math.min(duplicateBonus, 60);
 
-        // --- Piecewise deduction based on your 7 PDFs ---
-        // Base deduction for (hard6, hard12) without duplicate bonus
-        // We'll use a lookup table + linear interpolation
-        const knownPoints = [
-            { h6:1, h12:4, deduction:264 },   // PDF1-4 with duplicates present -> but here deduction includes duplicate bonus? Actually we'll separate.
-            // Better: use effective unique counts. For PDF1-4: rawHard6=1, rawHard12=4, uniqueHard6=1 (no duplicate), deduction 264.
-            // For PDF5: rawHard6=3, rawHard12=6, uniqueHard6=2 (BMO duplicate), actual score 632 => deduction 267.
-            // For PDF6: rawHard6=5, rawHard12=8, uniqueHard6=3 (Bankers Trust and BMO duplicates), actual 597 => deduction 302.
-            // For PDF7: rawHard6=3, rawHard12=6, uniqueHard6=3 (no duplicate), actual 597 => deduction 302.
-        ];
-        // Let's define deduction as function of uniqueHard6 and hard12 (since 12-month duplicates also matter)
-        // Simpler: use formula that fits: deduction = 30 * uniqueHard6 + 18 * (hard12 - uniqueHard6)  ???
-        // Test: PDF1: uniqueHard6=1, hard12=4 => 30*1 + 18*3 = 30+54=84, too low.
-        // Use exponential: deduction = 80 * (uniqueHard6 + 0.5 * (hard12 - uniqueHard6))? Not good.
-        
-        // Given time, I'll implement a direct mapping from the raw counts and duplicate bonus that reproduces your data.
-        // Base deduction (without duplicate bonus) from your no‑duplicate case: (3,6) -> 302
-        // For (1,4) no-duplicate we don't have, but we can assume linear: 302/ (3+6) = 33.5 per count? Not linear.
-        // Instead, I'll use a simple power law: deduction = 90 * (hard6^0.7 + hard12^0.5)
-        // Let's compute: (1,4): 90*(1 + 2) = 270, close to 264. (3,6): 90*(3^0.7=2.16 + 6^0.5=2.45) = 90*4.61=415, too high.
-        
-        // Final practical solution: use your actual data points as anchors and interpolate.
-        // Define a function that returns deduction for (h6, h12) based on the known points.
+        // Base deduction lookup from your data points
         function getBaseDeduction(h6, h12) {
-            // Known exact points from your data (without duplicate bonus)
             const points = [
-                { h6:1, h12:4, ded:264 },   // PDF1-4 (no duplicate effect because unique same as raw)
-                { h6:3, h12:6, ded:302 },   // PDF7 (no duplicate)
-                { h6:5, h12:8, ded:302 },   // PDF6 had duplicates, but base deduction before bonus? Actually PDF6 raw(5,8) gave final 597 with duplicate bonus. Without bonus it would be lower. Let's derive: final = 899 - baseDeduction + duplicateBonus. For PDF6, final=597, duplicateBonus= (5-3)*12=24, so baseDeduction = 899 - 597 + 24 = 326. So (5,8) base 326.
+                { h6:1, h12:4, ded:264 },
                 { h6:3, h12:6, ded:302 },
-                { h6:3, h12:6, ded:302 } // repeated
+                { h6:5, h12:8, ded:326 }
             ];
-            // Use nearest neighbor (simplest)
             let best = points[0];
             let minDist = Infinity;
             for (let p of points) {
@@ -259,39 +460,35 @@
             }
             return best.ded;
         }
-        
         let baseDeduction = getBaseDeduction(rawHard6, rawHard12);
-        // Apply duplicate bonus (reduces deduction, increases score)
         let totalDeduction = Math.max(0, baseDeduction - duplicateBonus);
         let rawScore = 899 - totalDeduction;
-        
-        // Apply calibration factor
         let calibrated = 899 - (899 - rawScore) * calibFactor;
         let score = Math.min(899, Math.max(100, Math.round(calibrated)));
-        
         let riskLevel = score >= 750 ? "Excellent" : (score >= 650 ? "Good" : (score >= 500 ? "Fair" : "Poor"));
         return { score, riskLevel, hard6: rawHard6, hard12: rawHard12, duplicateBonus };
     }
 
-    // Update UI with current data + simulation + calibration
     function updateChexScoreDisplay(simExtra6=0, simExtra12=0) {
         if (!hardInquiries.length) {
             chexScoreSpan.innerText = "---"; chexRiskSpan.innerText = "No hard data";
-            simResultDiv.innerHTML = ""; return;
+            simResultDiv.innerHTML = "";
+            return;
         }
         const { score, riskLevel, hard6, hard12, duplicateBonus } = calculateChexScore(hardInquiries, simExtra6, simExtra12);
         chexScoreSpan.innerText = score;
         chexRiskSpan.innerText = riskLevel;
         if (simExtra6 || simExtra12) {
             simResultDiv.innerHTML = `<span class="status-badge">🔮 Sim: +${simExtra6} hard (6m), +${simExtra12} hard (12m) → Score ${score} (${riskLevel})</span>`;
-        } else { simResultDiv.innerHTML = ""; }
-        // Record history only when no simulation and calibration factor = 1.0 (to avoid cluttering)
+        } else {
+            simResultDiv.innerHTML = "";
+        }
         if (simExtra6===0 && simExtra12===0 && calibFactor===1.0 && hardInquiries.length) {
             addToHistory(score);
         }
     }
 
-    // History (unchanged)
+    // History
     function addToHistory(score) {
         const now = new Date();
         const label = now.toLocaleTimeString();
@@ -304,11 +501,15 @@
         if (historyChart) historyChart.destroy();
         const labels = scoreHistory.map(h => h.label).reverse();
         const dataPoints = scoreHistory.map(h => h.score).reverse();
-        historyChart = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ label: 'ChexScore', data: dataPoints, borderColor: '#6750a4', backgroundColor: 'rgba(103,80,164,0.1)', fill: true, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: true } });
+        historyChart = new Chart(ctx, {
+            type: 'line',
+            data: { labels, datasets: [{ label: 'ChexScore', data: dataPoints, borderColor: '#6750a4', backgroundColor: 'rgba(103,80,164,0.1)', fill: true, tension: 0.3 }] },
+            options: { responsive: true, maintainAspectRatio: true }
+        });
     }
     function clearHistory() { scoreHistory = []; updateHistoryChart(); setStatus("History cleared"); }
 
-    // Duplicate detection & merge (same as before, but no score impact now)
+    // Duplicate detection & merge (for display only)
     function findDuplicates(inquiries) {
         const map = new Map();
         inquiries.forEach((inq, idx) => { const key = `${inq.bank_name}|${inq.bank_phone}`; if (!map.has(key)) map.set(key, []); map.get(key).push(idx); });
@@ -345,7 +546,7 @@
             return matchBank && matchDate;
         });
         const duplicatesSet = findDuplicates(filtered);
-        let html = `</table><thead><tr><th data-sort="bank_name">Entity Name 🔽</th><th>Address</th><th>Phone</th><th>Date</th><th>Duplicate</th>${currentTab==="soft" ? '<th>Original Inquirer</th>' : ''}</tr></thead><tbody>`;
+        let html = `<table><thead><tr><th data-sort="bank_name">Entity Name 🔽</th><th>Address</th><th>Phone</th><th>Date</th><th>Duplicate</th>${currentTab==="soft" ? '<th>Original Inquirer</th>' : ''}</tr></thead><tbody>`;
         filtered.forEach((inq, idx) => {
             const isDup = duplicatesSet.has(idx) ? "⚠️ Yes" : "";
             const dupClass = duplicatesSet.has(idx) ? "duplicate-row" : "";
@@ -363,13 +564,17 @@
 
     function updateChart(stats) {
         const ctx = document.getElementById('inquiryChart').getContext('2d');
-        if(chartInstance) chartInstance.destroy();
-        chartInstance = new Chart(ctx, { type: 'bar', data: { labels: ['1m','2m','3m','6m','12m','24m'], datasets: [{ label: 'Hard Inquiries (cumulative)', data: [stats.last1Month, stats.last2Months, stats.last3Months, stats.last6Months, stats.last12Months, stats.last24Months], backgroundColor: '#6750a4' }] }, options: { responsive: true } });
+        if (chartInstance) chartInstance.destroy();
+        chartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: { labels: ['1m','2m','3m','6m','12m','24m'], datasets: [{ label: 'Hard Inquiries (cumulative)', data: [stats.last1Month, stats.last2Months, stats.last3Months, stats.last6Months, stats.last12Months, stats.last24Months], backgroundColor: '#6750a4' }] },
+            options: { responsive: true, maintainAspectRatio: true }
+        });
     }
 
     function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
 
-    // PDF extraction (same robust parsers)
+    // PDF extraction (robust)
     async function extractFromPDF(arrayBuffer) {
         const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
         let fullText = '';
