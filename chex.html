@@ -277,26 +277,18 @@ function extractProfile(fullText) {
         dateOfBirth: ""
     };
 
-    // CONSUMER ID
-    let idMatch = fullText.match(/CONSUMER\s+ID\s+(\d+)/i);
-    if (idMatch) profileData.consumerId = idMatch[1];
-
-    // CONSUMER NAME - robust extraction
-    // Find the position of "CONSUMER NAME"
-    let nameIndex = fullText.search(/CONSUMER\s+NAME/i);
-    if (nameIndex !== -1) {
-        // Get text after the label
-        let afterName = fullText.substring(nameIndex + 13);
-        // Find the end of the name: stop at period, newline, "This report", or "Personal Information"
-        let endIndex = afterName.search(/\.|\n|\r|\s+This report|\s+Personal Information/i);
-        if (endIndex === -1) endIndex = afterName.length;
-        let rawName = afterName.substring(0, endIndex);
-        // Clean up: remove extra spaces, newlines, and trailing punctuation
-        rawName = rawName.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-        rawName = rawName.replace(/[.,;]$/, '');
-        if (rawName && rawName.length > 0) {
-            profileData.consumerName = rawName;
-        }
+    // CONSUMER ID and NAME from "Consumer ID 123 for NAME"
+    let idForMatch = fullText.match(/Consumer\s+ID\s+(\d+)\s+for\s+([A-Z\s]+?)(?=\s*\.|\s*\n|\s*This report)/i);
+    if (idForMatch) {
+        profileData.consumerId = idForMatch[1];
+        profileData.consumerName = idForMatch[2].trim();
+    } else {
+        // Fallback: separate ID and NAME
+        let idMatch = fullText.match(/Consumer\s+ID\s+(\d+)/i);
+        if (idMatch) profileData.consumerId = idMatch[1];
+        
+        let nameMatch = fullText.match(/Consumer\s+Name\s*:?\s*([A-Z\s]+?)(?=\s*\.|\s*\n|\s*This report)/i);
+        if (nameMatch) profileData.consumerName = nameMatch[1].trim();
     }
 
     // ASSOCIATED NAMES
