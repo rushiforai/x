@@ -350,24 +350,23 @@
             // First escape HTML to prevent XSS
             let escaped = escapeHtml(value);
             // Then replace semicolons followed by optional spaces with ;<br>
-            // But we need to keep the semicolon visible, so we replace ";" with ";<br>"
             return escaped.replace(/;\s*/g, '<br>');
         }
         
         const fields = [
-            { label: "Consumer ID", value: profile.consumerId, icon: "badge" },
-            { label: "Consumer Name", value: profile.consumerName, icon: "person" },
+            { label: "Consumer ID", value: escapeHtml(profile.consumerId), icon: "badge" },
+            { label: "Consumer Name", value: escapeHtml(profile.consumerName), icon: "person" },
             { label: "Associated Names", value: formatValue(profile.associatedNames), icon: "group" },
-            { label: "Addresses", value: profile.addresses, icon: "home" },
+            { label: "Addresses", value: escapeHtml(profile.addresses), icon: "home" },
             { label: "Phone Numbers", value: formatValue(profile.phoneNumbers), icon: "call" },
-            { label: "Email Addresses", value: profile.emailAddresses, icon: "email" },
-            { label: "Date of Birth", value: profile.dateOfBirth, icon: "cake" },
-            { label: "Date of Report", value: profile.dateOfReport, icon: "calendar_month" }
+            { label: "Email Addresses", value: escapeHtml(profile.emailAddresses), icon: "email" },
+            { label: "Date of Birth", value: escapeHtml(profile.dateOfBirth), icon: "cake" },
+            { label: "Date of Report", value: escapeHtml(profile.dateOfReport), icon: "calendar_month" }
         ];
         
         let html = '';
         fields.forEach(f => {
-            let displayValue = f.value === '—' ? '—' : f.value;
+            let displayValue = f.value === '' || f.value === '—' ? '—' : f.value;
             html += `
                 <div class="profile-field">
                     <div class="profile-label"><span class="material-symbols-outlined" style="font-size:16px; vertical-align:middle;">${f.icon}</span> ${f.label}</div>
@@ -377,6 +376,43 @@
         });
         profileContainer.innerHTML = html;
         profileCard.classList.remove('hidden');
+    }
+
+    function sortTable(field) {
+        let data = currentTab === "hard" ? hardInquiries : softInquiries;
+        let filtered = data.filter(inq => {
+            let matchBank = !currentFilterBank || inq.bank_name.toLowerCase().includes(currentFilterBank.toLowerCase());
+            let matchDate = !currentFilterDate || (inq.inquiry_date && inq.inquiry_date.includes(currentFilterDate));
+            return matchBank && matchDate;
+        });
+        filtered.sort((a, b) => {
+            let valA = (a[field] || '').toLowerCase();
+            let valB = (b[field] || '').toLowerCase();
+            if (valA < valB) return -1;
+            if (valA > valB) return 1;
+            return 0;
+        });
+        const duplicatesSet = findDuplicates(filtered);
+        let html = `<table><thead><tr><th>Name</th><th>Address</th><th>Phone</th><th>Date</th><th>Duplicate</th>`;
+        if (currentTab === "soft") html += '<th>Original Inquirer</th><th>Original Inquirer Address</th>';
+        html += `</thead><tbody>`;
+        filtered.forEach((inq, idx) => {
+            const isDup = duplicatesSet.has(idx) ? "Yes" : "";
+            const dupClass = duplicatesSet.has(idx) ? "duplicate-row" : "";
+            html += `<tr class="${dupClass}">
+                <td>${escapeHtml(inq.bank_name)}</td>
+                <td>${escapeHtml(inq.bank_address)}</td>
+                <td>${escapeHtml(inq.bank_phone)}</td>
+                <td>${inq.inquiry_date || ''}</td>
+                <td>${isDup}</td>`;
+            if (currentTab === "soft") {
+                html += `<td>${escapeHtml(inq.original_inquirer || '')}</td>`;
+                html += `<td>${escapeHtml(inq.original_inquirer_address || '')}</td>`;
+            }
+            html += `</tr>`;
+        });
+        html += `</tbody></table><div>Total: ${filtered.length} inquiries (${duplicatesSet.size} duplicate entries)</div>`;
+        tableContainer.innerHTML = html;
     }
 
     // Scoring algorithm (unchanged)
@@ -544,6 +580,15 @@
         });
         html += `</tbody></table><div>Total: ${filtered.length} inquiries (${duplicatesSet.size} duplicate entries)</div>`;
         tableContainer.innerHTML = html;
+                // Attach sorting event listeners to table headers
+        const headers = document.querySelectorAll('#tableContainer th');
+        const fieldNames = ['bank_name', 'bank_address', 'bank_phone', 'inquiry_date'];
+        headers.forEach((th, idx) => {
+            if (idx < fieldNames.length) {
+                th.style.cursor = 'pointer';
+                th.addEventListener('click', () => sortTable(fieldNames[idx]));
+            }
+        });
         const stats = computeCumulativeStats(currentTab === "hard" ? hardInquiries : []);
         summaryStatsDiv.innerHTML = `<div class="status-badge">📊 Cumulative Hard Inquires: 1m: ${stats.last1Month} | 2m: ${stats.last2Months} | 3m: ${stats.last3Months} | 6m: ${stats.last6Months} | 12m: ${stats.last12Months} | 24m:${stats.last24Months}</div>`;
         updateChart(stats);
