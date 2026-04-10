@@ -295,12 +295,18 @@
       }
 
       .chart-container {
-        max-width: 600px;
+        width: 100%;
         margin: 28px 0;
         background: white;
         padding: 16px;
         border-radius: 28px;
         box-shadow: var(--shadow-sm);
+      }
+      
+      #inquiryChart {
+        width: 100% !important;
+        height: auto !important;
+        max-height: 400px;
       }
 
       .hidden {
@@ -1324,7 +1330,7 @@ function attachSortListeners() {
             data: {
               labels: ['1m', '2m', '3m', '6m', '12m', '24m'],
               datasets: [{
-                label: 'Hard Inquiries (cumulative)',
+                label: 'Hard Inquiries',
                 data: [stats.last1Month, stats.last2Months, stats.last3Months, stats.last6Months, stats.last12Months, stats.last24Months],
                 backgroundColor: '#6750a4'
               }]
