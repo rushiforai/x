@@ -172,6 +172,29 @@
             color: #ccc;
             margin-top: 8px;
         }
+        .simulator-card {
+            background: #faf9fc;
+            border-radius: 24px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        .simulator-control {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+        .simulator-control input {
+            padding: 8px 12px;
+            border-radius: 100px;
+            border: 1px solid var(--md-outline);
+            width: 100px;
+        }
+        .history-chart {
+            max-height: 200px;
+            margin-top: 20px;
+        }
         @media (max-width: 640px) { .card { padding: 16px; } th, td { font-size: 0.8rem; } }
     </style>
 </head>
@@ -209,7 +232,7 @@
         <div class="chart-container"><canvas id="inquiryChart"></canvas></div>
         <div id="summaryStats"></div>
         
-        <!-- ChexScore Card (dynamic) -->
+        <!-- ChexScore Card -->
         <div id="chexscoreContainer" class="chexscore-card">
             <div>
                 <div style="font-size:0.9rem; opacity:0.8;">Estimated ChexScore™</div>
@@ -221,6 +244,27 @@
                 <div class="disclaimer" id="chexDisclaimer">*Educational model – not official ChexSystems score</div>
             </div>
         </div>
+
+        <!-- What-If Simulator & Score History -->
+        <div class="simulator-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap:wrap;">
+                <h3 style="font-weight:500;">📈 What‑If Simulator</h3>
+                <span class="status-badge">Try adding hypothetical hard inquiries</span>
+            </div>
+            <div class="simulator-control">
+                <label>Add extra hard inquiries (last 6 months):</label>
+                <input type="number" id="simExtraHard" value="0" min="0" max="20" step="1">
+                <button id="applySimulation" class="btn-outline btn">Simulate</button>
+                <button id="resetSimulation" class="btn-outline btn">Reset</button>
+            </div>
+            <div id="simResult" style="margin-top: 8px; font-size:0.9rem;"></div>
+            
+            <h3 style="font-weight:500; margin-top:20px;">📊 Score History (last 10 calculations)</h3>
+            <div class="history-chart">
+                <canvas id="scoreHistoryChart" width="400" height="150" style="max-height:180px; width:100%"></canvas>
+            </div>
+            <button id="clearHistoryBtn" class="btn-outline btn" style="margin-top:8px;">Clear History</button>
+        </div>
     </div>
 </div>
 
@@ -231,7 +275,10 @@
     let softInquiries = [];      // "Inquiries Viewed Only By You"
     let currentTab = "hard";
     let chartInstance = null;
+    let historyChart = null;
+    let scoreHistory = [];       // stores {score, timestamp, label}
     let currentFilterBank = "", currentFilterDate = "";
+    let simExtraHard = 0;        // for what-if
 
     // DOM elements
     const pdfInput = document.getElementById('pdfInput');
@@ -252,17 +299,20 @@
     const summaryStatsDiv = document.getElementById('summaryStats');
     const chexScoreSpan = document.getElementById('chexScoreValue');
     const chexRiskSpan = document.getElementById('chexRiskLevel');
+    const simExtraInput = document.getElementById('simExtraHard');
+    const applySimBtn = document.getElementById('applySimulation');
+    const resetSimBtn = document.getElementById('resetSimulation');
+    const simResultDiv = document.getElementById('simResult');
+    const clearHistoryBtn = document.getElementById('clearHistoryBtn');
 
-    // Helper: show error
+    // Helper functions
     function showError(msg) { errorDiv.innerHTML = `<div class="error-message"><span class="material-symbols-outlined">error</span> ${msg}</div>`; statusSpan.innerText = "Error"; }
     function clearError() { errorDiv.innerHTML = ""; }
     function setStatus(text, isLoading = false) { statusSpan.innerText = text; }
-
-    // Progress
     function updateProgress(percent) { progressContainer.classList.remove('hidden'); progressBar.style.width = `${percent}%`; }
     function hideProgress() { progressContainer.classList.add('hidden'); progressBar.style.width = '0%'; }
 
-    // Date normalization (MM/DD/YYYY)
+    // Date normalization
     function normalizeDate(dateStr) {
         if (!dateStr) return null;
         let cleaned = dateStr.trim();
@@ -285,14 +335,13 @@
         return null;
     }
 
-    // ---------- ChexScore Algorithm (proprietary, educational) ----------
-    function calculateChexScoreFromData(hardArray, softArray) {
+    // Core ChexScore calculation (with optional extra hard inquiries)
+    function calculateChexScoreFromData(hardArray, softArray, extraHard6mo = 0) {
         const now = new Date();
         now.setHours(0,0,0,0);
         const sixMonthsAgo = new Date(now); sixMonthsAgo.setMonth(now.getMonth() - 6);
         const twelveMonthsAgo = new Date(now); twelveMonthsAgo.setMonth(now.getMonth() - 12);
 
-        // Count hard inquiries in last 6 and 12 months
         let hard6 = 0, hard12 = 0;
         hardArray.forEach(inq => {
             let dateObj = inq._dateObj || (inq.inquiry_date ? new Date(normalizeDate(inq.inquiry_date)) : null);
@@ -300,8 +349,10 @@
             if (dateObj >= sixMonthsAgo) hard6++;
             if (dateObj >= twelveMonthsAgo) hard12++;
         });
+        hard6 += extraHard6mo;
+        hard12 += extraHard6mo; // extra adds to both 6 and 12 month counts
 
-        // Duplicate penalty: any bank name appears >=2 times in hard inquiries within last 6 months
+        // Duplicate penalty
         const bankCount6mo = new Map();
         hardArray.forEach(inq => {
             let dateObj = inq._dateObj || (inq.inquiry_date ? new Date(normalizeDate(inq.inquiry_date)) : null);
@@ -316,14 +367,12 @@
             if (count >= 2) { duplicatePenalty = 50; break; }
         }
 
-        // Hard deduction function: min(400, floor(70 * log2(count+1)))
         const hardDeduction = (count) => count === 0 ? 0 : Math.min(400, Math.floor(70 * Math.log2(count + 1)));
         let hardDeduction6 = hardDeduction(hard6);
         let hardDeduction12 = hardDeduction(hard12);
         let totalHardDeduction = Math.min(650, hardDeduction6 + hardDeduction12);
 
-        // Soft boost: ratio of soft to total (hard+soft)
-        let totalInquiries = hardArray.length + softArray.length;
+        let totalInquiries = hardArray.length + softArray.length + extraHard6mo;
         let softBoost = 0;
         if (totalInquiries > 0) {
             let ratio = softArray.length / totalInquiries;
@@ -338,23 +387,64 @@
         else if (score >= 500) riskLevel = "Fair";
         else riskLevel = "Poor";
 
-        return { score, riskLevel, hard6, hard12, duplicatePenalty, softBoost };
+        return { score, riskLevel, hard6, hard12, duplicatePenalty, softBoost, extraHard6mo };
     }
 
-    function updateChexScoreDisplay() {
+    // Update score display, history, and simulation feedback
+    function updateChexScoreDisplay(extraHard = 0) {
         if (!hardInquiries.length && !softInquiries.length) {
             chexScoreSpan.innerText = "---";
             chexRiskSpan.innerText = "No data";
+            simResultDiv.innerHTML = "";
             return;
         }
-        const { score, riskLevel, hard6, hard12, duplicatePenalty, softBoost } = calculateChexScoreFromData(hardInquiries, softInquiries);
+        const { score, riskLevel, hard6, hard12, duplicatePenalty, softBoost, extraHard6mo } = calculateChexScoreFromData(hardInquiries, softInquiries, extraHard);
         chexScoreSpan.innerText = score;
         chexRiskSpan.innerText = riskLevel;
-        // Optional tooltip on hover
         chexScoreSpan.parentElement.title = `Hard 6m: ${hard6}, Hard 12m: ${hard12}, Duplicate penalty: ${duplicatePenalty}, Soft boost: +${softBoost}`;
+        
+        // Update simulation result text
+        if (extraHard !== 0) {
+            simResultDiv.innerHTML = `<span class="status-badge">🔮 Simulation: +${extraHard} extra hard inquiry(ies) → Score ${score} (${riskLevel})</span>`;
+        } else {
+            simResultDiv.innerHTML = "";
+        }
+        
+        // Record history only when extraHard is 0 (actual state) and we have data
+        if (extraHard === 0 && (hardInquiries.length || softInquiries.length)) {
+            addToHistory(score);
+        }
     }
 
-    // ---------- Duplicate detection & merging (existing) ----------
+    // Score history management
+    function addToHistory(score) {
+        const now = new Date();
+        const label = now.toLocaleTimeString();
+        scoreHistory.unshift({ score, timestamp: now, label });
+        if (scoreHistory.length > 10) scoreHistory.pop();
+        updateHistoryChart();
+    }
+    function updateHistoryChart() {
+        const ctx = document.getElementById('scoreHistoryChart').getContext('2d');
+        if (historyChart) historyChart.destroy();
+        const labels = scoreHistory.map(h => h.label).reverse();
+        const dataPoints = scoreHistory.map(h => h.score).reverse();
+        historyChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{ label: 'ChexScore', data: dataPoints, borderColor: '#6750a4', backgroundColor: 'rgba(103,80,164,0.1)', fill: true, tension: 0.3 }]
+            },
+            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top' } } }
+        });
+    }
+    function clearHistory() {
+        scoreHistory = [];
+        updateHistoryChart();
+        setStatus("History cleared");
+    }
+
+    // Duplicate & merge functions
     function findDuplicates(inquiries) {
         const map = new Map();
         inquiries.forEach((inq, idx) => {
@@ -366,7 +456,6 @@
         for (let indices of map.values()) { if (indices.length > 1) indices.forEach(i => duplicateIndices.add(i)); }
         return duplicateIndices;
     }
-
     function mergeDuplicates(inquiries) {
         const map = new Map();
         for (let inq of inquiries) {
@@ -377,7 +466,7 @@
         return Array.from(map.values()).map(({count, ...rest}) => rest);
     }
 
-    // Cumulative stats (for summary)
+    // Cumulative stats for chart
     function computeCumulativeStats(inquiries) {
         const now = new Date(); now.setHours(0,0,0,0);
         const cutoffs = [1,2,3,6,12,24].map(m => { let d=new Date(now); d.setMonth(now.getMonth()-m); return d; });
@@ -390,7 +479,6 @@
         return { last1Month:counts[0], last2Months:counts[1], last3Months:counts[2], last6Months:counts[3], last12Months:counts[4], last24Months:counts[5] };
     }
 
-    // Render table + chart + summary + ChexScore
     function renderCurrentTab() {
         let data = currentTab === "hard" ? hardInquiries : softInquiries;
         let filtered = data.filter(inq => {
@@ -399,23 +487,21 @@
             return matchBank && matchDate;
         });
         const duplicatesSet = findDuplicates(filtered);
-        let html = `<table><thead><tr><th data-sort="bank_name">Bank Name 🔽</th><th data-sort="bank_address">Address</th><th data-sort="bank_phone">Phone</th><th data-sort="inquiry_date">Date</th><th>Duplicate</th></tr></thead><tbody>`;
+        let html = `<table><thead><tr><th data-sort="bank_name">Bank Name 🔽</th><th>Address</th><th>Phone</th><th>Date</th><th>Duplicate</th></tr></thead><tbody>`;
         filtered.forEach((inq, idx) => {
             const isDup = duplicatesSet.has(idx) ? "⚠️ Yes" : "";
             const dupClass = duplicatesSet.has(idx) ? "duplicate-row" : "";
             html += `<tr class="${dupClass}"><td>${escapeHtml(inq.bank_name)}</td><td>${escapeHtml(inq.bank_address)}</td><td>${escapeHtml(inq.bank_phone)}</td><td>${inq.inquiry_date || ''}</td><td>${isDup}</td></tr>`;
         });
-        html += `</tbody></table><div>Total: ${filtered.length} inquiries (${duplicatesSet.size} duplicate entries)</div>`;
+        html += `</tbody><tr><div>Total: ${filtered.length} inquiries (${duplicatesSet.size} duplicate entries)</div>`;
         tableContainer.innerHTML = html;
-        // attach sorting
         document.querySelectorAll('th[data-sort]').forEach(th => {
             th.addEventListener('click', () => sortTable(th.dataset.sort, filtered));
         });
         const stats = computeCumulativeStats(filtered);
         summaryStatsDiv.innerHTML = `<div class="status-badge" style="margin-top:12px">📊 Cumulative: 1m:${stats.last1Month} | 2m:${stats.last2Months} | 3m:${stats.last3Months} | 6m:${stats.last6Months} | 12m:${stats.last12Months} | 24m:${stats.last24Months}</div>`;
         updateChart(stats);
-        // Always update ChexScore from full data (not filtered)
-        updateChexScoreDisplay();
+        updateChexScoreDisplay(simExtraHard);  // reflect any active simulation
     }
 
     function sortTable(field, filteredData) {
@@ -451,7 +537,7 @@
 
     function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
 
-    // Extract sections (auto-detect)
+    // PDF extraction (same as before)
     async function extractFromPDF(arrayBuffer) {
         const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
         let fullText = '';
@@ -490,12 +576,14 @@
         try {
             const arrayBuffer = await file.arrayBuffer();
             const { hard, soft } = await extractFromPDF(arrayBuffer);
-            if(hard.length===0 && soft.length===0) throw new Error("No inquiries found in any section.");
+            if(hard.length===0 && soft.length===0) throw new Error("No inquiries found.");
             hardInquiries = hard;
             softInquiries = soft;
             currentFilterBank = ""; currentFilterDate = "";
             if(filterBankInput) filterBankInput.value = "";
             if(filterDateInput) filterDateInput.value = "";
+            simExtraHard = 0;
+            simExtraInput.value = "0";
             renderCurrentTab();
             resultsCard.classList.remove('hidden');
             setStatus(`Loaded: ${hardInquiries.length} hard, ${softInquiries.length} soft inquiries`);
@@ -504,7 +592,7 @@
     }
 
     function saveSession() {
-        const data = { hard: hardInquiries, soft: softInquiries, timestamp: new Date().toISOString() };
+        const data = { hard: hardInquiries, soft: softInquiries, scoreHistory: scoreHistory, timestamp: new Date().toISOString() };
         localStorage.setItem('creditInquirySession', JSON.stringify(data));
         setStatus("Session saved");
     }
@@ -515,10 +603,14 @@
             const data = JSON.parse(raw);
             hardInquiries = data.hard || [];
             softInquiries = data.soft || [];
+            scoreHistory = data.scoreHistory || [];
             currentFilterBank = ""; currentFilterDate = "";
             if(filterBankInput) filterBankInput.value = "";
             if(filterDateInput) filterDateInput.value = "";
+            simExtraHard = 0;
+            simExtraInput.value = "0";
             renderCurrentTab();
+            updateHistoryChart();
             resultsCard.classList.remove('hidden');
             setStatus(`Session loaded (${hardInquiries.length} hard, ${softInquiries.length} soft)`);
         } catch(e) { showError("Failed to load session"); }
@@ -536,6 +628,22 @@
         XLSX.writeFile(wb, `credit_inquiries_${new Date().toISOString().slice(0,19)}.xlsx`);
     }
 
+    // Simulation handlers
+    function applySimulation() {
+        let extra = parseInt(simExtraInput.value, 10);
+        if (isNaN(extra)) extra = 0;
+        simExtraHard = extra;
+        updateChexScoreDisplay(simExtraHard);
+        // also re-render table summary to keep UI consistent, but score display already updated
+        setStatus(`Simulation: +${extra} extra hard inquiries`);
+    }
+    function resetSimulation() {
+        simExtraHard = 0;
+        simExtraInput.value = "0";
+        updateChexScoreDisplay(0);
+        setStatus("Simulation reset");
+    }
+
     // Event listeners
     uploadZone.addEventListener('click', () => pdfInput.click());
     pdfInput.addEventListener('change', (e) => { if(e.target.files.length) processPDF(e.target.files[0]); });
@@ -551,6 +659,9 @@
         renderCurrentTab();
         setStatus("Duplicates merged");
     });
+    applySimBtn.addEventListener('click', applySimulation);
+    resetSimBtn.addEventListener('click', resetSimulation);
+    clearHistoryBtn.addEventListener('click', clearHistory);
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
