@@ -465,16 +465,35 @@
             return matchBank && matchDate;
         });
         const duplicatesSet = findDuplicates(filtered);
-        let html = `<table><thead><tr><th data-sort="bank_name">Entity Name 🔽</th><th>Address</th><th>Phone</th><th>Date</th><th>Duplicate</th>${currentTab==="soft" ? '<th>Original Inquirer</th>' : ''}</thead><tbody>`;
+        let html = `<table><thead><tr>
+            <th data-sort="bank_name">Entity Name 🔽</th>
+            <th>Address</th>
+            <th>Phone</th>
+            <th>Date</th>
+            <th>Duplicate</th>`;
+        if (currentTab === "soft") {
+            html += '<th>Original Inquirer</th><th>Original Inquirer Address</th>';
+        }
+        html += `</tr></thead><tbody>`;
+        
         filtered.forEach((inq, idx) => {
             const isDup = duplicatesSet.has(idx) ? "⚠️ Yes" : "";
             const dupClass = duplicatesSet.has(idx) ? "duplicate-row" : "";
-            html += `<tr class="${dupClass}"><td>${escapeHtml(inq.bank_name)}</td><td>${escapeHtml(inq.bank_address)}</td><td>${escapeHtml(inq.bank_phone)}</td><td>${inq.inquiry_date || ''}</td><td>${isDup}</td>`;
-            if (currentTab === "soft") html += `<td>${escapeHtml(inq.original_inquirer || '')}</td>`;
+            html += `<tr class="${dupClass}">
+                <td>${escapeHtml(inq.bank_name)}</td>
+                <td>${escapeHtml(inq.bank_address)}</td>
+                <td>${escapeHtml(inq.bank_phone)}</td>
+                <td>${inq.inquiry_date || ''}</td>
+                <td>${isDup}</td>`;
+            if (currentTab === "soft") {
+                html += `<td>${escapeHtml(inq.original_inquirer || '')}</td>`;
+                html += `<td>${escapeHtml(inq.original_inquirer_address || '')}</td>`;
+            }
             html += `</tr>`;
         });
-        html += `</tbody><table><div>Total: ${filtered.length} inquiries (${duplicatesSet.size} duplicate entries)</div>`;
+        html += `</tbody></table><div>Total: ${filtered.length} inquiries (${duplicatesSet.size} duplicate entries)</div>`;
         tableContainer.innerHTML = html;
+
         const stats = computeCumulativeStats(currentTab === "hard" ? hardInquiries : []);
         summaryStatsDiv.innerHTML = `<div class="status-badge">📊 Cumulative Hard: 1m:${stats.last1Month} | 2m:${stats.last2Months} | 3m:${stats.last3Months} | 6m:${stats.last6Months} | 12m:${stats.last12Months} | 24m:${stats.last24Months}</div>`;
         updateChart(stats);
