@@ -1008,7 +1008,6 @@ function sortTable(column, direction) {
         }
         html += `</tr>`;
     });
-    // html += `</tbody></table><div>Total: ${filtered.length} inquiries (${duplicatesSet.size} duplicate entries)</div>`;
     tableContainer.innerHTML = html;
     attachSortListeners(); // reattach listeners after table rebuild
 }
@@ -1311,8 +1310,7 @@ function attachSortListeners() {
           });
           html += `
 																										</tbody>
-																									</table>
-																									// <div>Total: ${filtered.length} inquiries (${duplicatesSet.size} duplicate entries)</div>`;
+																									</table>`;
           tableContainer.innerHTML = html;
           // Attach sorting event listeners to table headers
           attachSortListeners();
