@@ -330,8 +330,8 @@
             softBoost = Math.floor(ratio * 50);
         }
 
-        let score = 800 - totalHardDeduction - duplicatePenalty + softBoost;
-        score = Math.min(800, Math.max(100, score));
+        let score = 899 - totalHardDeduction - duplicatePenalty + softBoost;
+        score = Math.min(899, Math.max(100, score));
         let riskLevel = "";
         if (score >= 750) riskLevel = "Excellent";
         else if (score >= 650) riskLevel = "Good";
