@@ -256,16 +256,33 @@
         const sessions = getSessions();
         const session = sessions.find(s => s.id == id);
         if (!session) return;
-        hardInquiries = session.hardInquiries;
-        softInquiries = session.softInquiries;
+    
+        const restoreDates = (inquiries) => {
+            if (!inquiries) return [];
+            return inquiries.map(inq => {
+                const normDate = normalizeDate(inq.inquiry_date);
+                const dateObj = normDate ? new Date(normDate) : null;
+                return { ...inq, _dateObj: dateObj };
+            });
+        };
+    
+        hardInquiries = restoreDates(session.hardInquiries);
+        softInquiries = restoreDates(session.softInquiries);
         scoreHistory = session.scoreHistory || [];
-        currentFilterBank = ""; currentFilterDate = "";
-        filterBankInput.value = ""; filterDateInput.value = "";
-        simExtraHard = 0; simExtraHard12 = 0;
-        simExtraHardInput.value = "0"; simExtraHard12Input.value = "0";
+    
+        // Reset UI state
+        currentFilterBank = "";
+        currentFilterDate = "";
+        if (filterBankInput) filterBankInput.value = "";
+        if (filterDateInput) filterDateInput.value = "";
+        simExtraHard = 0;
+        simExtraHard12 = 0;
+        if (simExtraHardInput) simExtraHardInput.value = "0";
+        if (simExtraHard12Input) simExtraHard12Input.value = "0";
+    
         renderCurrentTab();
-        updateHistoryChart();
-        resultsCard.classList.remove('hidden');
+        updateHistoryChart();   // redraw history
+        if (resultsCard) resultsCard.classList.remove('hidden');
         setStatus(`Loaded session: ${session.name}`);
     }
     function deleteSessionById(id) {
@@ -281,13 +298,16 @@
         }
         let name = newSessionNameInput.value.trim();
         if (!name) name = currentPDFName || `Session ${new Date().toLocaleString()}`;
+        
+        const stripDates = (arr) => arr.map(({ _dateObj, ...rest }) => rest);
+        
         const sessions = getSessions();
         const newSession = {
             id: Date.now(),
             name: name,
             date: new Date().toISOString(),
-            hardInquiries: hardInquiries,
-            softInquiries: softInquiries,
+            hardInquiries: stripDates(hardInquiries),
+            softInquiries: stripDates(softInquiries),
             scoreHistory: scoreHistory
         };
         sessions.unshift(newSession);
