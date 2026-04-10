@@ -25,6 +25,8 @@
         .btn { background: var(--md-primary); color: white; border: none; padding: 10px 24px; border-radius: 100px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
         .btn-outline { background: transparent; border: 1px solid var(--md-outline); color: var(--md-primary); }
         .btn-outline:hover { background: #ede7f6; }
+        .btn-danger { background: #dc3545; color: white; border: none; }
+        .btn-danger:hover { background: #b02a37; }
         .status-badge { background: #e8def8; border-radius: 100px; padding: 6px 12px; font-size: 0.75rem; color: #381e72; display: inline-flex; align-items: center; gap: 6px; }
         .progress-bar-container { margin: 16px 0; background: #e3e1e6; border-radius: 100px; height: 8px; overflow: hidden; }
         .progress-bar { width: 0%; height: 100%; background: var(--md-primary); transition: width 0.2s; }
@@ -102,6 +104,9 @@
                     <input type="text" id="newSessionName" placeholder="Session name (e.g., PDF5 - Apr 2026)">
                     <button id="saveCurrentSessionBtn" class="btn-outline btn">Save Current</button>
                 </div>
+                <div style="margin-top: 12px;">
+                    <button id="deleteAllSessionsBtn" class="btn-danger btn">Delete All Sessions</button>
+                </div>
             </div>
         </div>
     </div>
@@ -150,8 +155,8 @@
             
             <div class="calibration-slider">
                 <label>🔧 Calibration factor (0.8 – 1.2): </label>
-                <input type="range" id="calibFactor" min="0.8" max="1.2" step="0.01" value="1.00">
-                <span id="calibValue">1.00</span>
+                <input type="range" id="calibFactor" min="0.8" max="1.2" step="0.01" value="1.03">
+                <span id="calibValue">1.03</span>
                 <button id="resetCalib" class="btn-outline btn" style="margin-left:12px;">Reset</button>
             </div>
 
@@ -173,7 +178,7 @@
     let scoreHistory = [];
     let currentFilterBank = "", currentFilterDate = "";
     let simExtras = { m1:0, m2:0, m3:0, m6:0, m12:0 };
-    let calibFactor = 1.00;
+    let calibFactor = 1.03;
     let currentPDFName = "";
 
     // DOM elements
@@ -204,6 +209,7 @@
     const sessionPanel = document.getElementById('sessionPanel');
     const saveCurrentBtn = document.getElementById('saveCurrentSessionBtn');
     const newSessionNameInput = document.getElementById('newSessionName');
+    const deleteAllSessionsBtn = document.getElementById('deleteAllSessionsBtn');
     const simExtra1m = document.getElementById('simExtra1m');
     const simExtra2m = document.getElementById('simExtra2m');
     const simExtra3m = document.getElementById('simExtra3m');
@@ -399,7 +405,7 @@
             }
             html += `</tr>`;
         });
-        html += `</tbody></table><div>Total: ${filtered.length} inquiries (${duplicatesSet.size} duplicate entries)</div>`;
+        html += `</tbody><table><div>Total: ${filtered.length} inquiries (${duplicatesSet.size} duplicate entries)</div>`;
         tableContainer.innerHTML = html;
         const stats = computeCumulativeStats(currentTab === "hard" ? hardInquiries : []);
         summaryStatsDiv.innerHTML = `<div class="status-badge">📊 Cumulative Hard: 1m:${stats.last1Month} | 2m:${stats.last2Months} | 3m:${stats.last3Months} | 6m:${stats.last6Months} | 12m:${stats.last12Months} | 24m:${stats.last24Months}</div>`;
@@ -547,11 +553,11 @@
         setStatus(`Calibration factor = ${calibFactor.toFixed(2)}`);
     }
     function resetCalibration() {
-        calibSlider.value = "1.00";
-        calibFactor = 1.00;
-        calibValueSpan.innerText = "1.00";
+        calibSlider.value = "1.03";
+        calibFactor = 1.03;
+        calibValueSpan.innerText = "1.03";
         updateChexScoreDisplay(simExtras);
-        setStatus("Calibration reset to default (1.00)");
+        setStatus("Calibration reset to default (1.03)");
     }
 
     // Session management
@@ -655,6 +661,13 @@
         newSessionNameInput.value = '';
         setStatus(`Session "${name}" saved`);
     }
+    function deleteAllSessions() {
+        if (confirm("⚠️ WARNING: This will delete ALL saved sessions permanently. Are you sure?")) {
+            localStorage.removeItem(SESSIONS_KEY);
+            renderSessionsList();
+            setStatus("All sessions deleted");
+        }
+    }
     function toggleSessionPanel() {
         sessionPanel.classList.toggle('hidden');
         if (!sessionPanel.classList.contains('hidden')) renderSessionsList();
@@ -680,6 +693,7 @@
     resetCalibBtn.addEventListener('click', resetCalibration);
     toggleSessionBtn.addEventListener('click', toggleSessionPanel);
     saveCurrentBtn.addEventListener('click', saveCurrentSession);
+    deleteAllSessionsBtn.addEventListener('click', deleteAllSessions);
     document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => {
         document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
         btn.classList.add('active'); currentTab = btn.dataset.type; renderCurrentTab();
