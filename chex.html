@@ -3,212 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Credit Inquiry Analyzer + ChexScore™ Risk Model</title>
+    <title>ChexScore Analyzer | Inquiries + Simulator</title>
     <!-- Material 3 Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
-    <!-- Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.3.122/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: #f5f5f7;
-            font-family: 'Roboto', sans-serif;
-            padding: 24px 16px;
-            color: #1e1e2f;
-        }
-        :root {
-            --md-primary: #6750a4;
-            --md-primary-light: #eaddff;
-            --md-surface: #ffffff;
-            --md-surface-variant: #f5f5f7;
-            --md-outline: #79747e;
-            --md-on-surface: #1e1e2f;
-            --md-on-surface-variant: #49454e;
-            --md-elevation-1: 0 1px 2px 0 rgba(0,0,0,0.05), 0 1px 3px 0 rgba(0,0,0,0.1);
-        }
+        body { background: #f5f5f7; font-family: 'Roboto', sans-serif; padding: 24px 16px; color: #1e1e2f; }
+        :root { --md-primary: #6750a4; --md-primary-light: #eaddff; --md-surface: #ffffff; --md-surface-variant: #f5f5f7; --md-outline: #79747e; --md-on-surface: #1e1e2f; --md-on-surface-variant: #49454e; --md-elevation-1: 0 1px 2px 0 rgba(0,0,0,0.05), 0 1px 3px 0 rgba(0,0,0,0.1); }
         .container { max-width: 1400px; margin: 0 auto; }
-        .card {
-            background: var(--md-surface);
-            border-radius: 28px;
-            padding: 24px 20px;
-            box-shadow: var(--md-elevation-1);
-            margin-bottom: 24px;
-        }
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #e9e9ef;
-            padding-bottom: 12px;
-        }
+        .card { background: var(--md-surface); border-radius: 28px; padding: 24px 20px; box-shadow: var(--md-elevation-1); margin-bottom: 24px; }
+        .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; border-bottom: 1px solid #e9e9ef; padding-bottom: 12px; }
         .card-header .material-symbols-outlined { font-size: 28px; color: var(--md-primary); }
         .card-header h2 { font-size: 1.5rem; font-weight: 500; }
-        .upload-zone {
-            border: 2px dashed #cac4d0;
-            border-radius: 28px;
-            padding: 32px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: #fefbff;
-            margin-bottom: 20px;
-        }
+        .upload-zone { border: 2px dashed #cac4d0; border-radius: 28px; padding: 32px 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: #fefbff; margin-bottom: 20px; }
         .upload-zone:hover { border-color: var(--md-primary); background: #f9f6ff; }
         .upload-icon { font-size: 48px; color: var(--md-primary); }
         .file-input { display: none; }
-        .btn {
-            background: var(--md-primary);
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 100px;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+        .btn { background: var(--md-primary); color: white; border: none; padding: 10px 24px; border-radius: 100px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.2s; }
         .btn-outline { background: transparent; border: 1px solid var(--md-outline); color: var(--md-primary); }
         .btn-outline:hover { background: #ede7f6; }
-        .status-badge {
-            background: #e8def8;
-            border-radius: 100px;
-            padding: 6px 12px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: #381e72;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .progress-bar-container {
-            margin: 16px 0;
-            background: #e3e1e6;
-            border-radius: 100px;
-            height: 8px;
-            overflow: hidden;
-        }
+        .status-badge { background: #e8def8; border-radius: 100px; padding: 6px 12px; font-size: 0.75rem; font-weight: 500; color: #381e72; display: inline-flex; align-items: center; gap: 6px; }
+        .progress-bar-container { margin: 16px 0; background: #e3e1e6; border-radius: 100px; height: 8px; overflow: hidden; }
         .progress-bar { width: 0%; height: 100%; background: var(--md-primary); transition: width 0.2s; }
-        .tabs {
-            display: flex;
-            gap: 8px;
-            border-bottom: 1px solid #e3e1e6;
-            margin-bottom: 20px;
-        }
-        .tab-btn {
-            background: none;
-            border: none;
-            padding: 12px 20px;
-            font-weight: 500;
-            cursor: pointer;
-            color: var(--md-on-surface-variant);
-            border-radius: 100px 100px 0 0;
-        }
+        .tabs { display: flex; gap: 8px; border-bottom: 1px solid #e3e1e6; margin-bottom: 20px; }
+        .tab-btn { background: none; border: none; padding: 12px 20px; font-weight: 500; cursor: pointer; color: var(--md-on-surface-variant); border-radius: 100px 100px 0 0; }
         .tab-btn.active { background: var(--md-primary-light); color: #381e72; }
-        .filter-bar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin: 16px 0;
-            align-items: center;
-        }
-        .filter-input {
-            padding: 8px 12px;
-            border-radius: 100px;
-            border: 1px solid var(--md-outline);
-            font-family: inherit;
-            flex: 1;
-            min-width: 150px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 16px;
-            overflow-x: auto;
-            display: block;
-        }
-        th, td {
-            text-align: left;
-            padding: 12px 8px;
-            border-bottom: 1px solid #e9e9ef;
-        }
+        .filter-bar { display: flex; flex-wrap: wrap; gap: 12px; margin: 16px 0; align-items: center; }
+        .filter-input { padding: 8px 12px; border-radius: 100px; border: 1px solid var(--md-outline); font-family: inherit; flex: 1; min-width: 150px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; overflow-x: auto; display: block; }
+        th, td { text-align: left; padding: 12px 8px; border-bottom: 1px solid #e9e9ef; }
         th { cursor: pointer; background: #faf9fc; }
         .duplicate-row { background-color: #fff3e0; }
         .action-group { display: flex; gap: 12px; flex-wrap: wrap; margin: 16px 0; }
         .chart-container { max-width: 600px; margin: 20px 0; }
         .hidden { display: none; }
         .error-message { background: #ffdad6; color: #b3261e; border-radius: 16px; padding: 12px; margin-top: 16px; }
-        .chexscore-card {
-            background: linear-gradient(135deg, #1e2a3a 0%, #0f1724 100%);
-            border-radius: 28px;
-            padding: 20px;
-            margin: 20px 0;
-            color: white;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .score-number {
-            font-size: 3rem;
-            font-weight: 800;
-            line-height: 1;
-        }
-        .risk-level {
-            font-size: 1.2rem;
-            font-weight: 500;
-            background: rgba(255,255,255,0.2);
-            padding: 4px 12px;
-            border-radius: 100px;
-            display: inline-block;
-        }
-        .disclaimer {
-            font-size: 0.7rem;
-            color: #ccc;
-            margin-top: 8px;
-        }
-        .simulator-card {
-            background: #faf9fc;
-            border-radius: 24px;
-            padding: 16px;
-            margin-top: 16px;
-        }
-        .simulator-control {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-            flex-wrap: wrap;
-            margin: 12px 0;
-        }
-        .simulator-control input {
-            padding: 8px 12px;
-            border-radius: 100px;
-            border: 1px solid var(--md-outline);
-            width: 100px;
-        }
-        .history-chart {
-            max-height: 200px;
-            margin-top: 20px;
-        }
+        .chexscore-card { background: linear-gradient(135deg, #1e2a3a 0%, #0f1724 100%); border-radius: 28px; padding: 20px; margin: 20px 0; color: white; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; }
+        .score-number { font-size: 3rem; font-weight: 800; line-height: 1; }
+        .risk-level { font-size: 1.2rem; font-weight: 500; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 100px; display: inline-block; }
+        .disclaimer { font-size: 0.7rem; color: #ccc; margin-top: 8px; }
+        .simulator-card { background: #faf9fc; border-radius: 24px; padding: 16px; margin-top: 16px; }
+        .simulator-control { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin: 12px 0; }
+        .simulator-control input, .simulator-control select { padding: 8px 12px; border-radius: 100px; border: 1px solid var(--md-outline); }
+        .history-chart { max-height: 200px; margin-top: 20px; }
         @media (max-width: 640px) { .card { padding: 16px; } th, td { font-size: 0.8rem; } }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="card">
-        <div class="card-header"><span class="material-symbols-outlined">credit_score</span><h2>Credit Inquiry Analyzer + ChexScore™ Risk Model</h2></div>
+        <div class="card-header"><span class="material-symbols-outlined">credit_score</span><h2>ChexScore™ Risk Analyzer</h2></div>
         <div id="uploadZone" class="upload-zone">
             <span class="material-symbols-outlined upload-icon">cloud_upload</span>
-            <div class="upload-text">Click or drag PDF</div>
+            <div class="upload-text">Click or drag PDF (credit report)</div>
         </div>
         <input type="file" id="pdfInput" accept=".pdf" class="file-input" />
         <div class="progress-bar-container hidden" id="progressContainer"><div id="progressBar" class="progress-bar"></div></div>
-        <div id="statusArea" class="status-badge"><span class="material-symbols-outlined" style="font-size:16px">info</span><span id="statusText">Ready</span></div>
+        <div id="statusArea" class="status-badge"><span class="material-symbols-outlined">info</span><span id="statusText">Ready</span></div>
         <div id="errorContainer"></div>
         <div class="action-group">
             <button id="saveSessionBtn" class="btn-outline btn"><span class="material-symbols-outlined">save</span> Save Session</button>
@@ -223,10 +78,10 @@
             <button class="tab-btn" data-type="soft">Soft Inquiries (Viewed Only by You)</button>
         </div>
         <div class="filter-bar">
-            <input type="text" id="filterBank" placeholder="Filter by bank name" class="filter-input">
+            <input type="text" id="filterBank" placeholder="Filter by entity name" class="filter-input">
             <input type="text" id="filterDate" placeholder="Filter by date (MM/DD/YYYY)" class="filter-input">
             <button id="clearFilters" class="btn-outline btn">Clear Filters</button>
-            <button id="mergeDuplicatesBtn" class="btn-outline btn">Merge Selected Duplicates</button>
+            <button id="mergeDuplicatesBtn" class="btn-outline btn">Merge Duplicates</button>
         </div>
         <div id="tableContainer" style="overflow-x: auto;"></div>
         <div class="chart-container"><canvas id="inquiryChart"></canvas></div>
@@ -241,28 +96,27 @@
             </div>
             <div style="text-align:right;">
                 <span class="material-symbols-outlined" style="font-size:40px;">analytics</span>
-                <div class="disclaimer" id="chexDisclaimer">*Educational model – not official ChexSystems score</div>
+                <div class="disclaimer">*Educational model – not official ChexSystems score</div>
             </div>
         </div>
 
-        <!-- What-If Simulator & Score History -->
+        <!-- Enhanced Simulator -->
         <div class="simulator-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap:wrap;">
-                <h3 style="font-weight:500;">📈 What‑If Simulator</h3>
-                <span class="status-badge">Try adding hypothetical hard inquiries</span>
-            </div>
+            <h3 style="font-weight:500;">🎮 What‑If Simulator</h3>
             <div class="simulator-control">
-                <label>Add extra hard inquiries (last 6 months):</label>
+                <label>➕ Extra hard inquiries (last 6 mo):</label>
                 <input type="number" id="simExtraHard" value="0" min="0" max="20" step="1">
+                <label>➕ Extra soft inquiries:</label>
+                <input type="number" id="simExtraSoft" value="0" min="0" max="50" step="1">
+                <label>⚠️ Force duplicate penalty:</label>
+                <select id="simDuplicateFlag"><option value="false">No change</option><option value="true">Apply penalty (as if duplicate exists)</option></select>
                 <button id="applySimulation" class="btn-outline btn">Simulate</button>
                 <button id="resetSimulation" class="btn-outline btn">Reset</button>
             </div>
             <div id="simResult" style="margin-top: 8px; font-size:0.9rem;"></div>
             
-            <h3 style="font-weight:500; margin-top:20px;">📊 Score History (last 10 calculations)</h3>
-            <div class="history-chart">
-                <canvas id="scoreHistoryChart" width="400" height="150" style="max-height:180px; width:100%"></canvas>
-            </div>
+            <h3 style="font-weight:500; margin-top:20px;">📊 Score History (last 10)</h3>
+            <div class="history-chart"><canvas id="scoreHistoryChart" width="400" height="150"></canvas></div>
             <button id="clearHistoryBtn" class="btn-outline btn" style="margin-top:8px;">Clear History</button>
         </div>
     </div>
@@ -270,15 +124,14 @@
 
 <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.3.122/pdf.worker.min.js';
-    // ---------- Global state ----------
-    let hardInquiries = [];      // "Inquiries Viewed By Others"
-    let softInquiries = [];      // "Inquiries Viewed Only By You"
+    // ---------- Data structures ----------
+    let hardInquiries = [];      // Hard inquiries (Viewed by Others) - fields: bank_name, bank_address, bank_phone, inquiry_date, original_inquirer (optional)
+    let softInquiries = [];      // Soft inquiries (Viewed Only by You) - fields: bank_name (from On Behalf Of), bank_address, bank_phone, inquiry_date, original_inquirer, original_address
     let currentTab = "hard";
-    let chartInstance = null;
-    let historyChart = null;
-    let scoreHistory = [];       // stores {score, timestamp, label}
+    let chartInstance = null, historyChart = null;
+    let scoreHistory = [];
     let currentFilterBank = "", currentFilterDate = "";
-    let simExtraHard = 0;        // for what-if
+    let simExtraHard = 0, simExtraSoft = 0, simDuplicateFlag = false;
 
     // DOM elements
     const pdfInput = document.getElementById('pdfInput');
@@ -299,124 +152,146 @@
     const summaryStatsDiv = document.getElementById('summaryStats');
     const chexScoreSpan = document.getElementById('chexScoreValue');
     const chexRiskSpan = document.getElementById('chexRiskLevel');
-    const simExtraInput = document.getElementById('simExtraHard');
+    const simExtraHardInput = document.getElementById('simExtraHard');
+    const simExtraSoftInput = document.getElementById('simExtraSoft');
+    const simDuplicateSelect = document.getElementById('simDuplicateFlag');
     const applySimBtn = document.getElementById('applySimulation');
     const resetSimBtn = document.getElementById('resetSimulation');
     const simResultDiv = document.getElementById('simResult');
     const clearHistoryBtn = document.getElementById('clearHistoryBtn');
 
-    // Helper functions
-    function showError(msg) { errorDiv.innerHTML = `<div class="error-message"><span class="material-symbols-outlined">error</span> ${msg}</div>`; statusSpan.innerText = "Error"; }
-    function clearError() { errorDiv.innerHTML = ""; }
-    function setStatus(text, isLoading = false) { statusSpan.innerText = text; }
-    function updateProgress(percent) { progressContainer.classList.remove('hidden'); progressBar.style.width = `${percent}%`; }
-    function hideProgress() { progressContainer.classList.add('hidden'); progressBar.style.width = '0%'; }
-
-    // Date normalization
+    // Helper: normalize date (MM/DD/YYYY)
     function normalizeDate(dateStr) {
         if (!dateStr) return null;
         let cleaned = dateStr.trim();
         let parts = cleaned.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-        if (parts) {
-            let m = parseInt(parts[1],10), d = parseInt(parts[2],10), y = parseInt(parts[3],10);
-            if (m>=1 && m<=12 && d>=1 && d<=31) return `${m.toString().padStart(2,'0')}/${d.toString().padStart(2,'0')}/${y}`;
-        }
-        parts = cleaned.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-        if(parts){
-            let d=parseInt(parts[1],10), m=parseInt(parts[2],10), y=parseInt(parts[3],10);
-            if(m>=1 && m<=12 && d>=1 && d<=31) return `${m.toString().padStart(2,'0')}/${d.toString().padStart(2,'0')}/${y}`;
-        }
+        if (parts) { let m=parts[1], d=parts[2], y=parts[3]; if(m>=1&&m<=12&&d>=1&&d<=31) return `${m.padStart(2,'0')}/${d.padStart(2,'0')}/${y}`; }
         const months = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
         let match = cleaned.match(/([A-Za-z]{3})\s+(\d{1,2}),?\s+(\d{4})/i);
-        if(match){
-            let mon = months[match[1].toLowerCase()];
-            if(mon) return `${mon.toString().padStart(2,'0')}/${match[2].padStart(2,'0')}/${match[3]}`;
-        }
+        if(match){ let mon = months[match[1].toLowerCase()]; if(mon) return `${mon.toString().padStart(2,'0')}/${match[2].padStart(2,'0')}/${match[3]}`; }
         return null;
     }
 
-    // Core ChexScore calculation (with optional extra hard inquiries)
-    function calculateChexScoreFromData(hardArray, softArray, extraHard6mo = 0) {
-        const now = new Date();
-        now.setHours(0,0,0,0);
+    // Enhanced parser for soft inquiries: extract "On Behalf Of" as primary entity
+    function parseSoftInquiriesSection(text) {
+        // Pattern matches block: Inquirer: ... ; ... Phone Number: ... \n On Behalf Of: ... \n Phone Number: ... \n Inquiry Date: ...
+        const blockPattern = /Inquirer:\s*(.*?)[;,\n]\s*(.*?)\s*Phone Number:\s*(.*?)(?:\n|\r)\s*On Behalf Of:\s*(.*?)\s*Phone Number:\s*(.*?)(?:\n|\r)\s*Inquiry Date:\s*(\d{2}\/\d{2}\/\d{4})/gi;
+        let results = [];
+        let match;
+        while ((match = blockPattern.exec(text)) !== null) {
+            let inquirerName = match[1].trim();
+            let inquirerAddr = match[2].trim();
+            let inquirerPhone = match[3].trim();
+            let onBehalfName = match[4].trim();
+            let onBehalfPhone = match[5].trim();
+            let dateRaw = match[6].trim();
+            let normDate = normalizeDate(dateRaw);
+            let dateObj = normDate ? new Date(normDate) : null;
+            results.push({
+                bank_name: onBehalfName,                     // main entity for soft inquiry
+                bank_address: inquirerAddr,                  // fallback address (or could be onBehalf addr but not provided)
+                bank_phone: onBehalfPhone,
+                inquiry_date: normDate || dateRaw,
+                _dateObj: dateObj,
+                original_inquirer: inquirerName,
+                original_inquirer_phone: inquirerPhone
+            });
+        }
+        // Fallback: if no "On Behalf Of" pattern, treat as normal inquiry (like hard)
+        if (results.length === 0) {
+            const simplePattern = /Inquirer:\s*(.*?)[;,\n]\s*(.*?)\s*Phone Number:\s*(.*?)(?:\n|\r)\s*Inquiry Date:\s*(\d{2}\/\d{2}\/\d{4})/gi;
+            while ((match = simplePattern.exec(text)) !== null) {
+                let bankName = match[1].trim(), address = match[2].trim(), phone = match[3].trim(), dateRaw = match[4].trim();
+                let normDate = normalizeDate(dateRaw);
+                let dateObj = normDate ? new Date(normDate) : null;
+                results.push({ bank_name: bankName, bank_address: address, bank_phone: phone, inquiry_date: normDate || dateRaw, _dateObj: dateObj, original_inquirer: null });
+            }
+        }
+        return results;
+    }
+
+    function parseHardInquiriesSection(text) {
+        const inquiryRegex = /Inquirer:\s*(.*?)[;,\n]\s*(.*?)\s*Phone Number:\s*(.*?)(?:\n|\r)\s*Inquiry Date:\s*(\d{2}\/\d{2}\/\d{4})/gi;
+        let results = [];
+        let m;
+        while ((m = inquiryRegex.exec(text)) !== null) {
+            let bankName = m[1].trim(), address = m[2].trim(), phone = m[3].trim(), dateRaw = m[4].trim();
+            let normDate = normalizeDate(dateRaw);
+            let dateObj = normDate ? new Date(normDate) : null;
+            results.push({ bank_name: bankName, bank_address: address, bank_phone: phone, inquiry_date: normDate || dateRaw, _dateObj: dateObj });
+        }
+        return results;
+    }
+
+    // Score calculation with simulation overrides
+    function calculateChexScoreFromData(hardArray, softArray, extraHard=0, extraSoft=0, forceDuplicatePenalty=false) {
+        const now = new Date(); now.setHours(0,0,0,0);
         const sixMonthsAgo = new Date(now); sixMonthsAgo.setMonth(now.getMonth() - 6);
         const twelveMonthsAgo = new Date(now); twelveMonthsAgo.setMonth(now.getMonth() - 12);
 
         let hard6 = 0, hard12 = 0;
         hardArray.forEach(inq => {
             let dateObj = inq._dateObj || (inq.inquiry_date ? new Date(normalizeDate(inq.inquiry_date)) : null);
-            if (!dateObj || isNaN(dateObj)) return;
-            if (dateObj >= sixMonthsAgo) hard6++;
-            if (dateObj >= twelveMonthsAgo) hard12++;
-        });
-        hard6 += extraHard6mo;
-        hard12 += extraHard6mo; // extra adds to both 6 and 12 month counts
-
-        // Duplicate penalty
-        const bankCount6mo = new Map();
-        hardArray.forEach(inq => {
-            let dateObj = inq._dateObj || (inq.inquiry_date ? new Date(normalizeDate(inq.inquiry_date)) : null);
-            if (!dateObj || isNaN(dateObj)) return;
-            if (dateObj >= sixMonthsAgo) {
-                let bank = inq.bank_name;
-                bankCount6mo.set(bank, (bankCount6mo.get(bank) || 0) + 1);
+            if (dateObj && !isNaN(dateObj)) {
+                if (dateObj >= sixMonthsAgo) hard6++;
+                if (dateObj >= twelveMonthsAgo) hard12++;
             }
         });
+        hard6 += extraHard;
+        hard12 += extraHard;
+
+        // Duplicate penalty: based on actual hard inquiries within last 6 months (plus extraHard? we treat extra as separate, but penalty flag overrides)
         let duplicatePenalty = 0;
-        for (let count of bankCount6mo.values()) {
-            if (count >= 2) { duplicatePenalty = 50; break; }
+        if (forceDuplicatePenalty) {
+            duplicatePenalty = 50;
+        } else {
+            const bankCount6mo = new Map();
+            hardArray.forEach(inq => {
+                let dateObj = inq._dateObj || (inq.inquiry_date ? new Date(normalizeDate(inq.inquiry_date)) : null);
+                if (dateObj && !isNaN(dateObj) && dateObj >= sixMonthsAgo) {
+                    let bank = inq.bank_name;
+                    bankCount6mo.set(bank, (bankCount6mo.get(bank) || 0) + 1);
+                }
+            });
+            for (let count of bankCount6mo.values()) { if (count >= 2) { duplicatePenalty = 50; break; } }
         }
 
         const hardDeduction = (count) => count === 0 ? 0 : Math.min(400, Math.floor(70 * Math.log2(count + 1)));
-        let hardDeduction6 = hardDeduction(hard6);
-        let hardDeduction12 = hardDeduction(hard12);
-        let totalHardDeduction = Math.min(650, hardDeduction6 + hardDeduction12);
+        let totalHardDeduction = Math.min(650, hardDeduction(hard6) + hardDeduction(hard12));
 
-        let totalInquiries = hardArray.length + softArray.length + extraHard6mo;
+        let totalInquiries = hardArray.length + softArray.length + extraHard + extraSoft;
         let softBoost = 0;
         if (totalInquiries > 0) {
-            let ratio = softArray.length / totalInquiries;
+            let ratio = (softArray.length + extraSoft) / totalInquiries;
             softBoost = Math.floor(ratio * 50);
         }
 
         let score = 899 - totalHardDeduction - duplicatePenalty + softBoost;
         score = Math.min(899, Math.max(100, score));
-        let riskLevel = "";
-        if (score >= 750) riskLevel = "Excellent";
-        else if (score >= 650) riskLevel = "Good";
-        else if (score >= 500) riskLevel = "Fair";
-        else riskLevel = "Poor";
-
-        return { score, riskLevel, hard6, hard12, duplicatePenalty, softBoost, extraHard6mo };
+        let riskLevel = score >= 750 ? "Excellent" : (score >= 650 ? "Good" : (score >= 500 ? "Fair" : "Poor"));
+        return { score, riskLevel, hard6, hard12, duplicatePenalty, softBoost, extraHard, extraSoft };
     }
 
-    // Update score display, history, and simulation feedback
-    function updateChexScoreDisplay(extraHard = 0) {
+    function updateChexScoreDisplay(simOpts = { extraHard:0, extraSoft:0, forceDuplicate:false }) {
         if (!hardInquiries.length && !softInquiries.length) {
-            chexScoreSpan.innerText = "---";
-            chexRiskSpan.innerText = "No data";
-            simResultDiv.innerHTML = "";
-            return;
+            chexScoreSpan.innerText = "---"; chexRiskSpan.innerText = "No data";
+            simResultDiv.innerHTML = ""; return;
         }
-        const { score, riskLevel, hard6, hard12, duplicatePenalty, softBoost, extraHard6mo } = calculateChexScoreFromData(hardInquiries, softInquiries, extraHard);
+        const { score, riskLevel, hard6, hard12, duplicatePenalty, softBoost } = calculateChexScoreFromData(
+            hardInquiries, softInquiries, simOpts.extraHard, simOpts.extraSoft, simOpts.forceDuplicate
+        );
         chexScoreSpan.innerText = score;
         chexRiskSpan.innerText = riskLevel;
         chexScoreSpan.parentElement.title = `Hard 6m: ${hard6}, Hard 12m: ${hard12}, Duplicate penalty: ${duplicatePenalty}, Soft boost: +${softBoost}`;
-        
-        // Update simulation result text
-        if (extraHard !== 0) {
-            simResultDiv.innerHTML = `<span class="status-badge">🔮 Simulation: +${extraHard} extra hard inquiry(ies) → Score ${score} (${riskLevel})</span>`;
-        } else {
-            simResultDiv.innerHTML = "";
-        }
-        
-        // Record history only when extraHard is 0 (actual state) and we have data
-        if (extraHard === 0 && (hardInquiries.length || softInquiries.length)) {
+        if (simOpts.extraHard || simOpts.extraSoft || simOpts.forceDuplicate) {
+            simResultDiv.innerHTML = `<span class="status-badge">🔮 Sim: +${simOpts.extraHard} hard, +${simOpts.extraSoft} soft, duplicate=${simOpts.forceDuplicate ? "ON" : "OFF"} → Score ${score} (${riskLevel})</span>`;
+        } else { simResultDiv.innerHTML = ""; }
+        if (simOpts.extraHard===0 && simOpts.extraSoft===0 && !simOpts.forceDuplicate && (hardInquiries.length || softInquiries.length)) {
             addToHistory(score);
         }
     }
 
-    // Score history management
+    // History
     function addToHistory(score) {
         const now = new Date();
         const label = now.toLocaleTimeString();
@@ -429,32 +304,17 @@
         if (historyChart) historyChart.destroy();
         const labels = scoreHistory.map(h => h.label).reverse();
         const dataPoints = scoreHistory.map(h => h.score).reverse();
-        historyChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{ label: 'ChexScore', data: dataPoints, borderColor: '#6750a4', backgroundColor: 'rgba(103,80,164,0.1)', fill: true, tension: 0.3 }]
-            },
-            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top' } } }
-        });
+        historyChart = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ label: 'ChexScore', data: dataPoints, borderColor: '#6750a4', backgroundColor: 'rgba(103,80,164,0.1)', fill: true, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: true } });
     }
-    function clearHistory() {
-        scoreHistory = [];
-        updateHistoryChart();
-        setStatus("History cleared");
-    }
+    function clearHistory() { scoreHistory = []; updateHistoryChart(); setStatus("History cleared"); }
 
-    // Duplicate & merge functions
+    // Duplicate detection & merge (based on bank_name + phone)
     function findDuplicates(inquiries) {
         const map = new Map();
-        inquiries.forEach((inq, idx) => {
-            const key = `${inq.bank_name}|${inq.bank_phone}`;
-            if (!map.has(key)) map.set(key, []);
-            map.get(key).push(idx);
-        });
-        const duplicateIndices = new Set();
-        for (let indices of map.values()) { if (indices.length > 1) indices.forEach(i => duplicateIndices.add(i)); }
-        return duplicateIndices;
+        inquiries.forEach((inq, idx) => { const key = `${inq.bank_name}|${inq.bank_phone}`; if (!map.has(key)) map.set(key, []); map.get(key).push(idx); });
+        const dupSet = new Set();
+        for (let indices of map.values()) if (indices.length > 1) indices.forEach(i => dupSet.add(i));
+        return dupSet;
     }
     function mergeDuplicates(inquiries) {
         const map = new Map();
@@ -466,15 +326,13 @@
         return Array.from(map.values()).map(({count, ...rest}) => rest);
     }
 
-    // Cumulative stats for chart
     function computeCumulativeStats(inquiries) {
         const now = new Date(); now.setHours(0,0,0,0);
         const cutoffs = [1,2,3,6,12,24].map(m => { let d=new Date(now); d.setMonth(now.getMonth()-m); return d; });
         let counts = [0,0,0,0,0,0];
         inquiries.forEach(inq => {
             let dateObj = inq._dateObj || (inq.inquiry_date ? new Date(normalizeDate(inq.inquiry_date)) : null);
-            if (!dateObj || isNaN(dateObj)) return;
-            for(let i=0; i<cutoffs.length; i++) if(dateObj >= cutoffs[i]) counts[i]++;
+            if (dateObj && !isNaN(dateObj)) for(let i=0; i<cutoffs.length; i++) if(dateObj >= cutoffs[i]) counts[i]++;
         });
         return { last1Month:counts[0], last2Months:counts[1], last3Months:counts[2], last6Months:counts[3], last12Months:counts[4], last24Months:counts[5] };
     }
@@ -487,57 +345,44 @@
             return matchBank && matchDate;
         });
         const duplicatesSet = findDuplicates(filtered);
-        let html = `<table><thead><tr><th data-sort="bank_name">Bank Name 🔽</th><th>Address</th><th>Phone</th><th>Date</th><th>Duplicate</th></tr></thead><tbody>`;
+        let html = `<table><thead><tr><th data-sort="bank_name">Entity Name 🔽</th><th>Address</th><th>Phone</th><th>Date</th><th>Duplicate</th>${currentTab==="soft" ? '<th>Original Inquirer</th>' : ''}</tr></thead><tbody>`;
         filtered.forEach((inq, idx) => {
             const isDup = duplicatesSet.has(idx) ? "⚠️ Yes" : "";
             const dupClass = duplicatesSet.has(idx) ? "duplicate-row" : "";
-            html += `<tr class="${dupClass}"><td>${escapeHtml(inq.bank_name)}</td><td>${escapeHtml(inq.bank_address)}</td><td>${escapeHtml(inq.bank_phone)}</td><td>${inq.inquiry_date || ''}</td><td>${isDup}</td></tr>`;
+            html += `<tr class="${dupClass}"><td>${escapeHtml(inq.bank_name)}</td><td>${escapeHtml(inq.bank_address)}</td><td>${escapeHtml(inq.bank_phone)}</td><td>${inq.inquiry_date || ''}</td><td>${isDup}</td>`;
+            if (currentTab === "soft") html += `<td>${escapeHtml(inq.original_inquirer || '')}</td>`;
+            html += `</tr>`;
         });
-        html += `</tbody><tr><div>Total: ${filtered.length} inquiries (${duplicatesSet.size} duplicate entries)</div>`;
+        html += `</tbody></table><div>Total: ${filtered.length} inquiries (${duplicatesSet.size} duplicate entries)</div>`;
         tableContainer.innerHTML = html;
-        document.querySelectorAll('th[data-sort]').forEach(th => {
-            th.addEventListener('click', () => sortTable(th.dataset.sort, filtered));
-        });
+        document.querySelectorAll('th[data-sort]').forEach(th => th.addEventListener('click', () => sortTable(th.dataset.sort, filtered)));
         const stats = computeCumulativeStats(filtered);
-        summaryStatsDiv.innerHTML = `<div class="status-badge" style="margin-top:12px">📊 Cumulative: 1m:${stats.last1Month} | 2m:${stats.last2Months} | 3m:${stats.last3Months} | 6m:${stats.last6Months} | 12m:${stats.last12Months} | 24m:${stats.last24Months}</div>`;
+        summaryStatsDiv.innerHTML = `<div class="status-badge">📊 Cumulative: 1m:${stats.last1Month} | 2m:${stats.last2Months} | 3m:${stats.last3Months} | 6m:${stats.last6Months} | 12m:${stats.last12Months} | 24m:${stats.last24Months}</div>`;
         updateChart(stats);
-        updateChexScoreDisplay(simExtraHard);  // reflect any active simulation
+        updateChexScoreDisplay({ extraHard: simExtraHard, extraSoft: simExtraSoft, forceDuplicate: simDuplicateFlag });
     }
 
     function sortTable(field, filteredData) {
-        let sorted = [...filteredData];
-        sorted.sort((a,b) => (a[field] || '').localeCompare(b[field] || ''));
+        let sorted = [...filteredData].sort((a,b) => (a[field] || '').localeCompare(b[field] || ''));
         let data = currentTab === "hard" ? hardInquiries : softInquiries;
-        let filtered = data.filter(inq => {
-            let matchBank = !currentFilterBank || inq.bank_name.toLowerCase().includes(currentFilterBank.toLowerCase());
-            let matchDate = !currentFilterDate || (inq.inquiry_date && inq.inquiry_date.includes(currentFilterDate));
-            return matchBank && matchDate;
-        });
+        let filtered = data.filter(inq => (!currentFilterBank || inq.bank_name.toLowerCase().includes(currentFilterBank.toLowerCase())) && (!currentFilterDate || (inq.inquiry_date && inq.inquiry_date.includes(currentFilterDate))));
         filtered.sort((a,b) => (a[field] || '').localeCompare(b[field] || ''));
-        const duplicatesSet = findDuplicates(filtered);
-        let html = `<table><thead><tr><th data-sort="bank_name">Bank Name 🔽</th><th>Address</th><th>Phone</th><th>Date</th><th>Duplicate</th></tr></thead><tbody>`;
-        filtered.forEach((inq, idx) => {
-            html += `<tr class="${duplicatesSet.has(idx) ? 'duplicate-row' : ''}"><td>${escapeHtml(inq.bank_name)}</td><td>${escapeHtml(inq.bank_address)}</td><td>${escapeHtml(inq.bank_phone)}</td><td>${inq.inquiry_date}</td><td>${duplicatesSet.has(idx) ? "⚠️ Yes" : ""}</td></tr>`;
-        });
+        const dupSet = findDuplicates(filtered);
+        let html = `<table><thead><tr><th>Entity Name</th><th>Address</th><th>Phone</th><th>Date</th><th>Duplicate</th>${currentTab==="soft" ? '<th>Original Inquirer</th>' : ''}</tr></thead><tbody>`;
+        filtered.forEach((inq, idx) => { html += `<tr class="${dupSet.has(idx)?'duplicate-row':''}"><td>${escapeHtml(inq.bank_name)}</td><td>${escapeHtml(inq.bank_address)}</td><td>${escapeHtml(inq.bank_phone)}</td><td>${inq.inquiry_date}</td><td>${dupSet.has(idx)?"⚠️ Yes":""}</td>${currentTab==="soft"?`<td>${escapeHtml(inq.original_inquirer||'')}</td>`:''}</tr>`; });
         html += `</tbody></table>`;
         tableContainer.innerHTML = html;
-        document.querySelectorAll('th[data-sort]').forEach(th => th.addEventListener('click', () => sortTable(th.dataset.sort, filtered)));
     }
 
     function updateChart(stats) {
         const ctx = document.getElementById('inquiryChart').getContext('2d');
         if(chartInstance) chartInstance.destroy();
-        chartInstance = new Chart(ctx, {
-            type: 'bar',
-            data: { labels: ['1 month','2 months','3 months','6 months','12 months','24 months'],
-                     datasets: [{ label: 'Cumulative Inquiries', data: [stats.last1Month, stats.last2Months, stats.last3Months, stats.last6Months, stats.last12Months, stats.last24Months], backgroundColor: '#6750a4' }] },
-            options: { responsive: true, maintainAspectRatio: true }
-        });
+        chartInstance = new Chart(ctx, { type: 'bar', data: { labels: ['1m','2m','3m','6m','12m','24m'], datasets: [{ label: 'Cumulative Inquiries', data: [stats.last1Month, stats.last2Months, stats.last3Months, stats.last6Months, stats.last12Months, stats.last24Months], backgroundColor: '#6750a4' }] }, options: { responsive: true } });
     }
 
-    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
 
-    // PDF extraction (same as before)
+    // PDF extraction using enhanced soft parser
     async function extractFromPDF(arrayBuffer) {
         const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
         let fullText = '';
@@ -553,20 +398,8 @@
         for(let pat of hardPatterns) { let match = fullText.match(new RegExp(`(${pat.source})([\\s\\S]*?)(?=${softPatterns.map(p=>p.source).join('|')}|$)`, 'i')); if(match) { hardSection = match[2]; break; } }
         for(let pat of softPatterns) { let match = fullText.match(new RegExp(`(${pat.source})([\\s\\S]*?)(?=${hardPatterns.map(p=>p.source).join('|')}|$)`, 'i')); if(match) { softSection = match[2]; break; } }
         if(!hardSection && !softSection) throw new Error("Could not detect inquiry sections.");
-        const inquiryRegex = /Inquirer:\s*(.*?)[;,\n]\s*(.*?)\s*Phone Number:\s*(.*?)(?:\n|\r|,|\s)*Inquiry Date:\s*(\d{2}\/\d{2}\/\d{4})/gi;
-        function parseSection(text) {
-            let results = [];
-            let m;
-            while((m = inquiryRegex.exec(text)) !== null) {
-                let bankName = m[1].trim(), address = m[2].trim(), phone = m[3].trim(), dateRaw = m[4].trim();
-                let normDate = normalizeDate(dateRaw);
-                let dateObj = normDate ? new Date(normDate) : null;
-                results.push({ bank_name: bankName, bank_address: address, bank_phone: phone, inquiry_date: normDate || dateRaw, _dateObj: dateObj });
-            }
-            return results;
-        }
-        let hard = hardSection ? parseSection(hardSection) : [];
-        let soft = softSection ? parseSection(softSection) : [];
+        let hard = hardSection ? parseHardInquiriesSection(hardSection) : [];
+        let soft = softSection ? parseSoftInquiriesSection(softSection) : [];
         return { hard, soft };
     }
 
@@ -577,70 +410,63 @@
             const arrayBuffer = await file.arrayBuffer();
             const { hard, soft } = await extractFromPDF(arrayBuffer);
             if(hard.length===0 && soft.length===0) throw new Error("No inquiries found.");
-            hardInquiries = hard;
-            softInquiries = soft;
+            hardInquiries = hard; softInquiries = soft;
             currentFilterBank = ""; currentFilterDate = "";
-            if(filterBankInput) filterBankInput.value = "";
-            if(filterDateInput) filterDateInput.value = "";
-            simExtraHard = 0;
-            simExtraInput.value = "0";
+            filterBankInput.value = ""; filterDateInput.value = "";
+            simExtraHard=0; simExtraSoft=0; simDuplicateFlag=false;
+            simExtraHardInput.value="0"; simExtraSoftInput.value="0"; simDuplicateSelect.value="false";
             renderCurrentTab();
             resultsCard.classList.remove('hidden');
-            setStatus(`Loaded: ${hardInquiries.length} hard, ${softInquiries.length} soft inquiries`);
+            setStatus(`Loaded: ${hardInquiries.length} hard, ${softInquiries.length} soft`);
             hideProgress();
         } catch(err) { showError(err.message); hideProgress(); }
     }
 
     function saveSession() {
-        const data = { hard: hardInquiries, soft: softInquiries, scoreHistory: scoreHistory, timestamp: new Date().toISOString() };
+        const data = { hard: hardInquiries, soft: softInquiries, scoreHistory, timestamp: new Date().toISOString() };
         localStorage.setItem('creditInquirySession', JSON.stringify(data));
         setStatus("Session saved");
     }
     function loadSession() {
         const raw = localStorage.getItem('creditInquirySession');
-        if(!raw) { showError("No saved session found."); return; }
+        if(!raw) { showError("No saved session."); return; }
         try {
             const data = JSON.parse(raw);
-            hardInquiries = data.hard || [];
-            softInquiries = data.soft || [];
+            hardInquiries = data.hard || []; softInquiries = data.soft || [];
             scoreHistory = data.scoreHistory || [];
             currentFilterBank = ""; currentFilterDate = "";
-            if(filterBankInput) filterBankInput.value = "";
-            if(filterDateInput) filterDateInput.value = "";
-            simExtraHard = 0;
-            simExtraInput.value = "0";
-            renderCurrentTab();
-            updateHistoryChart();
+            filterBankInput.value = ""; filterDateInput.value = "";
+            simExtraHard=0; simExtraSoft=0; simDuplicateFlag=false;
+            simExtraHardInput.value="0"; simExtraSoftInput.value="0"; simDuplicateSelect.value="false";
+            renderCurrentTab(); updateHistoryChart();
             resultsCard.classList.remove('hidden');
             setStatus(`Session loaded (${hardInquiries.length} hard, ${softInquiries.length} soft)`);
-        } catch(e) { showError("Failed to load session"); }
+        } catch(e) { showError("Failed load session"); }
     }
 
     function exportToExcel() {
-        const hardSheet = XLSX.utils.json_to_sheet(hardInquiries);
-        const softSheet = XLSX.utils.json_to_sheet(softInquiries);
+        const hardSheet = XLSX.utils.json_to_sheet(hardInquiries.map(({_dateObj, ...rest}) => rest));
+        const softSheet = XLSX.utils.json_to_sheet(softInquiries.map(({_dateObj, ...rest}) => rest));
         const stats = computeCumulativeStats(hardInquiries);
         const statsSheet = XLSX.utils.json_to_sheet([stats]);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, hardSheet, "Hard Inquiries");
         XLSX.utils.book_append_sheet(wb, softSheet, "Soft Inquiries");
         XLSX.utils.book_append_sheet(wb, statsSheet, "Summary");
-        XLSX.writeFile(wb, `credit_inquiries_${new Date().toISOString().slice(0,19)}.xlsx`);
+        XLSX.writeFile(wb, `chex_inquiries_${new Date().toISOString().slice(0,19)}.xlsx`);
     }
 
-    // Simulation handlers
     function applySimulation() {
-        let extra = parseInt(simExtraInput.value, 10);
-        if (isNaN(extra)) extra = 0;
-        simExtraHard = extra;
-        updateChexScoreDisplay(simExtraHard);
-        // also re-render table summary to keep UI consistent, but score display already updated
-        setStatus(`Simulation: +${extra} extra hard inquiries`);
+        simExtraHard = parseInt(simExtraHardInput.value,10) || 0;
+        simExtraSoft = parseInt(simExtraSoftInput.value,10) || 0;
+        simDuplicateFlag = simDuplicateSelect.value === "true";
+        updateChexScoreDisplay({ extraHard: simExtraHard, extraSoft: simExtraSoft, forceDuplicate: simDuplicateFlag });
+        setStatus(`Simulation active`);
     }
     function resetSimulation() {
-        simExtraHard = 0;
-        simExtraInput.value = "0";
-        updateChexScoreDisplay(0);
+        simExtraHard=0; simExtraSoft=0; simDuplicateFlag=false;
+        simExtraHardInput.value="0"; simExtraSoftInput.value="0"; simDuplicateSelect.value="false";
+        updateChexScoreDisplay({ extraHard:0, extraSoft:0, forceDuplicate:false });
         setStatus("Simulation reset");
     }
 
@@ -654,24 +480,20 @@
     filterBankInput.addEventListener('input', (e) => { currentFilterBank = e.target.value; renderCurrentTab(); });
     filterDateInput.addEventListener('input', (e) => { currentFilterDate = e.target.value; renderCurrentTab(); });
     mergeDuplicatesBtn.addEventListener('click', () => {
-        if(currentTab === "hard") { hardInquiries = mergeDuplicates(hardInquiries); }
-        else { softInquiries = mergeDuplicates(softInquiries); }
+        if(currentTab === "hard") hardInquiries = mergeDuplicates(hardInquiries);
+        else softInquiries = mergeDuplicates(softInquiries);
         renderCurrentTab();
         setStatus("Duplicates merged");
     });
     applySimBtn.addEventListener('click', applySimulation);
     resetSimBtn.addEventListener('click', resetSimulation);
     clearHistoryBtn.addEventListener('click', clearHistory);
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentTab = btn.dataset.type;
-            renderCurrentTab();
-        });
-    });
-    uploadZone.addEventListener('dragover', (e) => e.preventDefault());
-    uploadZone.addEventListener('drop', (e) => { e.preventDefault(); const file = e.dataTransfer.files[0]; if(file && file.type==='application/pdf') processPDF(file); else showError("Drop a PDF file"); });
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active'); currentTab = btn.dataset.type; renderCurrentTab();
+    }));
+    uploadZone.addEventListener('dragover', e=>e.preventDefault());
+    uploadZone.addEventListener('drop', e=>{ e.preventDefault(); const file = e.dataTransfer.files[0]; if(file && file.type==='application/pdf') processPDF(file); else showError("Drop PDF"); });
 </script>
 </body>
 </html>
