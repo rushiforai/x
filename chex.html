@@ -333,11 +333,14 @@
     function renderProfile() {
         if (!profileContainer) return;
         
-        // Helper to convert semicolons to line breaks
+        // Helper to convert semicolons to line breaks and escape HTML properly
         function formatValue(value) {
             if (!value) return '—';
-            // Replace semicolons followed by optional spaces with <br>
-            return value.replace(/;\s*/g, ';<br>');
+            // First escape HTML to prevent XSS
+            let escaped = escapeHtml(value);
+            // Then replace semicolons followed by optional spaces with ;<br>
+            // But we need to keep the semicolon visible, so we replace ";" with ";<br>"
+            return escaped.replace(/;\s*/g, '<br>');
         }
         
         const fields = [
@@ -352,10 +355,11 @@
         
         let html = '';
         fields.forEach(f => {
+            let displayValue = f.value === '—' ? '—' : f.value;
             html += `
                 <div class="profile-field">
                     <div class="profile-label"><span class="material-symbols-outlined" style="font-size:16px; vertical-align:middle;">${f.icon}</span> ${f.label}</div>
-                    <div class="profile-value">${f.value === '—' ? '—' : escapeHtml(f.value)}</div>
+                    <div class="profile-value">${displayValue}</div>
                 </div>
             `;
         });
