@@ -161,19 +161,20 @@
         background: #b02a37;
       }
 
-      .status-badge {
-        background: var(--md-primary-light);
-        border-radius: 100px;
-        padding: 8px 16px;
-        font-size: 0.8rem;
-        font-weight: 500;
-        color: #381e72;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        width: auto;
-        vertical-align: middle;
-      }
+	.status-badge {
+	  background: var(--md-primary-light);
+	  border-radius: 100px;
+	  padding: 8px 16px;
+	  font-size: 0.8rem;
+	  font-weight: 500;
+	  color: #381e72;
+	  display: flex;
+	  align-items: center;
+	  gap: 8px;
+	  width: fit-content;
+	  margin-left: auto;
+	  margin-right: auto;
+	}
 
       .status-badge .material-symbols-outlined {
         font-size: 1.1rem;
@@ -949,7 +950,7 @@
         function formatValue(value) {
           if (!value) return '—';
           let escaped = escapeHtml(value);
-          return escaped.replace(/;\s*/g, '; < br > ');
+          return escaped.replace(/;\s*/g, ' <br> ');
           }
           const fields = [{
             label: "Consumer ID",
@@ -1022,7 +1023,7 @@
 																								<th>Phone</th>
 																								<th>Date ${column === 'inquiry_date' ? (direction === 'asc' ? '▲' : '▼') : ''}</th>
 																								<th>Duplicate</th>`;
-          if (currentTab === "soft") html += ' < th > Original Inquirer < /th> < th > Original Inquirer Address < /th>';
+          if (currentTab === "soft") html += ' <th> Original Inquirer </th> <th> Original Inquirer Address </th>';
           html += `
 																							</thead>
 																							<tbody>`;
@@ -1046,8 +1047,7 @@
           });
           html += `
 																							</tbody>
-																						</table>
-																						<div>Total: ${filtered.length} inquiries (${duplicatesSet.size} duplicate entries)</div>`;
+																						</table>`;
           tableContainer.innerHTML = html;
           attachSortListeners();
         }
@@ -1184,7 +1184,7 @@
           const totalExtra = extras.m1 + extras.m2 + extras.m3 + extras.m6 + extras.m12;
           if (totalExtra > 0) {
             simResultDiv.innerHTML = `
-																						<span class="status-badge">🔮 Simulated: +${extras.m1}/1m, +${extras.m2}/2m, +${extras.m3}/3m, +${extras.m6}/6m, +${extras.m12}/12m → Score ${score} (${riskLevel})</span>`;
+																						<span class="status-badge">🔮 Simulated Score ${score} (${riskLevel})</span>`;
           } else {
             simResultDiv.innerHTML = "";
           }
@@ -1338,7 +1338,7 @@
 																										<th>Phone</th>
 																										<th>Date</th>
 																										<th>Duplicate</th>`;
-          if (currentTab === "soft") html += ' < th > Original Inquirer < /th> < th > Original Inquirer Address < /th>';
+          if (currentTab === "soft") html += ' <th> Original Inquirer </th> <th> Original Inquirer Address </th>';
           html += `
 																									</thead>
 																									<tbody>`;
@@ -1362,13 +1362,12 @@
           });
           html += `
 																									</tbody>
-																								</table>
-																								<div>Total: ${filtered.length} inquiries (${duplicatesSet.size} duplicate entries)</div>`;
+																								</table>`;
           tableContainer.innerHTML = html;
           attachSortListeners();
           const stats = computeCumulativeStats(currentTab === "hard" ? hardInquiries : []);
           summaryStatsDiv.innerHTML = `
-																								<div class="status-badge">📊 Cumulative Hard Inquiries: 1m: ${stats.last1Month} | 2m: ${stats.last2Months} | 3m: ${stats.last3Months} | 6m: ${stats.last6Months} | 12m: ${stats.last12Months} | 24m:${stats.last24Months}</div>`;
+																								<div class="status-badge">📊 Cumulative Hard Inquiries: 1m: ${stats.last1Month} | 2m: ${stats.last2Months} | 3m: ${stats.last3Months} | 6m: ${stats.last6Months} | 12m: ${stats.last12Months} | 24m: ${stats.last24Months}</div>`;
           updateChart(stats);
           updateChexScoreDisplay(simExtras);
         }
@@ -1381,7 +1380,7 @@
             data: {
               labels: ['1m', '2m', '3m', '6m', '12m', '24m'],
               datasets: [{
-                label: 'Hard Inquiries (cumulative)',
+                label: 'Hard Inquiries',
                 data: [stats.last1Month, stats.last2Months, stats.last3Months, stats.last6Months, stats.last12Months, stats.last24Months],
                 backgroundColor: '#6750a4'
               }]
