@@ -366,7 +366,7 @@
         margin-top: 6px;
         font-size: 0.7rem;
         font-weight: 500;
-        color: #2c3e50;
+        color: #ffffff;
       }
 
       .meter-labels span {
@@ -681,9 +681,6 @@
               </div>
               <div class="meter-marker" id="scoreMarker">▼</div>
             </div>
-          </div>
-          <div>
-            <span class="material-symbols-outlined" style="font-size:40px;">analytics</span>
           </div>
         </div>
       </div>
@@ -1550,7 +1547,7 @@
             renderProfile();
             renderCurrentTab();
             resultsCard.classList.remove('hidden');
-            setStatus(`Report Says: ${hardInquiries.length} Hard Inquiries, ${softInquiries.length} Soft Inquiries`);
+            setStatus(`Report Says: ${hardInquiries.length} Hard Inquiries & ${softInquiries.length} Soft Inquiries`);
             hideProgress();
             setTimeout(() => updateHistoryChart(), 100);
           } catch (err) {
