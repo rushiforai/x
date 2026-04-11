@@ -366,7 +366,7 @@
             margin-top: 6px;
             font-size: 0.7rem;
             font-weight: 500;
-            color: #2c3e50;
+            color: #ffffff;
         }
 
         .meter-labels span {
@@ -693,7 +693,6 @@
                     <div class="meter-marker" id="scoreMarker">▼</div>
                 </div>
             </div>
-            <div><span class="material-symbols-outlined" style="font-size:40px;">analytics</span></div>
         </div>
     </div>
 
@@ -713,7 +712,7 @@
             <canvas id="inquiryChart"></canvas>
         </div>
         <div id="summaryStats"></div>
-        <div class="simulator-card">
+        <div class="simulator-card" hidden>
             <h3 style="font-weight:500; text-align:center;">Score Simulator</h3>
             <div class="simulator-control">
                 <div>
@@ -898,7 +897,7 @@
         function formatValue(value) {
             if (!value) return '—';
             let escaped = escapeHtml(value);
-            return escaped.replace(/;\s*/g, ';<br>');
+            return escaped.replace(/;\s*/g, '<br>');
         }
         const fields = [
             { label: "Consumer ID", value: escapeHtml(profile.consumerId), icon: "badge" },
@@ -1139,7 +1138,7 @@
     function updateChart(stats) {
         const ctx = document.getElementById('inquiryChart').getContext('2d');
         if (chartInstance) chartInstance.destroy();
-        const title = currentTab === "hard" ? "Hard Inquiries (cumulative)" : "Soft Inquiries (cumulative)";
+        const title = currentTab === "hard" ? "Hard Inquiries" : "Soft Inquiries";
         chartInstance = new Chart(ctx, {
             type: 'bar',
             data: {
