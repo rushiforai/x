@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>KYCR</title>
+    <title>KYCR - Know Your Chex Report</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.3.122/pdf.min.js"></script>
@@ -33,9 +33,9 @@
         --md-outline: #c2c7d0;
         --md-on-surface: #1e1e2f;
         --md-on-surface-variant: #4a4e6b;
-        --shadow-sm: 0 2px 4px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
-        --shadow-md: 0 8px 20px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.02);
-        --shadow-lg: 0 16px 32px rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.04);
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+        --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.02);
+        --shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.04);
         --transition: all 0.2s ease;
       }
 
@@ -51,8 +51,7 @@
         box-shadow: var(--shadow-md);
         margin-bottom: 28px;
         transition: var(--transition);
-        backdrop-filter: blur(0px);
-        border: 1px solid rgba(255,255,255,0.3);
+        border: 1px solid rgba(255, 255, 255, 0.3);
       }
 
       .card:hover {
@@ -140,10 +139,6 @@
         box-shadow: var(--shadow-md);
       }
 
-      .btn:active {
-        transform: translateY(1px);
-      }
-
       .btn-outline {
         background: transparent;
         border: 1px solid var(--md-outline);
@@ -154,7 +149,6 @@
       .btn-outline:hover {
         background: var(--md-primary-light);
         border-color: var(--md-primary);
-        transform: translateY(-1px);
       }
 
       .btn-danger {
@@ -167,20 +161,25 @@
         background: #b02a37;
       }
 
-	.status-badge {
-	  background: var(--md-primary-light);
-	  border-radius: 100px;
-	  padding: 8px 16px;
-	  font-size: 0.8rem;
-	  font-weight: 500;
-	  color: #381e72;
-	  display: flex;
-	  align-items: center;
-	  gap: 8px;
-	  width: fit-content;
-	  margin-left: auto;
-	  margin-right: auto;
-	}
+      .status-badge {
+        background: var(--md-primary-light);
+        border-radius: 100px;
+        padding: 8px 16px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: #381e72;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        width: auto;
+        vertical-align: middle;
+      }
+
+      .status-badge .material-symbols-outlined {
+        font-size: 1.1rem;
+        line-height: 1;
+        vertical-align: middle;
+      }
 
       .progress-bar-container {
         margin: 20px 0;
@@ -217,15 +216,9 @@
         font-size: 0.95rem;
       }
 
-      .tab-btn:hover {
-        background: rgba(103, 80, 164, 0.08);
-        color: var(--md-primary);
-      }
-
       .tab-btn.active {
         background: var(--md-primary-light);
         color: #381e72;
-        position: relative;
       }
 
       .filter-bar {
@@ -278,7 +271,6 @@
         background: #fafbfd;
         font-weight: 600;
         color: #2c2e3a;
-        transition: var(--transition);
       }
 
       th:hover {
@@ -297,20 +289,20 @@
         align-items: center;
       }
 
-	.chart-container {
-	  width: 100%;
-	  margin: 28px 0;
-	  background: white;
-	  padding: 16px;
-	  border-radius: 28px;
-	  box-shadow: var(--shadow-sm);
-	}
-	
-	#inquiryChart {
-	  width: 100% !important;
-	  height: auto !important;
-	  max-height: 400px;
-	}
+      .chart-container {
+        width: 100%;
+        margin: 28px 0;
+        background: white;
+        padding: 16px;
+        border-radius: 28px;
+        box-shadow: var(--shadow-sm);
+      }
+
+      #inquiryChart {
+        width: 100% !important;
+        height: auto !important;
+        max-height: 400px;
+      }
 
       .hidden {
         display: none;
@@ -326,6 +318,73 @@
         font-weight: 500;
       }
 
+      /* ChexScore Meter */
+      .score-meter {
+        position: relative;
+        width: 100%;
+        margin-top: 10px;
+        user-select: none;
+      }
+
+      .meter-bar {
+        display: flex;
+        height: 30px;
+        border-radius: 30px;
+        overflow: hidden;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 0 rgba(255, 255, 255, 0.3);
+      }
+
+      .meter-segment {
+        flex: 1;
+        height: 100%;
+      }
+
+      .poor {
+        background: #d32f2f;
+      }
+
+      .fair {
+        background: #f57c00;
+      }
+
+      .good {
+        background: #fbc02d;
+      }
+
+      .very-good {
+        background: #388e3c;
+      }
+
+      .excellent {
+        background: #0d47a1;
+      }
+
+      .meter-labels {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 6px;
+        font-size: 0.7rem;
+        font-weight: 500;
+        color: #2c3e50;
+      }
+
+      .meter-labels span {
+        text-align: center;
+        flex: 1;
+      }
+
+      .meter-marker {
+        position: absolute;
+        top: -18px;
+        left: 0%;
+        transform: translateX(-50%);
+        font-size: 20px;
+        color: #1e2a3a;
+        filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
+        transition: left 0.3s ease;
+        text-shadow: 0 1px 0 white;
+      }
+
       .chexscore-card {
         background: linear-gradient(135deg, #1e2a3a 0%, #0f1724 100%);
         border-radius: 32px;
@@ -337,18 +396,13 @@
         align-items: center;
         flex-wrap: wrap;
         box-shadow: var(--shadow-lg);
-        transition: var(--transition);
-      }
-
-      .chexscore-card:hover {
-        transform: translateY(-3px);
       }
 
       .score-number {
         font-size: 3.5rem;
         font-weight: 800;
         line-height: 1;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
       }
 
       .risk-level {
@@ -358,7 +412,6 @@
         border-radius: 100px;
         display: inline-block;
         margin-top: 10px;
-        backdrop-filter: blur(4px);
       }
 
       .simulator-card {
@@ -367,11 +420,6 @@
         padding: 20px;
         margin-top: 24px;
         box-shadow: var(--shadow-sm);
-        transition: var(--transition);
-      }
-
-      .simulator-card:hover {
-        box-shadow: var(--shadow-md);
       }
 
       .simulator-control {
@@ -381,7 +429,7 @@
         margin: 16px 0;
       }
 
-      .simulator-control > div {
+      .simulator-control>div {
         min-width: 110px;
         background: white;
         padding: 12px;
@@ -415,11 +463,6 @@
         border-top: 1px solid #e0e4ec;
       }
 
-      .calibration-slider input {
-        width: 100%;
-        max-width: 320px;
-      }
-
       .session-manager {
         margin-top: 20px;
         border-top: 1px solid #edf0f5;
@@ -441,10 +484,6 @@
         transition: var(--transition);
       }
 
-      .session-toggle-btn:hover {
-        background: #e8e1f5;
-      }
-
       .session-panel {
         margin-top: 14px;
         background: white;
@@ -461,11 +500,6 @@
         align-items: center;
         padding: 14px;
         border-bottom: 1px solid #edf0f5;
-        transition: var(--transition);
-      }
-
-      .session-item:hover {
-        background: #faf9fe;
       }
 
       .session-info {
@@ -489,7 +523,6 @@
         cursor: pointer;
         padding: 6px;
         border-radius: 50%;
-        transition: var(--transition);
       }
 
       .delete-session:hover {
@@ -507,14 +540,6 @@
         padding: 12px 16px;
         border-radius: 100px;
         border: 1px solid var(--md-outline);
-        font-family: inherit;
-        transition: var(--transition);
-      }
-
-      .save-session-input input:focus {
-        outline: none;
-        border-color: var(--md-primary);
-        box-shadow: 0 0 0 3px rgba(103, 80, 164, 0.2);
       }
 
       .profile-grid {
@@ -530,12 +555,6 @@
         padding: 16px 20px;
         transition: var(--transition);
         border: 1px solid rgba(103, 80, 164, 0.1);
-      }
-
-      .profile-field:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-sm);
-        border-color: var(--md-primary-light);
       }
 
       .profile-label {
@@ -558,26 +577,32 @@
         body {
           padding: 20px 16px;
         }
+
         .card {
           padding: 20px 16px;
         }
-        th, td {
+
+        th,
+        td {
           font-size: 0.75rem;
           padding: 10px 6px;
         }
+
         .score-number {
           font-size: 2.2rem;
         }
+
         .profile-grid {
           grid-template-columns: 1fr;
         }
-        .simulator-control > div {
+
+        .simulator-control>div {
           min-width: calc(50% - 20px);
         }
       }
 
       @media (max-width: 480px) {
-        .simulator-control > div {
+        .simulator-control>div {
           min-width: 100%;
         }
       }
@@ -615,10 +640,10 @@
           <div id="sessionPanel" class="session-panel hidden">
             <div id="sessionsList"></div>
             <div class="save-session-input">
-              <input type="text" id="newSessionName" placeholder=" Enter Session Name to Save (default: PDF Name)">
+              <input type="text" id="newSessionName" placeholder="Enter Session Name (default: PDF Name)">
               <button id="saveCurrentSessionBtn" class="btn-outline btn">Save</button>
             </div>
-            <div style="margin-top: 12px;">
+            <div style="margin-top:12px;">
               <button id="deleteAllSessionsBtn" class="btn-danger btn">Delete All Sessions</button>
             </div>
           </div>
@@ -636,6 +661,25 @@
             <div style="font-size:0.9rem; opacity:0.8;">Estimated ChexScore™</div>
             <div class="score-number" id="chexScoreValue">---</div>
             <div class="risk-level" id="chexRiskLevel">---</div>
+          </div>
+          <div style="flex:1; min-width:200px; margin-left:20px;">
+            <div class="score-meter" id="scoreMeter">
+              <div class="meter-bar">
+                <div class="meter-segment poor"></div>
+                <div class="meter-segment fair"></div>
+                <div class="meter-segment good"></div>
+                <div class="meter-segment very-good"></div>
+                <div class="meter-segment excellent"></div>
+              </div>
+              <div class="meter-labels">
+                <span>Poor</span>
+                <span>Fair</span>
+                <span>Good</span>
+                <span>Very Good</span>
+                <span>Excellent</span>
+              </div>
+              <div class="meter-marker" id="scoreMarker">▼</div>
+            </div>
           </div>
           <div>
             <span class="material-symbols-outlined" style="font-size:40px;">analytics</span>
@@ -658,7 +702,7 @@
           <canvas id="inquiryChart"></canvas>
         </div>
         <div id="summaryStats"></div>
-        <div class="simulator-card hidden">
+        <div class="simulator-card">
           <h3 style="font-weight:500;">Score Simulator</h3>
           <div class="simulator-control">
             <div>
@@ -692,11 +736,11 @@
               <span id="simExtra12mVal">0</span>
             </div>
           </div>
-          <div style="margin-top: 8px;">
+          <div style="margin-top:8px;">
             <button id="applySimulation" class="btn-outline btn">Simulate</button>
             <button id="resetSimulation" class="btn-outline btn">Reset</button>
           </div>
-          <div id="simResult" style="margin-top: 8px; font-size:0.9rem;"></div>
+          <div id="simResult" style="margin-top:8px; font-size:0.9rem;"></div>
           <div class="calibration-slider">
             <label>Calibration factor (0.8 – 1.2): </label>
             <input type="range" id="calibFactor" min="0.8" max="1.2" step="0.01" value="1.00">
@@ -741,9 +785,9 @@
       };
       let calibFactor = 1.00;
       let currentPDFName = "";
-      let sortColumn = 'bank_name';   // 'bank_name' or 'inquiry_date'
-	  let sortDirection = 'asc';     // 'asc' or 'desc'
-	  let lastRecordedScore = null;  // add this at the top with other global variables
+      let sortColumn = 'bank_name';
+      let sortDirection = 'asc';
+      let lastRecordedScore = null;
       // DOM elements
       const pdfInput = document.getElementById('pdfInput');
       const uploadZone = document.getElementById('uploadZone');
@@ -855,7 +899,6 @@
           dateOfBirth: "",
           dateOfReport: ""
         };
-        // CONSUMER ID and NAME from "Consumer ID 123 for NAME"
         let idForMatch = fullText.match(/Consumer\s+ID\s+(\d+)\s+for\s+([A-Z\s]+?)(?=\s*\.|\s*\n|\s*This report)/i);
         if (idForMatch) {
           profileData.consumerId = idForMatch[1];
@@ -866,43 +909,32 @@
           let nameMatch = fullText.match(/Consumer\s+Name\s*:?\s*([A-Z\s]+?)(?=\s*\.|\s*\n|\s*This report)/i);
           if (nameMatch) profileData.consumerName = nameMatch[1].trim();
         }
-        // ASSOCIATED NAMES - fixed to capture until "Addresses:" regardless of line breaks
         let assocMatch = fullText.match(/Associated\s+Names:\s*([\s\S]*?)(?=Addresses:)/i);
         if (assocMatch) {
-          let assoc = assocMatch[1].replace(/\n/g, ' ') // replace newlines with spaces
-            .replace(/\s+/g, ' ') // collapse multiple spaces
-            .trim();
-          // Remove trailing colon or extra spaces
+          let assoc = assocMatch[1].replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
           assoc = assoc.replace(/:\s*$/, '').trim();
           profileData.associatedNames = assoc;
         }
-        // ADDRESSES (unchanged)
         let addrMatch = fullText.match(/Addresses:\s*([\s\S]*?)(?=Phone\s+Numbers:)/i);
         if (addrMatch) {
           let addr = addrMatch[1].replace(/\n/g, ', ').replace(/\s+/g, ' ').replace(/,\s*,/g, ',').trim();
           profileData.addresses = addr;
         }
-        // PHONE NUMBERS (unchanged)
         let phoneMatch = fullText.match(/Phone\s+Numbers:\s*([\s\S]*?)(?=Email\s+Addresses:)/i);
         if (phoneMatch) {
           let phones = phoneMatch[1].replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
           profileData.phoneNumbers = phones;
         }
-        // EMAIL ADDRESSES (unchanged)
         let emailMatch = fullText.match(/Email\s+Addresses:\s*([^\n]+?)(?=\s*Date\s+of\s+Birth:)/i);
-        if (emailMatch) {
-          profileData.emailAddresses = emailMatch[1].trim();
-        } else {
+        if (emailMatch) profileData.emailAddresses = emailMatch[1].trim();
+        else {
           let simpleEmail = fullText.match(/Email\s+Addresses:\s*([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i);
           if (simpleEmail) profileData.emailAddresses = simpleEmail[1];
         }
-        // DATE OF BIRTH (unchanged)
         let dobMatch = fullText.match(/Date\s+of\s+Birth:\s*(\d{1,2}\/\d{1,2}\/\d{4})/i);
         if (dobMatch) profileData.dateOfBirth = dobMatch[1];
-        // DATE OF REPORT – find first date near the beginning of the PDF (before Consumer ID)
         let reportDateMatch = fullText.match(/^[\s\S]{0,500}?(\d{2}\/\d{2}\/\d{4})/im);
         if (!reportDateMatch) {
-          // Fallback: look for any date before "Consumer ID"
           let beforeConsumer = fullText.split(/Consumer\s+ID/i)[0];
           let dateInHeader = beforeConsumer.match(/\b(\d{2}\/\d{2}\/\d{4})\b/);
           if (dateInHeader) reportDateMatch = dateInHeader;
@@ -913,14 +945,12 @@
 
       function renderProfile() {
         if (!profileContainer) return;
-        // Helper to convert semicolons to line breaks and escape HTML properly
+
         function formatValue(value) {
           if (!value) return '—';
-          // First escape HTML to prevent XSS
           let escaped = escapeHtml(value);
-          // Then replace semicolons followed by optional spaces with ;<br>
-            return escaped.replace(/;\s*/g, ' <br> ');
-            }
+          return escaped.replace(/;\s*/g, '; < br > ');
+          }
           const fields = [{
             label: "Consumer ID",
             value: escapeHtml(profile.consumerId),
@@ -956,99 +986,101 @@
           }];
           let html = '';
           fields.forEach(f => {
-            let displayValue = f.value === '' || f.value === '—' ? '—' : f.value;
+            let displayValue = (f.value === '' || f.value === '—') ? '—' : f.value;
             html += `
-                
-																						<div class="profile-field">
-																							<div class="profile-label">
-																								<span class="material-symbols-outlined" style="font-size:16px; vertical-align:middle;">${f.icon}</span> ${f.label}
-																							</div>
-																							<div class="profile-value">${displayValue}</div>
+																					<div class="profile-field">
+																						<div class="profile-label">
+																							<span class="material-symbols-outlined" style="font-size:16px; vertical-align:middle;">${f.icon}</span> ${f.label}
 																						</div>
-            `;
+																						<div class="profile-value">${displayValue}</div>
+																					</div>`;
           });
           profileContainer.innerHTML = html;
           profileCard.classList.remove('hidden');
         }
 
-function sortTable(column, direction) {
-    let data = currentTab === "hard" ? hardInquiries : softInquiries;
-    let filtered = data.filter(inq => {
-        let matchBank = !currentFilterBank || inq.bank_name.toLowerCase().includes(currentFilterBank.toLowerCase());
-        let matchDate = !currentFilterDate || (inq.inquiry_date && inq.inquiry_date.includes(currentFilterDate));
-        return matchBank && matchDate;
-    });
-    filtered.sort((a, b) => {
-        let valA = (a[column] || '').toLowerCase();
-        let valB = (b[column] || '').toLowerCase();
-        if (direction === 'asc') {
-            return valA < valB ? -1 : valA > valB ? 1 : 0;
-        } else {
-            return valA > valB ? -1 : valA < valB ? 1 : 0;
+        function sortTable(column, direction) {
+          let data = currentTab === "hard" ? hardInquiries : softInquiries;
+          let filtered = data.filter(inq => {
+            let matchBank = !currentFilterBank || inq.bank_name.toLowerCase().includes(currentFilterBank.toLowerCase());
+            let matchDate = !currentFilterDate || (inq.inquiry_date && inq.inquiry_date.includes(currentFilterDate));
+            return matchBank && matchDate;
+          });
+          filtered.sort((a, b) => {
+            let valA = (a[column] || '').toLowerCase();
+            let valB = (b[column] || '').toLowerCase();
+            if (direction === 'asc') return valA < valB ? -1 : valA > valB ? 1 : 0;
+            else return valA > valB ? -1 : valA < valB ? 1 : 0;
+          });
+          const duplicatesSet = findDuplicates(filtered);
+          let html = `
+																					<table>
+																						<thead>
+																							<tr>
+																								<th>Name ${column === 'bank_name' ? (direction === 'asc' ? '▲' : '▼') : ''}</th>
+																								<th>Address</th>
+																								<th>Phone</th>
+																								<th>Date ${column === 'inquiry_date' ? (direction === 'asc' ? '▲' : '▼') : ''}</th>
+																								<th>Duplicate</th>`;
+          if (currentTab === "soft") html += ' < th > Original Inquirer < /th> < th > Original Inquirer Address < /th>';
+          html += `
+																							</thead>
+																							<tbody>`;
+          filtered.forEach((inq, idx) => {
+            const isDup = duplicatesSet.has(idx) ? "Yes" : "";
+            const dupClass = duplicatesSet.has(idx) ? "duplicate-row" : "";
+            html += `
+																								<tr class="${dupClass}">
+																									<td>${escapeHtml(inq.bank_name)}</td>
+																									<td>${escapeHtml(inq.bank_address)}</td>
+																									<td>${escapeHtml(inq.bank_phone)}</td>
+																									<td>${inq.inquiry_date || ''}</td>
+																									<td>${isDup}</td>`;
+            if (currentTab === "soft") {
+              html += `
+																									<td>${escapeHtml(inq.original_inquirer || '')}</td>
+																									<td>${escapeHtml(inq.original_inquirer_address || '')}</td>`;
+            }
+            html += `
+																								</tr>`;
+          });
+          html += `
+																							</tbody>
+																						</table>
+																						<div>Total: ${filtered.length} inquiries (${duplicatesSet.size} duplicate entries)</div>`;
+          tableContainer.innerHTML = html;
+          attachSortListeners();
         }
-    });
-    const duplicatesSet = findDuplicates(filtered);
-    let html = `<table><thead><tr><th>Name ${column === 'bank_name' ? (direction === 'asc' ? '▲' : '▼') : ''}</th>
-                    <th>Address</th>
-                    <th>Phone</th>
-                    <th>Date ${column === 'inquiry_date' ? (direction === 'asc' ? '▲' : '▼') : ''}</th>
-                    <th>Duplicate</th>`;
-    if (currentTab === "soft") html += '<th>Original Inquirer</th><th>Original Inquirer Address</th>';
-    html += `</thead><tbody>`;
-    filtered.forEach((inq, idx) => {
-        const isDup = duplicatesSet.has(idx) ? "Yes" : "";
-        const dupClass = duplicatesSet.has(idx) ? "duplicate-row" : "";
-        html += `<tr class="${dupClass}">
-            <td>${escapeHtml(inq.bank_name)}</td>
-            <td>${escapeHtml(inq.bank_address)}</td>
-            <td>${escapeHtml(inq.bank_phone)}</td>
-            <td>${inq.inquiry_date || ''}</td>
-            <td>${isDup}</td>`;
-        if (currentTab === "soft") {
-            html += `<td>${escapeHtml(inq.original_inquirer || '')}</td>`;
-            html += `<td>${escapeHtml(inq.original_inquirer_address || '')}</td>`;
-        }
-        html += `</tr>`;
-    });
-    tableContainer.innerHTML = html;
-    attachSortListeners(); // reattach listeners after table rebuild
-}
 
-function attachSortListeners() {
-    const headers = document.querySelectorAll('#tableContainer th');
-    if (!headers.length) return;
-    
-    // Name column (first th)
-    const nameHeader = headers[0];
-    const newNameHeader = nameHeader.cloneNode(true);
-    nameHeader.parentNode.replaceChild(newNameHeader, nameHeader);
-    newNameHeader.style.cursor = 'pointer';
-    newNameHeader.addEventListener('click', () => {
-        if (sortColumn === 'bank_name') {
-            sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            sortColumn = 'bank_name';
-            sortDirection = 'asc';
+        function attachSortListeners() {
+          const headers = document.querySelectorAll('#tableContainer th');
+          if (!headers.length) return;
+          const nameHeader = headers[0];
+          const newNameHeader = nameHeader.cloneNode(true);
+          nameHeader.parentNode.replaceChild(newNameHeader, nameHeader);
+          newNameHeader.style.cursor = 'pointer';
+          newNameHeader.addEventListener('click', () => {
+            if (sortColumn === 'bank_name') sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            else {
+              sortColumn = 'bank_name';
+              sortDirection = 'asc';
+            }
+            sortTable(sortColumn, sortDirection);
+          });
+          const dateHeader = headers[3];
+          const newDateHeader = dateHeader.cloneNode(true);
+          dateHeader.parentNode.replaceChild(newDateHeader, dateHeader);
+          newDateHeader.style.cursor = 'pointer';
+          newDateHeader.addEventListener('click', () => {
+            if (sortColumn === 'inquiry_date') sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            else {
+              sortColumn = 'inquiry_date';
+              sortDirection = 'asc';
+            }
+            sortTable(sortColumn, sortDirection);
+          });
         }
-        sortTable(sortColumn, sortDirection);
-    });
 
-    // Date column (fourth th)
-    const dateHeader = headers[3];
-    const newDateHeader = dateHeader.cloneNode(true);
-    dateHeader.parentNode.replaceChild(newDateHeader, dateHeader);
-    newDateHeader.style.cursor = 'pointer';
-    newDateHeader.addEventListener('click', () => {
-        if (sortColumn === 'inquiry_date') {
-            sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            sortColumn = 'inquiry_date';
-            sortDirection = 'asc';
-        }
-        sortTable(sortColumn, sortDirection);
-    });
-}
-        // Scoring algorithm (unchanged)
         function calculateChexScore(hardArray, extras = {
           m1: 0,
           m2: 0,
@@ -1078,9 +1110,7 @@ function attachSortListeners() {
           const uniqueBanks6mo = new Set();
           hardArray.forEach(inq => {
             let dateObj = inq._dateObj || (inq.inquiry_date ? new Date(normalizeDate(inq.inquiry_date)) : null);
-            if (dateObj && !isNaN(dateObj) && dateObj >= sixMonthsAgo) {
-              uniqueBanks6mo.add(inq.bank_name);
-            }
+            if (dateObj && !isNaN(dateObj) && dateObj >= sixMonthsAgo) uniqueBanks6mo.add(inq.bank_name);
           });
           let uniqueHard6 = uniqueBanks6mo.size + extra6;
           let duplicateCount = rawHard6 - uniqueHard6;
@@ -1109,8 +1139,8 @@ function attachSortListeners() {
               r12: 8,
               ded: 326
             }];
-            let best = points[0];
-            let minDist = Infinity;
+            let best = points[0],
+              minDist = Infinity;
             for (let p of points) {
               let dist = Math.abs(p.u6 - unique6) + Math.abs(p.r12 - raw12);
               if (dist < minDist) {
@@ -1128,94 +1158,115 @@ function attachSortListeners() {
           let riskLevel = score >= 750 ? "Excellent" : (score >= 650 ? "Good" : (score >= 500 ? "Fair" : "Poor"));
           return {
             score,
-            riskLevel,
-            hard6: rawHard6,
-            hard12: rawHard12,
-            duplicateBonus
+            riskLevel
           };
         }
 
-		function updateChexScoreDisplay(extras = { m1:0, m2:0, m3:0, m6:0, m12:0 }) {
-		    if (!hardInquiries.length) {
-		        chexScoreSpan.innerText = "---";
-		        chexRiskSpan.innerText = "No hard data";
-		        if (simResultDiv) simResultDiv.innerHTML = "";
-		        return;
-		    }
-		    const { score, riskLevel } = calculateChexScore(hardInquiries, extras);
-		    chexScoreSpan.innerText = score;
-		    chexRiskSpan.innerText = riskLevel;
-		    
-		    const totalExtra = extras.m1 + extras.m2 + extras.m3 + extras.m6 + extras.m12;
-		    if (totalExtra > 0) {
-		        simResultDiv.innerHTML = `<span class="status-badge">🔮 Simulated: +${extras.m1}/1m, +${extras.m2}/2m, +${extras.m3}/3m, +${extras.m6}/6m, +${extras.m12}/12m → Score ${score} (${riskLevel})</span>`;
-		    } else {
-		        simResultDiv.innerHTML = "";
-		    }
-		    
-		    // Add to history only if no simulation and score changed
-		    if (totalExtra === 0 && hardInquiries.length && score !== lastRecordedScore) {
-		        lastRecordedScore = score;
-		        addToHistory(score);
-		    }
-		}
-        // History chart (unchanged)
-		function addToHistory(score) {
-		    const now = new Date();
-		    const label = now.toLocaleTimeString();
-		    scoreHistory.unshift({ score, timestamp: now, label });
-		    if (scoreHistory.length > 10) scoreHistory.pop();
-		    // Force chart update after a microtask (ensures DOM is ready)
-		    setTimeout(() => updateHistoryChart(), 50);
-		}
-		
-		function updateHistoryChart() {
-		    const canvas = document.getElementById('scoreHistoryChart');
-		    if (!canvas) return;
-		    // Ensure canvas is visible and has size
-		    if (canvas.offsetParent === null) {
-		        // Canvas is hidden – wait a bit and retry
-		        setTimeout(() => updateHistoryChart(), 200);
-		        return;
-		    }
-		    const ctx = canvas.getContext('2d');
-		    if (historyChart) {
-		        historyChart.destroy();
-		        historyChart = null;
-		    }
-		    if (scoreHistory.length === 0) {
-		        ctx.clearRect(0, 0, canvas.width, canvas.height);
-		        return;
-		    }
-		    const labels = scoreHistory.map(h => h.label).reverse();
-		    const dataPoints = scoreHistory.map(h => h.score).reverse();
-		    historyChart = new Chart(ctx, {
-		        type: 'line',
-		        data: {
-		            labels: labels,
-		            datasets: [{
-		                label: 'ChexScore',
-		                data: dataPoints,
-		                borderColor: '#6750a4',
-		                backgroundColor: 'rgba(103,80,164,0.1)',
-		                fill: true,
-		                tension: 0.3
-		            }]
-		        },
-		        options: {
-		            responsive: true,
-		            maintainAspectRatio: true,
-		            plugins: { legend: { position: 'top' } }
-		        }
-		    });
-		}
+        function updateChexScoreDisplay(extras = {
+          m1: 0,
+          m2: 0,
+          m3: 0,
+          m6: 0,
+          m12: 0
+        }) {
+          if (!hardInquiries.length) {
+            chexScoreSpan.innerText = "---";
+            chexRiskSpan.innerText = "No hard data";
+            if (simResultDiv) simResultDiv.innerHTML = "";
+            return;
+          }
+          const {
+            score,
+            riskLevel
+          } = calculateChexScore(hardInquiries, extras);
+          chexScoreSpan.innerText = score;
+          chexRiskSpan.innerText = riskLevel;
+          const totalExtra = extras.m1 + extras.m2 + extras.m3 + extras.m6 + extras.m12;
+          if (totalExtra > 0) {
+            simResultDiv.innerHTML = `
+																						<span class="status-badge">🔮 Simulated: +${extras.m1}/1m, +${extras.m2}/2m, +${extras.m3}/3m, +${extras.m6}/6m, +${extras.m12}/12m → Score ${score} (${riskLevel})</span>`;
+          } else {
+            simResultDiv.innerHTML = "";
+          }
+          if (totalExtra === 0 && hardInquiries.length && score !== lastRecordedScore) {
+            lastRecordedScore = score;
+            addToHistory(score);
+          }
+          // Update meter marker
+          const marker = document.getElementById('scoreMarker');
+          if (marker && score !== '---') {
+            let numericScore = parseInt(score);
+            if (!isNaN(numericScore)) {
+              let minScore = 300,
+                maxScore = 850;
+              let percent = (numericScore - minScore) / (maxScore - minScore);
+              percent = Math.min(1, Math.max(0, percent));
+              marker.style.left = (percent * 100) + '%';
+            }
+          }
+        }
+
+        function addToHistory(score) {
+          const now = new Date();
+          const label = now.toLocaleTimeString();
+          scoreHistory.unshift({
+            score,
+            timestamp: now,
+            label
+          });
+          if (scoreHistory.length > 10) scoreHistory.pop();
+          setTimeout(() => updateHistoryChart(), 50);
+        }
+
+        function updateHistoryChart() {
+          const canvas = document.getElementById('scoreHistoryChart');
+          if (!canvas) return;
+          if (canvas.offsetParent === null) {
+            setTimeout(() => updateHistoryChart(), 200);
+            return;
+          }
+          const ctx = canvas.getContext('2d');
+          if (historyChart) {
+            historyChart.destroy();
+            historyChart = null;
+          }
+          if (scoreHistory.length === 0) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            return;
+          }
+          const labels = scoreHistory.map(h => h.label).reverse();
+          const dataPoints = scoreHistory.map(h => h.score).reverse();
+          historyChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels,
+              datasets: [{
+                label: 'ChexScore',
+                data: dataPoints,
+                borderColor: '#6750a4',
+                backgroundColor: 'rgba(103,80,164,0.1)',
+                fill: true,
+                tension: 0.3
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: true,
+              plugins: {
+                legend: {
+                  position: 'top'
+                }
+              }
+            }
+          });
+        }
 
         function clearHistory() {
           scoreHistory = [];
           updateHistoryChart();
           setStatus("History cleared");
         }
-        // Duplicate functions (unchanged)
+
         function findDuplicates(inquiries) {
           const map = new Map();
           inquiries.forEach((inq, idx) => {
@@ -1279,46 +1330,45 @@ function attachSortListeners() {
           });
           const duplicatesSet = findDuplicates(filtered);
           let html = `
-																								<table>
-																									<thead>
-																										<tr>
-																											<th data-sort="bank_name">Name</th>
-																											<th>Address</th>
-																											<th>Phone</th>
-																											<th>Date</th>
-																											<th>Duplicate</th>`;
-          if (currentTab === "soft") html += ' <th> Original Inquirer </th> <th> Original Inquirer Address </th>';
+																							<table>
+																								<thead>
+																									<tr>
+																										<th>Name</th>
+																										<th>Address</th>
+																										<th>Phone</th>
+																										<th>Date</th>
+																										<th>Duplicate</th>`;
+          if (currentTab === "soft") html += ' < th > Original Inquirer < /th> < th > Original Inquirer Address < /th>';
           html += `
-																										</thead>
-																										<tbody>`;
+																									</thead>
+																									<tbody>`;
           filtered.forEach((inq, idx) => {
             const isDup = duplicatesSet.has(idx) ? "Yes" : "";
             const dupClass = duplicatesSet.has(idx) ? "duplicate-row" : "";
             html += `
-																											<tr class="${dupClass}">
-																												<td>${escapeHtml(inq.bank_name)}</td>
-																												<td>${escapeHtml(inq.bank_address)}</td>
-																												<td>${escapeHtml(inq.bank_phone)}</td>
-																												<td>${inq.inquiry_date || ''}</td>
-																												<td>${isDup}</td>`;
+																										<tr class="${dupClass}">
+																											<td>${escapeHtml(inq.bank_name)}</td>
+																											<td>${escapeHtml(inq.bank_address)}</td>
+																											<td>${escapeHtml(inq.bank_phone)}</td>
+																											<td>${inq.inquiry_date || ''}</td>
+																											<td>${isDup}</td>`;
             if (currentTab === "soft") {
               html += `
-																												<td>${escapeHtml(inq.original_inquirer || '')}</td>`;
-              html += `
-																												<td>${escapeHtml(inq.original_inquirer_address || '')}</td>`;
+																											<td>${escapeHtml(inq.original_inquirer || '')}</td>
+																											<td>${escapeHtml(inq.original_inquirer_address || '')}</td>`;
             }
             html += `
-																											</tr>`;
+																										</tr>`;
           });
           html += `
-																										</tbody>
-																									</table>`;
+																									</tbody>
+																								</table>
+																								<div>Total: ${filtered.length} inquiries (${duplicatesSet.size} duplicate entries)</div>`;
           tableContainer.innerHTML = html;
-          // Attach sorting event listeners to table headers
           attachSortListeners();
           const stats = computeCumulativeStats(currentTab === "hard" ? hardInquiries : []);
           summaryStatsDiv.innerHTML = `
-																									<div class="status-badge">📊 Cumulative Hard Inquires: 1m: ${stats.last1Month} | 2m: ${stats.last2Months} | 3m: ${stats.last3Months} | 6m: ${stats.last6Months} | 12m: ${stats.last12Months} | 24m: ${stats.last24Months}</div>`;
+																								<div class="status-badge">📊 Cumulative Hard Inquiries: 1m: ${stats.last1Month} | 2m: ${stats.last2Months} | 3m: ${stats.last3Months} | 6m: ${stats.last6Months} | 12m: ${stats.last12Months} | 24m:${stats.last24Months}</div>`;
           updateChart(stats);
           updateChexScoreDisplay(simExtras);
         }
@@ -1331,7 +1381,7 @@ function attachSortListeners() {
             data: {
               labels: ['1m', '2m', '3m', '6m', '12m', '24m'],
               datasets: [{
-                label: 'Hard Inquiries',
+                label: 'Hard Inquiries (cumulative)',
                 data: [stats.last1Month, stats.last2Months, stats.last3Months, stats.last6Months, stats.last12Months, stats.last24Months],
                 backgroundColor: '#6750a4'
               }]
@@ -1351,7 +1401,6 @@ function attachSortListeners() {
             '>': '&gt;'
           } [m]));
         }
-        // PDF extraction (including profile)
         async function extractFromPDF(arrayBuffer) {
           const pdf = await pdfjsLib.getDocument({
             data: arrayBuffer
@@ -1363,7 +1412,6 @@ function attachSortListeners() {
             fullText += content.items.map(item => item.str).join(' ') + '\n';
             updateProgress(Math.round(((i + 1) / pdf.numPages) * 100));
           }
-          // Extract profile data
           const extractedProfile = extractProfile(fullText);
           const hardPatterns = [/Inquiries Viewed By Others/i, /Hard Inquiries/i, /Inquiries Shared With Others/i];
           const softPatterns = [/Inquiries Viewed Only By You/i, /Soft Inquiries/i, /Inquiries Viewed Only By Consumer/i];
@@ -1412,15 +1460,15 @@ function attachSortListeners() {
             let results = [];
             let match;
             while ((match = blockPattern.exec(text)) !== null) {
-              let inquirerName = match[1].trim();
-              let inquirerAddr = match[2].trim();
-              let inquirerPhone = match[3].trim();
-              let onBehalfName = match[4].trim();
-              let onBehalfAddr = match[5].trim();
-              let onBehalfPhone = match[6].trim();
-              let dateRaw = match[7].trim();
-              let normDate = normalizeDate(dateRaw);
-              let dateObj = normDate ? new Date(normDate) : null;
+              let inquirerName = match[1].trim(),
+                inquirerAddr = match[2].trim(),
+                inquirerPhone = match[3].trim();
+              let onBehalfName = match[4].trim(),
+                onBehalfAddr = match[5].trim(),
+                onBehalfPhone = match[6].trim();
+              let dateRaw = match[7].trim(),
+                normDate = normalizeDate(dateRaw),
+                dateObj = normDate ? new Date(normDate) : null;
               results.push({
                 bank_name: onBehalfName,
                 bank_address: onBehalfAddr,
@@ -1439,8 +1487,8 @@ function attachSortListeners() {
                   address = match[2].trim(),
                   phone = match[3].trim(),
                   dateRaw = match[4].trim();
-                let normDate = normalizeDate(dateRaw);
-                let dateObj = normDate ? new Date(normDate) : null;
+                let normDate = normalizeDate(dateRaw),
+                  dateObj = normDate ? new Date(normDate) : null;
                 results.push({
                   bank_name: bankName,
                   bank_address: address,
@@ -1575,14 +1623,12 @@ function attachSortListeners() {
           updateChexScoreDisplay(simExtras);
           setStatus("Calibration reset to default (1.00)");
         }
-        // Session management (updated to include profile)
         const SESSIONS_KEY = 'chexSessions';
 
         function getSessions() {
           const raw = localStorage.getItem(SESSIONS_KEY);
-          if (!raw) return [];
           try {
-            return JSON.parse(raw);
+            return raw ? JSON.parse(raw) : [];
           } catch (e) {
             return [];
           }
@@ -1598,205 +1644,198 @@ function attachSortListeners() {
           const container = document.getElementById('sessionsList');
           if (!container) return;
           if (sessions.length === 0) {
-            container.innerHTML = ' <div style = "padding: 12px; text-align: center; color: #79747e;" > No saved sessions </div>';
-            return;
-          }
-          let html = '';
-          sessions.forEach(session => {
-            const dateStr = new Date(session.date).toLocaleString();
-            html += `
-                
-																									<div class="session-item">
-																										<div class="session-info" data-id="${session.id}">
-																											<div class="session-name">${escapeHtml(session.name)}</div>
-																											<div class="session-date">${dateStr}</div>
-																										</div>
-																										<span class="material-symbols-outlined delete-session" data-id="${session.id}">delete</span>
+            container.innerHTML = ' < div style = "padding:12px; text-align:center; color:#79747e;" > No saved sessions < /div>'; return; }
+            let html = '';
+            sessions.forEach(session => {
+              const dateStr = new Date(session.date).toLocaleString();
+              html += `
+																								<div class="session-item">
+																									<div class="session-info" data-id="${session.id}">
+																										<div class="session-name">${escapeHtml(session.name)}</div>
+																										<div class="session-date">${dateStr}</div>
 																									</div>
-            `;
-          });
-          container.innerHTML = html;
-          document.querySelectorAll('.session-info').forEach(el => {
-            el.addEventListener('click', (e) => {
-              const id = parseInt(el.dataset.id);
-              loadSessionById(id);
-              sessionPanel.classList.add('hidden');
+																									<span class="material-symbols-outlined delete-session" data-id="${session.id}">delete</span>
+																								</div>`;
             });
-          });
-          document.querySelectorAll('.delete-session').forEach(el => {
-            el.addEventListener('click', (e) => {
-              e.stopPropagation();
-              const id = parseInt(el.dataset.id);
-              if (confirm("Delete this session?")) deleteSessionById(id);
+            container.innerHTML = html;
+            document.querySelectorAll('.session-info').forEach(el => {
+              el.addEventListener('click', (e) => {
+                const id = parseInt(el.dataset.id);
+                loadSessionById(id);
+                sessionPanel.classList.add('hidden');
+              });
             });
-          });
-        }
+            document.querySelectorAll('.delete-session').forEach(el => {
+              el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const id = parseInt(el.dataset.id);
+                if (confirm("Delete this session?")) deleteSessionById(id);
+              });
+            });
+          }
 
-        function loadSessionById(id) {
-          const sessions = getSessions();
-          const session = sessions.find(s => s.id == id);
-          if (!session) return;
-          const restoreDates = (inquiries) => {
-            if (!inquiries) return [];
-            return inquiries.map(inq => {
+          function loadSessionById(id) {
+            const sessions = getSessions();
+            const session = sessions.find(s => s.id == id);
+            if (!session) return;
+            const restoreDates = (inquiries) => inquiries ? inquiries.map(inq => {
               const normDate = normalizeDate(inq.inquiry_date);
               const dateObj = normDate ? new Date(normDate) : null;
               return {
                 ...inq,
                 _dateObj: dateObj
               };
-            });
-          };
-          hardInquiries = restoreDates(session.hardInquiries);
-          softInquiries = restoreDates(session.softInquiries);
-          profile = session.profile || {
-            consumerId: "",
-            consumerName: "",
-            associatedNames: "",
-            addresses: "",
-            phoneNumbers: "",
-            emailAddresses: "",
-            dateOfBirth: "",
-            dateOfReport: ""
-          };
-          scoreHistory = session.scoreHistory || [];
-          currentFilterBank = "";
-          currentFilterDate = "";
-          filterBankInput.value = "";
-          filterDateInput.value = "";
-          simExtras = {
-            m1: 0,
-            m2: 0,
-            m3: 0,
-            m6: 0,
-            m12: 0
-          };
-          simExtra1m.value = 0;
-          simExtra2m.value = 0;
-          simExtra3m.value = 0;
-          simExtra6m.value = 0;
-          simExtra12m.value = 0;
-          simExtra1mVal.innerText = 0;
-          simExtra2mVal.innerText = 0;
-          simExtra3mVal.innerText = 0;
-          simExtra6mVal.innerText = 0;
-          simExtra12mVal.innerText = 0;
-          renderProfile();
-          renderCurrentTab();
-          updateHistoryChart();
-          resultsCard.classList.remove('hidden');
-          setStatus(`Loaded session: ${session.name}`);
-        }
-
-        function deleteSessionById(id) {
-          let sessions = getSessions();
-          sessions = sessions.filter(s => s.id != id);
-          saveSessions(sessions);
-          setStatus("Session deleted");
-        }
-
-        function saveCurrentSession() {
-          if (!hardInquiries.length && !softInquiries.length) {
-            alert("No data to save. Please upload a PDF first.");
-            return;
+            }) : [];
+            hardInquiries = restoreDates(session.hardInquiries);
+            softInquiries = restoreDates(session.softInquiries);
+            profile = session.profile || {
+              consumerId: "",
+              consumerName: "",
+              associatedNames: "",
+              addresses: "",
+              phoneNumbers: "",
+              emailAddresses: "",
+              dateOfBirth: "",
+              dateOfReport: ""
+            };
+            scoreHistory = session.scoreHistory || [];
+            currentFilterBank = "";
+            currentFilterDate = "";
+            filterBankInput.value = "";
+            filterDateInput.value = "";
+            simExtras = {
+              m1: 0,
+              m2: 0,
+              m3: 0,
+              m6: 0,
+              m12: 0
+            };
+            simExtra1m.value = 0;
+            simExtra2m.value = 0;
+            simExtra3m.value = 0;
+            simExtra6m.value = 0;
+            simExtra12m.value = 0;
+            simExtra1mVal.innerText = 0;
+            simExtra2mVal.innerText = 0;
+            simExtra3mVal.innerText = 0;
+            simExtra6mVal.innerText = 0;
+            simExtra12mVal.innerText = 0;
+            renderProfile();
+            renderCurrentTab();
+            updateHistoryChart();
+            resultsCard.classList.remove('hidden');
+            setStatus(`Loaded session: ${session.name}`);
           }
-          let name = newSessionNameInput.value.trim();
-          if (!name) name = currentPDFName || `Session ${new Date().toLocaleString()}`;
-          const stripDates = (arr) => arr.map(({
-            _dateObj,
-            ...rest
-          }) => rest);
-          const sessions = getSessions();
-          const newSession = {
-            id: Date.now(),
-            name: name,
-            date: new Date().toISOString(),
-            hardInquiries: stripDates(hardInquiries),
-            softInquiries: stripDates(softInquiries),
-            profile: profile,
-            scoreHistory: scoreHistory
-          };
-          sessions.unshift(newSession);
-          saveSessions(sessions);
-          newSessionNameInput.value = '';
-          setStatus(`Session "${name}" saved`);
-        }
 
-        function deleteAllSessions() {
-          if (confirm("⚠️ WARNING: This will delete ALL saved sessions permanently. Are you sure?")) {
-            localStorage.removeItem(SESSIONS_KEY);
-            renderSessionsList();
-            setStatus("All sessions deleted");
+          function deleteSessionById(id) {
+            let sessions = getSessions();
+            sessions = sessions.filter(s => s.id != id);
+            saveSessions(sessions);
+            setStatus("Session deleted");
           }
-        }
 
-        function toggleSessionPanel() {
-          sessionPanel.classList.toggle('hidden');
-          if (!sessionPanel.classList.contains('hidden')) renderSessionsList();
-        }
-        // Event listeners (add profile reset on new PDF)
-        uploadZone.addEventListener('click', () => pdfInput.click());
-        pdfInput.addEventListener('change', (e) => {
-          if (e.target.files.length) processPDF(e.target.files[0]);
-        });
-        exportExcelBtn.addEventListener('click', exportToExcel);
-        clearFiltersBtn.addEventListener('click', () => {
-          currentFilterBank = "";
-          currentFilterDate = "";
-          filterBankInput.value = "";
-          filterDateInput.value = "";
-          renderCurrentTab();
-        });
-        filterBankInput.addEventListener('input', (e) => {
-          currentFilterBank = e.target.value;
-          renderCurrentTab();
-        });
-        filterDateInput.addEventListener('input', (e) => {
-          currentFilterDate = e.target.value;
-          renderCurrentTab();
-        });
-        mergeDuplicatesBtn.addEventListener('click', () => {
-          if (currentTab === "hard") hardInquiries = mergeDuplicates(hardInquiries);
-          else softInquiries = mergeDuplicates(softInquiries);
-          renderCurrentTab();
-          setStatus("Duplicates merged");
-        });
-        applySimBtn.addEventListener('click', applySimulation);
-        resetSimBtn.addEventListener('click', resetSimulation);
-        clearHistoryBtn.addEventListener('click', clearHistory);
-        calibSlider.addEventListener('input', updateCalibration);
-        resetCalibBtn.addEventListener('click', resetCalibration);
-        toggleSessionBtn.addEventListener('click', toggleSessionPanel);
-        saveCurrentBtn.addEventListener('click', saveCurrentSession);
-        deleteAllSessionsBtn.addEventListener('click', deleteAllSessions);
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => {
-          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          currentTab = btn.dataset.type;
-          renderCurrentTab();
-        }));
-        uploadZone.addEventListener('dragover', e => e.preventDefault());
-        uploadZone.addEventListener('drop', e => {
-          e.preventDefault();
-          const file = e.dataTransfer.files[0];
-          if (file && file.type === 'application/pdf') processPDF(file);
-          else showError("Drop PDF");
-        });
-        simExtra1m.addEventListener('input', () => {
-          simExtra1mVal.innerText = simExtra1m.value;
-        });
-        simExtra2m.addEventListener('input', () => {
-          simExtra2mVal.innerText = simExtra2m.value;
-        });
-        simExtra3m.addEventListener('input', () => {
-          simExtra3mVal.innerText = simExtra3m.value;
-        });
-        simExtra6m.addEventListener('input', () => {
-          simExtra6mVal.innerText = simExtra6m.value;
-        });
-        simExtra12m.addEventListener('input', () => {
-          simExtra12mVal.innerText = simExtra12m.value;
-        });
+          function saveCurrentSession() {
+            if (!hardInquiries.length && !softInquiries.length) {
+              alert("No data to save. Please upload a PDF first.");
+              return;
+            }
+            let name = newSessionNameInput.value.trim();
+            if (!name) name = currentPDFName || `Session ${new Date().toLocaleString()}`;
+            const stripDates = (arr) => arr.map(({
+              _dateObj,
+              ...rest
+            }) => rest);
+            const sessions = getSessions();
+            const newSession = {
+              id: Date.now(),
+              name: name,
+              date: new Date().toISOString(),
+              hardInquiries: stripDates(hardInquiries),
+              softInquiries: stripDates(softInquiries),
+              profile: profile,
+              scoreHistory: scoreHistory
+            };
+            sessions.unshift(newSession);
+            saveSessions(sessions);
+            newSessionNameInput.value = '';
+            setStatus(`Session "${name}" saved`);
+          }
+
+          function deleteAllSessions() {
+            if (confirm("⚠️ WARNING: This will delete ALL saved sessions permanently. Are you sure?")) {
+              localStorage.removeItem(SESSIONS_KEY);
+              renderSessionsList();
+              setStatus("All sessions deleted");
+            }
+          }
+
+          function toggleSessionPanel() {
+            sessionPanel.classList.toggle('hidden');
+            if (!sessionPanel.classList.contains('hidden')) renderSessionsList();
+          }
+          // Event listeners
+          uploadZone.addEventListener('click', () => pdfInput.click());
+          pdfInput.addEventListener('change', (e) => {
+            if (e.target.files.length) processPDF(e.target.files[0]);
+          });
+          exportExcelBtn.addEventListener('click', exportToExcel);
+          clearFiltersBtn.addEventListener('click', () => {
+            currentFilterBank = "";
+            currentFilterDate = "";
+            filterBankInput.value = "";
+            filterDateInput.value = "";
+            renderCurrentTab();
+          });
+          filterBankInput.addEventListener('input', (e) => {
+            currentFilterBank = e.target.value;
+            renderCurrentTab();
+          });
+          filterDateInput.addEventListener('input', (e) => {
+            currentFilterDate = e.target.value;
+            renderCurrentTab();
+          });
+          mergeDuplicatesBtn.addEventListener('click', () => {
+            if (currentTab === "hard") hardInquiries = mergeDuplicates(hardInquiries);
+            else softInquiries = mergeDuplicates(softInquiries);
+            renderCurrentTab();
+            setStatus("Duplicates merged");
+          });
+          applySimBtn.addEventListener('click', applySimulation);
+          resetSimBtn.addEventListener('click', resetSimulation);
+          clearHistoryBtn.addEventListener('click', clearHistory);
+          calibSlider.addEventListener('input', updateCalibration);
+          resetCalibBtn.addEventListener('click', resetCalibration);
+          toggleSessionBtn.addEventListener('click', toggleSessionPanel);
+          saveCurrentBtn.addEventListener('click', saveCurrentSession);
+          deleteAllSessionsBtn.addEventListener('click', deleteAllSessions);
+          document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentTab = btn.dataset.type;
+            renderCurrentTab();
+          }));
+          uploadZone.addEventListener('dragover', e => e.preventDefault());
+          uploadZone.addEventListener('drop', e => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file && file.type === 'application/pdf') processPDF(file);
+            else showError("Drop PDF");
+          });
+          simExtra1m.addEventListener('input', () => {
+            simExtra1mVal.innerText = simExtra1m.value;
+          });
+          simExtra2m.addEventListener('input', () => {
+            simExtra2mVal.innerText = simExtra2m.value;
+          });
+          simExtra3m.addEventListener('input', () => {
+            simExtra3mVal.innerText = simExtra3m.value;
+          });
+          simExtra6m.addEventListener('input', () => {
+            simExtra6mVal.innerText = simExtra6m.value;
+          });
+          simExtra12m.addEventListener('input', () => {
+            simExtra12mVal.innerText = simExtra12m.value;
+          });
     </script>
   </body>
 </html>
