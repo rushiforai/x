@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Churning Helper | Material Design v3</title>
-    <!-- Material Icons & Roboto Font (MD3) -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" rel="stylesheet" />
     <style>
@@ -21,7 +20,7 @@
             color: #1c1b1f;
         }
 
-        /* Material Design 3 core tokens */
+        /* Material Design 3 tokens */
         :root {
             --md-sys-color-primary: #6750A4;
             --md-sys-color-on-primary: #FFFFFF;
@@ -38,7 +37,6 @@
             --md-sys-shadow-elevation-1: 0 1px 2px 0 rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
             --md-sys-shadow-elevation-2: 0 1px 2px 0 rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15);
             --md-sys-radius-md: 12px;
-            --md-sys-radius-lg: 28px;
         }
 
         .container {
@@ -46,7 +44,6 @@
             margin: 0 auto;
         }
 
-        /* Cards */
         .card {
             background: var(--md-sys-color-surface);
             border-radius: var(--md-sys-radius-md);
@@ -68,7 +65,6 @@
         h1 {
             font-size: 1.75rem;
             font-weight: 500;
-            letter-spacing: 0;
             color: var(--md-sys-color-on-surface);
         }
 
@@ -79,7 +75,7 @@
             color: var(--md-sys-color-on-surface);
         }
 
-        /* Form layout (MD3 style) */
+        /* Form layout */
         .form-grid {
             display: flex;
             flex-wrap: wrap;
@@ -99,7 +95,6 @@
             font-size: 0.875rem;
             font-weight: 500;
             color: var(--md-sys-color-on-surface-variant);
-            letter-spacing: 0.5px;
         }
 
         input, select {
@@ -119,7 +114,7 @@
             outline: 2px solid rgba(103, 80, 164, 0.2);
         }
 
-        /* Button styles MD3 */
+        /* Buttons */
         .btn-group {
             display: flex;
             gap: 12px;
@@ -136,7 +131,6 @@
             font-weight: 500;
             font-family: 'Roboto', sans-serif;
             font-size: 0.875rem;
-            letter-spacing: 0.1px;
             cursor: pointer;
             transition: background 0.2s, box-shadow 0.1s;
             border: none;
@@ -173,7 +167,7 @@
             background: #ffdad6;
         }
 
-        /* Table wrapper */
+        /* Table styles - improved columns */
         .table-wrapper {
             overflow-x: auto;
             border-radius: var(--md-sys-radius-md);
@@ -183,6 +177,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 0.9rem;
+            min-width: 600px;
         }
 
         .data-table th {
@@ -198,15 +193,61 @@
             padding: 16px 12px;
             border-bottom: 1px solid #e2dce6;
             color: var(--md-sys-color-on-surface);
+            vertical-align: middle;
+        }
+
+        /* Fixed width for actions column */
+        .data-table th:last-child,
+        .data-table td:last-child {
+            width: 90px;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .data-table td:last-child {
+            text-align: right;
         }
 
         .data-table tr:hover {
             background-color: rgba(103, 80, 164, 0.04);
         }
 
+        /* Next Churn cell with badge */
+        .next-churn-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .churn-date {
+            font-weight: 600;
+            color: #21005E;
+            font-size: 0.95rem;
+        }
+        .days-badge {
+            font-size: 0.7rem;
+            background: #EADDFF;
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 30px;
+            width: fit-content;
+            color: #1C1B1F;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+        .days-badge.overdue {
+            background: #FFDAD6;
+            color: #BA1A1A;
+        }
+        .days-badge.today {
+            background: #FFE6CC;
+            color: #B85C00;
+        }
+
+        /* Action icons container */
         .action-icons {
             display: flex;
-            gap: 12px;
+            gap: 8px;
+            justify-content: flex-end;
             align-items: center;
         }
 
@@ -217,7 +258,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 6px;
+            padding: 8px;
             border-radius: 20px;
             transition: background 0.2s;
             color: var(--md-sys-color-on-surface-variant);
@@ -244,37 +285,10 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 16px;
+            margin-bottom: 16px;
         }
 
-        .next-churn-cell {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .churn-date {
-            font-weight: 500;
-            color: #21005E;
-        }
-        .days-badge {
-            font-size: 0.7rem;
-            background: #EADDFF;
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 30px;
-            width: fit-content;
-            color: #1C1B1F;
-            font-weight: 500;
-        }
-        .days-badge.overdue {
-            background: #FFDAD6;
-            color: #BA1A1A;
-        }
-        .days-badge.today {
-            background: #FFE6CC;
-            color: #B85C00;
-        }
-
-        /* snackbar message */
+        /* snackbar */
         .snack-message {
             position: fixed;
             bottom: 24px;
@@ -296,6 +310,23 @@
             0% { opacity: 1; visibility: visible; }
             80% { opacity: 1; }
             100% { opacity: 0; visibility: hidden; }
+        }
+
+        /* Responsive touches */
+        @media (max-width: 700px) {
+            body {
+                padding: 16px;
+            }
+            .data-table th, .data-table td {
+                padding: 12px 8px;
+            }
+            .data-table th:last-child,
+            .data-table td:last-child {
+                width: 70px;
+            }
+            .churn-date {
+                font-size: 0.85rem;
+            }
         }
     </style>
 </head>
@@ -319,9 +350,7 @@
 
     <!-- Form Card -->
     <div class="card">
-        <h2>
-            <span id="formTitle">➕ Add new account</span>
-        </h2>
+        <h2><span id="formTitle">➕ Add new account</span></h2>
         <div class="form-grid">
             <div class="input-group">
                 <label>Account name *</label>
@@ -360,11 +389,11 @@
                     <th>Closed date</th>
                     <th>Cooling Period (days)</th>
                     <th>Next Churn</th>
-                    <th style="width: 90px;">Actions</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody id="tableBody">
-                <tr class="empty-row"><td colspan="5">No accounts yet. Add your first account ✨</td></tr>
+                    <tr class="empty-row"><td colspan="5">No accounts yet. Add your first account ✨</td></tr>
                 </tbody>
             </table>
         </div>
@@ -373,7 +402,7 @@
 
 <script>
     // ---------- Data Model ----------
-    let entries = [];         // each entry: { id, name, closedDateISO, coolingPeriod }
+    let entries = [];
     let editModeId = null;
 
     // DOM elements
@@ -388,26 +417,20 @@
     const recordCountSpan = document.getElementById('recordCount');
 
     // ----- UTC date helpers (timezone safe) -----
-    // Parse YYYY-MM-DD as UTC midnight, returns Date object (UTC-based)
     function parseUTCDate(isoDateString) {
         if (!isoDateString) return null;
         const [year, month, day] = isoDateString.split('-').map(Number);
-        // Date.UTC returns timestamp, then create Date object (will represent that UTC moment)
         return new Date(Date.UTC(year, month - 1, day));
     }
 
-    // Format a UTC date (from our functions) as local date string MM/DD/YYYY (no timezone shift)
-    // Since we store as UTC midnight, to display correctly in local time we need to get the UTC date components.
     function formatUTCDateToLocalMDY(utcDate) {
         if (!utcDate || isNaN(utcDate.getTime())) return '—';
-        // Extract UTC components to avoid timezone offset
         const year = utcDate.getUTCFullYear();
         const month = utcDate.getUTCMonth() + 1;
         const day = utcDate.getUTCDate();
         return `${month}/${day}/${year}`;
     }
 
-    // Compute next churn UTC date object (closedDateUTC + coolingDays)
     function computeNextChurnUTC(closedDateISO, coolingDays) {
         if (!closedDateISO) return null;
         const closedUTC = parseUTCDate(closedDateISO);
@@ -417,26 +440,22 @@
         return nextUTC;
     }
 
-    // Get today's date in UTC (midnight UTC) for comparison
     function getTodayUTC() {
         const now = new Date();
         return new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
     }
 
-    // Calculate days difference between two UTC dates (date2 - date1) in whole days
     function daysBetweenUTC(date1, date2) {
         const diffTime = date2.getTime() - date1.getTime();
         return Math.round(diffTime / (1000 * 60 * 60 * 24));
     }
 
-    // Get days left until next churn (positive = days left, zero = today, negative = overdue)
     function getDaysLeftUntilChurn(nextChurnUTC) {
         if (!nextChurnUTC) return null;
         const todayUTC = getTodayUTC();
         return daysBetweenUTC(todayUTC, nextChurnUTC);
     }
 
-    // Format the days left message
     function formatDaysLeft(daysLeft) {
         if (daysLeft === null) return '';
         if (daysLeft === 0) return '🎯 Today';
@@ -445,7 +464,6 @@
         return `⚠️ ${overdue} day${overdue !== 1 ? 's' : ''} overdue`;
     }
 
-    // Build dropdown 0-365
     function buildCoolingDropdown() {
         coolingSelect.innerHTML = '';
         for (let i = 0; i <= 365; i++) {
@@ -457,18 +475,15 @@
         }
     }
 
-    // Persist to localStorage
     function persistData() {
         localStorage.setItem('churning_helper_data', JSON.stringify(entries));
     }
 
-    // Load data with demo seeding
     function loadData() {
         const stored = localStorage.getItem('churning_helper_data');
         if (stored) {
             entries = JSON.parse(stored);
         } else {
-            // Seed demo (ensuring UTC-safe)
             entries = [
                 { id: Date.now() + 1, name: 'Netflix', closedDateISO: '2026-04-14', coolingPeriod: 4 },
                 { id: Date.now() + 2, name: 'Hulu', closedDateISO: '2026-04-01', coolingPeriod: 15 },
@@ -478,7 +493,6 @@
         }
     }
 
-    // Escape HTML
     function escapeHtml(str) {
         if (!str) return '';
         return str.replace(/[&<>]/g, function(m) {
@@ -489,7 +503,6 @@
         });
     }
 
-    // Render table with next churn + days indicator
     function renderTable() {
         if (!tableBody) return;
         if (!entries.length) {
@@ -519,7 +532,7 @@
                         ${daysLeftText ? `<span class="${badgeClass}">${daysLeftText}</span>` : ''}
                     </td>
                     <td class="action-icons">
-                        <button class="icon-btn edit-entry" data-id="${entry.id}" title="Edit">
+                        <button class="icon-btn edit-entry" data-id="${entry.id}" title="Edit account">
                             <span class="material-symbols-outlined">edit</span>
                         </button>
                         <button class="icon-btn delete-entry" data-id="${entry.id}" title="Delete">
@@ -532,7 +545,6 @@
         tableBody.innerHTML = html;
         recordCountSpan.innerText = `${entries.length} record${entries.length !== 1 ? 's' : ''}`;
 
-        // attach edit/delete events
         document.querySelectorAll('.edit-entry').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const id = parseInt(btn.getAttribute('data-id'));
@@ -547,7 +559,6 @@
         });
     }
 
-    // Add entry
     function addEntry() {
         const name = accountNameInput.value.trim();
         const closedDate = closedDateInput.value;
@@ -572,7 +583,6 @@
         showSnackbar(`✅ "${name}" added. Next churn: ${formatted}`);
     }
 
-    // Update entry
     function updateEntry() {
         if (editModeId === null) return;
         const name = accountNameInput.value.trim();
@@ -592,7 +602,6 @@
         showSnackbar(`✏️ Updated "${name}" — next churn recalculated.`);
     }
 
-    // Delete
     function deleteEntryById(id) {
         const entry = entries.find(e => e.id === id);
         if (!entry) return;
@@ -605,7 +614,6 @@
         }
     }
 
-    // Clear all data
     function clearAllData() {
         if (entries.length === 0) { showSnackbar('No data to clear'); return; }
         if (confirm('⚠️ PERMANENT: Delete ALL accounts? This cannot be undone.')) {
@@ -617,7 +625,6 @@
         }
     }
 
-    // Edit mode
     function startEditMode(id) {
         const entry = entries.find(e => e.id === id);
         if (!entry) return;
@@ -658,8 +665,6 @@
         }
     }
 
-    // Snackbar
-    let snackbarTimeout;
     function showSnackbar(message, duration = 3000) {
         const existing = document.querySelector('.snack-message');
         if (existing) existing.remove();
@@ -670,7 +675,6 @@
         setTimeout(() => { if (snack.parentNode) snack.remove(); }, duration);
     }
 
-    // Initialize
     function init() {
         buildCoolingDropdown();
         loadData();
