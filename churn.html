@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Churning Helper | Collapsible Add (default closed)</title>
+    <title>Churning Helper | Collapsible Add (default closed, layout fixed)</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" rel="stylesheet" />
     <style>
@@ -49,6 +49,7 @@
             color: #6750A4;
             transition: transform 0.2s;
         }
+        
         .form-grid {
             display: flex;
             flex-wrap: wrap;
@@ -122,7 +123,7 @@
             opacity: 0.7;
             cursor: default;
         }
-        /* Desktop table styles */
+        
         .table-wrapper {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -210,7 +211,7 @@
             gap: 12px;
             margin-bottom: 12px;
         }
-        /* Mobile card layout */
+        
         .cards-list {
             display: flex;
             flex-direction: column;
@@ -273,7 +274,7 @@
             100% { opacity: 0; visibility: hidden; }
         }
 
-        /* Mobile specific overrides */
+        
         @media (max-width: 600px) {
             body {
                 padding: 12px;
@@ -334,13 +335,14 @@
         <p style="color: #49454F; text-align: center; font-size: 0.85rem;">Track closed accounts — get notified when cooling period ends.</p>
     </div>
 
-    <!-- Collapsible Add Section (default collapsed) -->
+    
     <div class="card">
         <div class="collapsible-header" id="toggleAddSection">
             <h2><span id="formTitle">➕ Add new account</span></h2>
             <span class="material-symbols-outlined toggle-icon" id="toggleIcon">expand_more</span>
         </div>
-        <div id="addFormContent" style="display: none;">
+        <div id="addFormContent">
+            
             <div class="form-grid">
                 <div class="input-group">
                     <label>Account name</label>
@@ -366,26 +368,26 @@
         </div>
     </div>
 
-    <!-- Churning log section -->
+    
     <div class="card">
         <div class="flex-between">
             <h2>📋 Churning log</h2>
             <span id="recordCount" style="background:#EADDFF; padding:4px 12px; border-radius:30px; font-size:0.8rem;">0 records</span>
         </div>
         <div id="logContainer" class="table-wrapper">
-            <!-- Dynamic content: either table or cards -->
+            
         </div>
     </div>
 </div>
 
 <script>
-    // ---------- Data ----------
+    
     let entries = [];
     let editModeId = null;
     let notificationPermissionGranted = false;
     let notificationCheckInterval = null;
 
-    // DOM elements
+    
     const accountNameInput = document.getElementById('accountName');
     const closedDateInput = document.getElementById('closedDate');
     const coolingSelect = document.getElementById('coolingPeriodSelect');
@@ -400,8 +402,8 @@
     const toggleAddSection = document.getElementById('toggleAddSection');
     const toggleIcon = document.getElementById('toggleIcon');
 
-    // Collapsible logic (default collapsed)
-    let isFormCollapsed = true;  // default closed
+    
+    let isFormCollapsed = true;
     function toggleAddForm() {
         isFormCollapsed = !isFormCollapsed;
         addFormContent.style.display = isFormCollapsed ? 'none' : 'flex';
@@ -409,7 +411,7 @@
     }
     toggleAddSection.addEventListener('click', toggleAddForm);
 
-    // Notification UI
+    
     function updateNotificationButtonUI() {
         if (notificationPermissionGranted) {
             notifyBtn.innerHTML = '<span class="material-symbols-outlined">notifications_active</span> ✅ Enabled';
@@ -488,7 +490,7 @@
         localStorage.removeItem('churning_last_notified');
     }
 
-    // UTC helpers
+    
     function parseUTCDate(iso) {
         if (!iso) return null;
         const [y, m, d] = iso.split('-').map(Number);
@@ -555,7 +557,7 @@
         return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
     }
 
-    // Desktop table rendering
+    
     function renderDesktopTable() {
         if (!entries.length) {
             return `<div class="table-wrapper"><table class="data-table"><tbody><tr class="empty-row"><td colspan="5">✨ No accounts yet. Add your first account ✨</td></tr></tbody></table></div>`;
@@ -588,7 +590,7 @@
         return html;
     }
 
-    // Mobile cards rendering
+    
     function renderMobileCards() {
         if (!entries.length) {
             return `<div class="cards-list"><div class="churn-card" style="text-align:center; color:#49454F;">✨ No accounts yet. Add your first account ✨</div></div>`;
@@ -652,7 +654,7 @@
         } else {
             html = renderDesktopTable();
             logContainer.innerHTML = html;
-            // attach events for table buttons
+            
             document.querySelectorAll('.edit-entry').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     startEditMode(parseInt(btn.dataset.id));
@@ -667,7 +669,7 @@
         recordCountSpan.innerText = `${entries.length} record${entries.length !== 1 ? 's' : ''}`;
     }
 
-    // CRUD operations
+    
     function addEntry() {
         const name = accountNameInput.value.trim();
         const closed = closedDateInput.value;
@@ -735,7 +737,7 @@
         formTitleSpan.innerHTML = '✏️ Edit account';
         submitBtn.innerHTML = '<span class="material-symbols-outlined">save</span> Update';
         cancelEditBtn.style.display = 'inline-flex';
-        // Expand form if collapsed
+        
         if (isFormCollapsed) toggleAddForm();
     }
 
