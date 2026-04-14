@@ -383,8 +383,10 @@
                     <td>${closedFmt}</td>
                     <td>${entry.coolingPeriod} day${entry.coolingPeriod !== 1 ? 's' : ''}</td>
                     <td class="next-churn-cell">
-                        <span class="churn-date">${nextFmt}</span>
-                        ${badgeText ? `<span class="${badgeClass}">${badgeText}</span>` : ''}
+                        <div class="next-churn-content">
+                            <span class="churn-date">${nextFmt}</span>
+                            ${badgeText ? `<span class="${badgeClass}">${badgeText}</span>` : ''}
+                        </div>
                     </td>
                     <td class="action-icons">
                         <button class="icon-btn edit-entry" data-id="${entry.id}" title="Edit">
