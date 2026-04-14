@@ -15,7 +15,7 @@
 
         body {
             background: #fef7ff;
-            font-family: 'Roboto', system-ui, -apple-system, 'Segoe UI', sans-serif;
+            font-family: 'Roboto', system-ui, sans-serif;
             padding: 24px 16px;
             color: #1c1b1f;
         }
@@ -23,18 +23,13 @@
         :root {
             --md-sys-color-primary: #6750A4;
             --md-sys-color-on-primary: #FFFFFF;
-            --md-sys-color-primary-container: #EADDFF;
-            --md-sys-color-on-primary-container: #21005E;
-            --md-sys-color-secondary: #625B71;
             --md-sys-color-surface: #FFFBFE;
             --md-sys-color-surface-variant: #E7E0EC;
             --md-sys-color-on-surface: #1C1B1F;
             --md-sys-color-on-surface-variant: #49454F;
             --md-sys-color-outline: #79747E;
             --md-sys-color-error: #BA1A1A;
-            --md-sys-color-error-container: #FFDAD6;
             --md-sys-shadow-elevation-1: 0 1px 2px 0 rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
-            --md-sys-shadow-elevation-2: 0 1px 2px 0 rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15);
             --md-sys-radius-md: 12px;
         }
 
@@ -51,26 +46,15 @@
             margin-bottom: 28px;
         }
 
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-            gap: 12px;
-        }
-
         h1 {
             font-size: 1.75rem;
             font-weight: 500;
-            color: var(--md-sys-color-on-surface);
         }
 
         h2 {
             font-size: 1.25rem;
             font-weight: 500;
             margin-bottom: 16px;
-            color: var(--md-sys-color-on-surface);
         }
 
         .form-grid {
@@ -88,7 +72,7 @@
             gap: 6px;
         }
 
-        .input-group label {
+        label {
             font-size: 0.875rem;
             font-weight: 500;
             color: var(--md-sys-color-on-surface-variant);
@@ -99,23 +83,8 @@
             border: 1px solid var(--md-sys-color-outline);
             border-radius: 8px;
             padding: 12px 16px;
-            font-family: 'Roboto', sans-serif;
+            font-family: inherit;
             font-size: 1rem;
-            transition: all 0.2s;
-            outline: none;
-            color: var(--md-sys-color-on-surface);
-        }
-
-        input:focus, select:focus {
-            border-color: var(--md-sys-color-primary);
-            outline: 2px solid rgba(103, 80, 164, 0.2);
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: center;
         }
 
         .btn {
@@ -125,10 +94,7 @@
             padding: 10px 20px;
             border-radius: 40px;
             font-weight: 500;
-            font-family: 'Roboto', sans-serif;
-            font-size: 0.875rem;
             cursor: pointer;
-            transition: background 0.2s, box-shadow 0.1s;
             border: none;
             background: transparent;
         }
@@ -136,22 +102,11 @@
         .btn-primary {
             background: var(--md-sys-color-primary);
             color: var(--md-sys-color-on-primary);
-            box-shadow: var(--md-sys-shadow-elevation-1);
-        }
-
-        .btn-primary:hover {
-            background: #4f378a;
-            box-shadow: var(--md-sys-shadow-elevation-2);
         }
 
         .btn-outline {
             border: 1px solid var(--md-sys-color-outline);
             color: var(--md-sys-color-primary);
-            background: transparent;
-        }
-
-        .btn-outline:hover {
-            background: rgba(103, 80, 164, 0.08);
         }
 
         .btn-danger {
@@ -159,40 +114,32 @@
             border: 1px solid var(--md-sys-color-error);
         }
 
-        .btn-danger:hover {
-            background: #ffdad6;
-        }
-
-        /* Table styles – actions column forced separate */
+        /* Table styles – strict column separation */
         .table-wrapper {
             overflow-x: auto;
-            border-radius: var(--md-sys-radius-md);
         }
 
         .data-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.9rem;
-            min-width: 680px;
+            min-width: 700px;
         }
 
         .data-table th {
             text-align: left;
             padding: 16px 12px;
             background-color: #f3edf7;
-            color: var(--md-sys-color-on-surface-variant);
             font-weight: 500;
-            font-size: 0.875rem;
         }
 
         .data-table td {
             padding: 16px 12px;
             border-bottom: 1px solid #e2dce6;
-            color: var(--md-sys-color-on-surface);
             vertical-align: middle;
         }
 
-        /* Fixed width for Actions column – prevents overlapping */
+        /* Actions column – fixed width, right aligned, buttons only */
         .data-table th:last-child,
         .data-table td:last-child {
             width: 100px;
@@ -200,17 +147,17 @@
             white-space: nowrap;
         }
 
-        /* Next Churn cell – date + badge only, no buttons */
         .next-churn-cell {
             display: flex;
             flex-direction: column;
             gap: 6px;
         }
+
         .churn-date {
             font-weight: 600;
             color: #21005E;
-            font-size: 0.95rem;
         }
+
         .days-badge {
             font-size: 0.7rem;
             background: #EADDFF;
@@ -218,19 +165,19 @@
             padding: 4px 10px;
             border-radius: 30px;
             width: fit-content;
-            color: #1C1B1F;
             font-weight: 500;
         }
+
         .days-badge.overdue {
             background: #FFDAD6;
             color: #BA1A1A;
         }
+
         .days-badge.today {
             background: #FFE6CC;
             color: #B85C00;
         }
 
-        /* Actions cell – only buttons, aligned right */
         .action-icons {
             display: flex;
             gap: 8px;
@@ -242,12 +189,11 @@
             background: none;
             border: none;
             cursor: pointer;
+            padding: 8px;
+            border-radius: 20px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 8px;
-            border-radius: 20px;
-            transition: background 0.2s;
             color: var(--md-sys-color-on-surface-variant);
         }
 
@@ -263,7 +209,6 @@
             text-align: center;
             padding: 40px;
             color: var(--md-sys-color-on-surface-variant);
-            font-style: italic;
         }
 
         .flex-between {
@@ -285,11 +230,8 @@
             padding: 10px 24px;
             border-radius: 28px;
             font-size: 0.875rem;
-            font-weight: 500;
             z-index: 1000;
-            box-shadow: var(--md-sys-shadow-elevation-2);
             animation: fadeOut 3s forwards;
-            pointer-events: none;
         }
 
         @keyframes fadeOut {
@@ -297,22 +239,12 @@
             80% { opacity: 1; }
             100% { opacity: 0; visibility: hidden; }
         }
-
-        @media (max-width: 700px) {
-            .data-table th, .data-table td {
-                padding: 12px 8px;
-            }
-            .data-table th:last-child,
-            .data-table td:last-child {
-                width: 80px;
-            }
-        }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="card">
-        <div class="card-header">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;">
             <div style="display: flex; align-items: center; gap: 12px;">
                 <span class="material-symbols-outlined" style="font-size: 32px; color: #6750A4;">autorenew</span>
                 <h1>Churning Helper</h1>
@@ -339,7 +271,7 @@
                 <label>Cooling period (days)</label>
                 <select id="coolingPeriodSelect"></select>
             </div>
-            <div class="btn-group">
+            <div>
                 <button id="submitBtn" class="btn btn-primary">
                     <span class="material-symbols-outlined">add</span> Add entry
                 </button>
@@ -375,9 +307,11 @@
 </div>
 
 <script>
+    // ---------- Data ----------
     let entries = [];
     let editModeId = null;
 
+    // DOM elements
     const accountNameInput = document.getElementById('accountName');
     const closedDateInput = document.getElementById('closedDate');
     const coolingSelect = document.getElementById('coolingPeriodSelect');
@@ -388,24 +322,25 @@
     const clearAllBtn = document.getElementById('clearAllBtn');
     const recordCountSpan = document.getElementById('recordCount');
 
-    function parseUTCDate(isoDateString) {
-        if (!isoDateString) return null;
-        const [year, month, day] = isoDateString.split('-').map(Number);
-        return new Date(Date.UTC(year, month - 1, day));
+    // ---------- UTC helpers ----------
+    function parseUTCDate(isoString) {
+        if (!isoString) return null;
+        const [y, m, d] = isoString.split('-').map(Number);
+        return new Date(Date.UTC(y, m - 1, d));
     }
 
-    function formatUTCDateToLocalMDY(utcDate) {
-        if (!utcDate || isNaN(utcDate.getTime())) return '—';
-        return `${utcDate.getUTCMonth()+1}/${utcDate.getUTCDate()}/${utcDate.getUTCFullYear()}`;
+    function formatUTCDateToMDY(utcDate) {
+        if (!utcDate || isNaN(utcDate)) return '—';
+        return `${utcDate.getUTCMonth() + 1}/${utcDate.getUTCDate()}/${utcDate.getUTCFullYear()}`;
     }
 
-    function computeNextChurnUTC(closedDateISO, coolingDays) {
-        if (!closedDateISO) return null;
-        const closedUTC = parseUTCDate(closedDateISO);
-        if (!closedUTC) return null;
-        const nextUTC = new Date(closedUTC);
-        nextUTC.setUTCDate(closedUTC.getUTCDate() + coolingDays);
-        return nextUTC;
+    function computeNextChurnUTC(closedISO, days) {
+        if (!closedISO) return null;
+        const closed = parseUTCDate(closedISO);
+        if (!closed) return null;
+        const next = new Date(closed);
+        next.setUTCDate(closed.getUTCDate() + days);
+        return next;
     }
 
     function getTodayUTC() {
@@ -413,22 +348,23 @@
         return new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
     }
 
-    function daysBetweenUTC(d1, d2) {
+    function daysBetween(d1, d2) {
         return Math.round((d2 - d1) / (1000 * 60 * 60 * 24));
     }
 
-    function getDaysLeftUntilChurn(nextChurnUTC) {
-        if (!nextChurnUTC) return null;
-        return daysBetweenUTC(getTodayUTC(), nextChurnUTC);
+    function getDaysLeft(nextUTC) {
+        if (!nextUTC) return null;
+        return daysBetween(getTodayUTC(), nextUTC);
     }
 
-    function formatDaysLeft(daysLeft) {
-        if (daysLeft === null) return '';
-        if (daysLeft === 0) return '🎯 Today';
-        if (daysLeft > 0) return `${daysLeft} day${daysLeft !== 1 ? 's' : ''} left`;
-        return `⚠️ ${Math.abs(daysLeft)} day${Math.abs(daysLeft) !== 1 ? 's' : ''} overdue`;
+    function formatDaysLeft(days) {
+        if (days === null) return '';
+        if (days === 0) return '🎯 Today';
+        if (days > 0) return `${days} day${days !== 1 ? 's' : ''} left`;
+        return `⚠️ ${Math.abs(days)} day${Math.abs(days) !== 1 ? 's' : ''} overdue`;
     }
 
+    // ---------- UI ----------
     function buildCoolingDropdown() {
         coolingSelect.innerHTML = '';
         for (let i = 0; i <= 365; i++) {
@@ -440,22 +376,28 @@
         }
     }
 
-    function persistData() { localStorage.setItem('churning_helper_data', JSON.stringify(entries)); }
+    function persist() {
+        localStorage.setItem('churning_helper_data', JSON.stringify(entries));
+    }
 
     function loadData() {
         const stored = localStorage.getItem('churning_helper_data');
-        if (stored) entries = JSON.parse(stored);
-        else {
+        if (stored) {
+            entries = JSON.parse(stored);
+        } else {
             entries = [
-                { id: Date.now()+1, name: 'Netflix', closedDateISO: '2026-04-14', coolingPeriod: 4 },
-                { id: Date.now()+2, name: 'Hulu', closedDateISO: '2026-04-01', coolingPeriod: 15 },
-                { id: Date.now()+3, name: 'Amazon Prime', closedDateISO: '2026-03-20', coolingPeriod: 45 }
+                { id: Date.now() + 1, name: 'Netflix', closedDateISO: '2026-04-14', coolingPeriod: 4 },
+                { id: Date.now() + 2, name: 'Hulu', closedDateISO: '2026-04-01', coolingPeriod: 15 },
+                { id: Date.now() + 3, name: 'Amazon Prime', closedDateISO: '2026-03-20', coolingPeriod: 45 }
             ];
-            persistData();
+            persist();
         }
     }
 
-    function escapeHtml(str) { return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])); }
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
+    }
 
     function renderTable() {
         if (!entries.length) {
@@ -463,12 +405,14 @@
             recordCountSpan.innerText = '0 records';
             return;
         }
+
         let html = '';
         for (const entry of entries) {
-            const closedDateFmt = formatUTCDateToLocalMDY(parseUTCDate(entry.closedDateISO));
+            const closedDateObj = parseUTCDate(entry.closedDateISO);
+            const closedFmt = closedDateObj ? formatUTCDateToMDY(closedDateObj) : '—';
             const nextUTC = computeNextChurnUTC(entry.closedDateISO, entry.coolingPeriod);
-            const nextFmt = nextUTC ? formatUTCDateToLocalMDY(nextUTC) : '—';
-            const daysLeft = nextUTC ? getDaysLeftUntilChurn(nextUTC) : null;
+            const nextFmt = nextUTC ? formatUTCDateToMDY(nextUTC) : '—';
+            const daysLeft = getDaysLeft(nextUTC);
             const badgeText = formatDaysLeft(daysLeft);
             let badgeClass = 'days-badge';
             if (daysLeft !== null && daysLeft < 0) badgeClass += ' overdue';
@@ -477,15 +421,19 @@
             html += `
                 <tr data-id="${entry.id}">
                     <td><strong>${escapeHtml(entry.name)}</strong></td>
-                    <td>${closedDateFmt}</td>
+                    <td>${closedFmt}</td>
                     <td>${entry.coolingPeriod} day${entry.coolingPeriod !== 1 ? 's' : ''}</td>
                     <td class="next-churn-cell">
                         <span class="churn-date">${nextFmt}</span>
                         ${badgeText ? `<span class="${badgeClass}">${badgeText}</span>` : ''}
                     </td>
                     <td class="action-icons">
-                        <button class="icon-btn edit-entry" data-id="${entry.id}" title="Edit"><span class="material-symbols-outlined">edit</span></button>
-                        <button class="icon-btn delete-entry" data-id="${entry.id}" title="Delete"><span class="material-symbols-outlined">delete</span></button>
+                        <button class="icon-btn edit-entry" data-id="${entry.id}" title="Edit">
+                            <span class="material-symbols-outlined">edit</span>
+                        </button>
+                        <button class="icon-btn delete-entry" data-id="${entry.id}" title="Delete">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
                     </td>
                 </tr>
             `;
@@ -493,31 +441,41 @@
         tableBody.innerHTML = html;
         recordCountSpan.innerText = `${entries.length} record${entries.length !== 1 ? 's' : ''}`;
 
-        document.querySelectorAll('.edit-entry').forEach(btn => btn.addEventListener('click', e => startEditMode(parseInt(btn.dataset.id))));
-        document.querySelectorAll('.delete-entry').forEach(btn => btn.addEventListener('click', e => deleteEntryById(parseInt(btn.dataset.id))));
+        // Attach events
+        document.querySelectorAll('.edit-entry').forEach(btn => {
+            btn.addEventListener('click', () => startEditMode(parseInt(btn.dataset.id)));
+        });
+        document.querySelectorAll('.delete-entry').forEach(btn => {
+            btn.addEventListener('click', () => deleteEntryById(parseInt(btn.dataset.id)));
+        });
     }
 
+    // ---------- CRUD ----------
     function addEntry() {
         const name = accountNameInput.value.trim();
-        const closedDate = closedDateInput.value;
-        const cooling = parseInt(coolingSelect.value);
+        const closed = closedDateInput.value;
+        const cooling = parseInt(coolingSelect.value, 10);
         if (!name) return showSnackbar('❌ Enter account name');
-        if (!closedDate) return showSnackbar('❌ Select closing date');
-        entries.push({ id: Date.now(), name, closedDateISO: closedDate, coolingPeriod: cooling });
-        persistData(); renderTable(); resetFormToAddMode();
+        if (!closed) return showSnackbar('❌ Select closing date');
+        entries.push({ id: Date.now(), name, closedDateISO: closed, coolingPeriod: cooling });
+        persist();
+        renderTable();
+        resetForm();
         showSnackbar(`✅ "${name}" added.`);
     }
 
     function updateEntry() {
         if (!editModeId) return;
         const name = accountNameInput.value.trim();
-        const closedDate = closedDateInput.value;
-        const cooling = parseInt(coolingSelect.value);
+        const closed = closedDateInput.value;
+        const cooling = parseInt(coolingSelect.value, 10);
         if (!name) return showSnackbar('❌ Name required');
         const idx = entries.findIndex(e => e.id === editModeId);
-        if (idx === -1) return resetFormToAddMode();
-        entries[idx] = { ...entries[idx], name, closedDateISO: closedDate, coolingPeriod: cooling };
-        persistData(); renderTable(); resetFormToAddMode();
+        if (idx === -1) return resetForm();
+        entries[idx] = { ...entries[idx], name, closedDateISO: closed, coolingPeriod: cooling };
+        persist();
+        renderTable();
+        resetForm();
         showSnackbar(`✏️ Updated "${name}"`);
     }
 
@@ -526,8 +484,9 @@
         if (!entry) return;
         if (confirm(`Delete "${entry.name}"?`)) {
             entries = entries.filter(e => e.id !== id);
-            persistData(); renderTable();
-            if (editModeId === id) resetFormToAddMode();
+            persist();
+            renderTable();
+            if (editModeId === id) resetForm();
             showSnackbar(`🗑️ Removed "${entry.name}"`);
         }
     }
@@ -535,59 +494,70 @@
     function clearAllData() {
         if (!entries.length) return showSnackbar('No data to clear');
         if (confirm('⚠️ Delete ALL accounts permanently?')) {
-            entries = []; persistData(); renderTable(); resetFormToAddMode();
+            entries = [];
+            persist();
+            renderTable();
+            resetForm();
             showSnackbar('All data cleared');
         }
     }
 
     function startEditMode(id) {
-        const e = entries.find(e => e.id === id);
-        if (!e) return;
+        const entry = entries.find(e => e.id === id);
+        if (!entry) return;
         editModeId = id;
-        accountNameInput.value = e.name;
-        closedDateInput.value = e.closedDateISO;
-        coolingSelect.value = e.coolingPeriod;
+        accountNameInput.value = entry.name;
+        closedDateInput.value = entry.closedDateISO;
+        coolingSelect.value = entry.coolingPeriod;
         formTitleSpan.innerHTML = '✏️ Edit account';
         submitBtn.innerHTML = '<span class="material-symbols-outlined">save</span> Update entry';
         cancelEditBtn.style.display = 'inline-flex';
     }
 
-    function resetFormToAddMode() {
+    function resetForm() {
         editModeId = null;
         accountNameInput.value = '';
         const today = new Date();
-        closedDateInput.value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+        closedDateInput.value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
         coolingSelect.value = '30';
         formTitleSpan.innerHTML = '➕ Add new account';
         submitBtn.innerHTML = '<span class="material-symbols-outlined">add</span> Add entry';
         cancelEditBtn.style.display = 'none';
     }
 
-    function onSubmitAction() { editModeId !== null ? updateEntry() : addEntry(); }
-    function cancelEdit() { if (editModeId) resetFormToAddMode(); showSnackbar('Edit cancelled'); }
+    function onSubmit() {
+        editModeId !== null ? updateEntry() : addEntry();
+    }
+
+    function cancelEdit() {
+        if (editModeId) resetForm();
+        showSnackbar('Edit cancelled');
+    }
 
     function showSnackbar(msg) {
         const old = document.querySelector('.snack-message');
         if (old) old.remove();
         const div = document.createElement('div');
         div.className = 'snack-message';
-        div.innerText = msg;
+        div.textContent = msg;
         document.body.appendChild(div);
         setTimeout(() => div.remove(), 3000);
     }
 
+    // ---------- Init ----------
     function init() {
         buildCoolingDropdown();
         loadData();
         renderTable();
         const today = new Date();
-        closedDateInput.value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-        submitBtn.onclick = onSubmitAction;
+        closedDateInput.value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+        submitBtn.onclick = onSubmit;
         cancelEditBtn.onclick = cancelEdit;
         clearAllBtn.onclick = clearAllData;
-        accountNameInput.onkeypress = e => { if (e.key === 'Enter') onSubmitAction(); };
-        closedDateInput.onkeypress = e => { if (e.key === 'Enter') onSubmitAction(); };
+        accountNameInput.onkeypress = e => { if (e.key === 'Enter') onSubmit(); };
+        closedDateInput.onkeypress = e => { if (e.key === 'Enter') onSubmit(); };
     }
+
     init();
 </script>
 </body>
