@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Churning Helper | Material Design 3</title>
+    <title>Churning Helper</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" rel="stylesheet" />
     <style>
@@ -36,12 +36,14 @@
             font-size: 1.25rem;
             font-weight: 500;
             margin-bottom: 16px;
+            text-align: center;
         }
         .form-grid {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
             align-items: flex-end;
+            justify-content: center;
         }
         .input-group {
             flex: 1;
@@ -54,6 +56,7 @@
             font-size: 0.875rem;
             font-weight: 500;
             color: #49454F;
+            text-align: center;
         }
         input, select {
             background: #E7E0EC;
@@ -62,6 +65,7 @@
             padding: 12px 16px;
             font-size: 1rem;
             font-family: inherit;
+            text-align: center;
         }
         .btn {
             display: inline-flex;
@@ -105,13 +109,14 @@
             min-width: 700px;
         }
         .data-table th {
-            text-align: middle;
+            text-align: center;
             padding: 16px 12px;
             background-color: #f3edf7;
             font-weight: 500;
             color: #1C1B1F;
         }
         .data-table td {
+            text-align: center;
             padding: 16px 12px;
             border-bottom: 1px solid #e2dce6;
             vertical-align: middle;
@@ -120,11 +125,11 @@
         .data-table th:last-child,
         .data-table td:last-child {
             width: 100px;
-
         }
         .next-churn-content {
             display: flex;
             flex-direction: column;
+            align-items: center;
             gap: 6px;
         }
         .churn-date {
@@ -151,7 +156,7 @@
         .action-icons {
             display: flex;
             gap: 8px;
-            justify-content: flex-end;
+            justify-content: center;
             align-items: center;
         }
         .icon-btn {
@@ -219,15 +224,13 @@
                 <span class="material-symbols-outlined">delete_sweep</span> Clear all data
             </button>
         </div>
-        <p style="color: #49454F;">Track closed accounts & re-subscription eligibility — next churn = closing date + cooling period (UTC-safe, your local timezone).</p>
     </div>
 
     <div class="card">
-        <h2><span id="formTitle">➕ Add new account</span></h2>
         <div class="form-grid">
             <div class="input-group">
                 <label>Account name</label>
-                <input type="text" id="accountName" placeholder="e.g., Netflix, Spotify">
+                <input type="text" id="accountName" placeholder="e.g., Chime">
             </div>
             <div class="input-group">
                 <label>Closed date</label>
@@ -267,7 +270,7 @@
                 <tbody id="tableBody">
                     <tr class="empty-row"><td colspan="5">✨ No accounts yet. Add your first account ✨</td></tr>
                 </tbody>
-            </table>
+             </table>
         </div>
     </div>
 </div>
@@ -346,9 +349,7 @@
             entries = JSON.parse(stored);
         } else {
             entries = [
-                { id: Date.now()+1, name: 'Netflix', closedDateISO: '2026-04-14', coolingPeriod: 4 },
-                { id: Date.now()+2, name: 'Hulu', closedDateISO: '2026-04-01', coolingPeriod: 15 },
-                { id: Date.now()+3, name: 'Amazon Prime', closedDateISO: '2026-03-20', coolingPeriod: 45 }
+                { id: Date.now()+1, name: 'Chime', closedDateISO: '2026-04-14', coolingPeriod: 34 }
             ];
             persist();
         }
@@ -382,7 +383,7 @@
                     <td><strong>${escapeHtml(entry.name)}</strong></td>
                     <td>${closedFmt}</td>
                     <td>${entry.coolingPeriod} day${entry.coolingPeriod !== 1 ? 's' : ''}</td>
-                    <td class="next-churn-cell">
+                    <td>
                         <div class="next-churn-content">
                             <span class="churn-date">${nextFmt}</span>
                             ${badgeText ? `<span class="${badgeClass}">${badgeText}</span>` : ''}
