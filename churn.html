@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Churning Helper | With Notifications</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Churning Helper | Mobile Ready</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" rel="stylesheet" />
     <style>
@@ -15,7 +15,7 @@
         body {
             background: #fef7ff;
             font-family: 'Roboto', sans-serif;
-            padding: 24px 16px;
+            padding: 16px;
         }
         .container {
             max-width: 1400px;
@@ -25,35 +25,35 @@
             background: #FFFBFE;
             border-radius: 12px;
             box-shadow: 0 1px 2px 0 rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
-            padding: 24px 20px;
-            margin-bottom: 28px;
+            padding: 20px 16px;
+            margin-bottom: 20px;
         }
         h1 {
-            font-size: 1.75rem;
+            font-size: 1.5rem;
             font-weight: 500;
         }
         h2 {
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             font-weight: 500;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             text-align: center;
         }
         .form-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 16px;
             align-items: flex-end;
             justify-content: center;
         }
         .input-group {
             flex: 1;
-            min-width: 160px;
+            min-width: 140px;
             display: flex;
             flex-direction: column;
             gap: 6px;
         }
         label {
-            font-size: 0.875rem;
+            font-size: 0.8rem;
             font-weight: 500;
             color: #49454F;
             text-align: center;
@@ -62,21 +62,23 @@
             background: #E7E0EC;
             border: 1px solid #79747E;
             border-radius: 8px;
-            padding: 12px 16px;
-            font-size: 1rem;
+            padding: 10px 12px;
+            font-size: 0.9rem;
             font-family: inherit;
             text-align: center;
         }
         .btn {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
+            gap: 6px;
+            padding: 8px 16px;
             border-radius: 40px;
             font-weight: 500;
+            font-size: 0.85rem;
             cursor: pointer;
             border: none;
             background: transparent;
+            white-space: nowrap;
         }
         .btn-primary {
             background: #6750A4;
@@ -104,55 +106,52 @@
             color: #21005E;
             border: none;
         }
-        .btn-notify:hover {
-            background: #d4c4f0;
-        }
         .btn-notify:disabled {
             opacity: 0.7;
             cursor: default;
-            background: #EADDFF;
         }
         .table-wrapper {
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.9rem;
-            min-width: 700px;
+            font-size: 0.85rem;
+            min-width: 600px;
         }
         .data-table th {
             text-align: center;
-            padding: 16px 12px;
+            padding: 12px 8px;
             background-color: #f3edf7;
             font-weight: 500;
-            color: #1C1B1F;
         }
         .data-table td {
             text-align: center;
-            padding: 16px 12px;
+            padding: 12px 8px;
             border-bottom: 1px solid #e2dce6;
             vertical-align: middle;
         }
         .data-table th:last-child,
         .data-table td:last-child {
-            width: 100px;
+            width: 90px;
         }
         .next-churn-content {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
         }
         .churn-date {
             font-weight: 600;
             color: #21005E;
+            font-size: 0.9rem;
         }
         .days-badge {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             background: #EADDFF;
             display: inline-block;
-            padding: 4px 10px;
+            padding: 2px 8px;
             border-radius: 30px;
             width: fit-content;
             font-weight: 500;
@@ -167,7 +166,7 @@
         }
         .action-icons {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             justify-content: center;
             align-items: center;
         }
@@ -175,22 +174,19 @@
             background: none;
             border: none;
             cursor: pointer;
-            padding: 8px;
+            padding: 6px;
             border-radius: 20px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             color: #49454F;
         }
-        .icon-btn:hover {
-            background: rgba(0,0,0,0.08);
-        }
         .material-symbols-outlined {
-            font-size: 20px;
+            font-size: 18px;
         }
         .empty-row td {
             text-align: center;
-            padding: 40px;
+            padding: 30px;
             color: #49454F;
         }
         .flex-between {
@@ -198,29 +194,93 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 16px;
-            margin-bottom: 16px;
+            gap: 12px;
+            margin-bottom: 12px;
         }
         .snack-message {
             position: fixed;
-            bottom: 24px;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             background: #1c1b1f;
             color: white;
-            padding: 10px 24px;
+            padding: 8px 20px;
             border-radius: 28px;
-            font-size: 0.875rem;
+            font-size: 0.8rem;
             font-weight: 500;
             z-index: 1000;
             box-shadow: 0 1px 2px 0 rgba(0,0,0,0.3);
             animation: fadeOut 3s forwards;
             pointer-events: none;
+            white-space: nowrap;
         }
         @keyframes fadeOut {
             0% { opacity: 1; visibility: visible; }
             80% { opacity: 1; }
             100% { opacity: 0; visibility: hidden; }
+        }
+
+        /* Mobile specific improvements */
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+            .card {
+                padding: 16px;
+            }
+            .form-grid {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .input-group {
+                min-width: 100%;
+            }
+            .btn-group {
+                display: flex;
+                justify-content: center;
+                margin-top: 8px;
+            }
+            .flex-between {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            .flex-between h2 {
+                margin-bottom: 8px;
+            }
+            .data-table th, .data-table td {
+                padding: 10px 6px;
+            }
+            .data-table th:last-child,
+            .data-table td:last-child {
+                width: 80px;
+            }
+            .action-icons {
+                gap: 4px;
+            }
+            .icon-btn {
+                padding: 4px;
+            }
+            .material-symbols-outlined {
+                font-size: 16px;
+            }
+            .snack-message {
+                white-space: normal;
+                text-align: center;
+                max-width: 90%;
+            }
+            /* Stack header buttons on mobile */
+            .card > div:first-child {
+                flex-direction: column;
+                align-items: center;
+            }
+            .card > div:first-child > div:first-child {
+                justify-content: center;
+            }
+            #notifyBtn, #clearAllBtn {
+                white-space: normal;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -228,20 +288,20 @@
 <div class="container">
     <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <span class="material-symbols-outlined" style="font-size: 32px; color: #6750A4;">autorenew</span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="material-symbols-outlined" style="font-size: 28px; color: #6750A4;">autorenew</span>
                 <h1>Churning Helper</h1>
             </div>
-            <div style="display: flex; gap: 12px;">
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
                 <button id="notifyBtn" class="btn btn-notify">
                     <span class="material-symbols-outlined">notifications</span> Enable Notifications
                 </button>
                 <button id="clearAllBtn" class="btn btn-outline btn-danger">
-                    <span class="material-symbols-outlined">delete_sweep</span> Clear all data
+                    <span class="material-symbols-outlined">delete_sweep</span> Clear all
                 </button>
             </div>
         </div>
-        <p style="color: #49454F; text-align: center;">Track closed accounts & re-subscription eligibility — get notified when cooling period ends.</p>
+        <p style="color: #49454F; text-align: center; font-size: 0.85rem;">Track closed accounts — get notified when cooling period ends.</p>
     </div>
 
     <div class="card">
@@ -259,9 +319,9 @@
                 <label>Cooling period (days)</label>
                 <select id="coolingPeriodSelect"></select>
             </div>
-            <div>
+            <div class="btn-group">
                 <button id="submitBtn" class="btn btn-primary">
-                    <span class="material-symbols-outlined">add</span> Add entry
+                    <span class="material-symbols-outlined">add</span> Add
                 </button>
                 <button id="cancelEditBtn" class="btn btn-outline" style="display: none;">
                     <span class="material-symbols-outlined">close</span> Cancel
@@ -273,15 +333,15 @@
     <div class="card">
         <div class="flex-between">
             <h2>📋 Churning log</h2>
-            <span id="recordCount" style="background:#EADDFF; padding:4px 12px; border-radius:30px;">0 records</span>
+            <span id="recordCount" style="background:#EADDFF; padding:4px 12px; border-radius:30px; font-size:0.8rem;">0 records</span>
         </div>
         <div class="table-wrapper">
             <table class="data-table">
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Closed date</th>
-                        <th>Cooling Period (days)</th>
+                        <th>Closed</th>
+                        <th>Cooling</th>
                         <th>Next Churn</th>
                         <th>Actions</th>
                     </tr>
@@ -301,7 +361,6 @@
     let notificationPermissionGranted = false;
     let notificationCheckInterval = null;
 
-    // DOM elements
     const accountNameInput = document.getElementById('accountName');
     const closedDateInput = document.getElementById('closedDate');
     const coolingSelect = document.getElementById('coolingPeriodSelect');
@@ -313,20 +372,20 @@
     const recordCountSpan = document.getElementById('recordCount');
     const notifyBtn = document.getElementById('notifyBtn');
 
-    // ---------- Notification Helpers ----------
+    // Notification UI
     function updateNotificationButtonUI() {
         if (notificationPermissionGranted) {
-            notifyBtn.innerHTML = '<span class="material-symbols-outlined">notifications_active</span> ✅ Notifications Enabled';
+            notifyBtn.innerHTML = '<span class="material-symbols-outlined">notifications_active</span> ✅ Enabled';
             notifyBtn.disabled = true;
         } else {
-            notifyBtn.innerHTML = '<span class="material-symbols-outlined">notifications</span> Enable Notifications';
+            notifyBtn.innerHTML = '<span class="material-symbols-outlined">notifications</span> Enable';
             notifyBtn.disabled = false;
         }
     }
 
     function requestNotificationPermission() {
         if (!("Notification" in window)) {
-            showSnackbar("❌ Your browser does not support notifications");
+            showSnackbar("❌ Notifications not supported");
             return;
         }
         if (Notification.permission === "granted") {
@@ -339,14 +398,14 @@
                 if (permission === "granted") {
                     notificationPermissionGranted = true;
                     updateNotificationButtonUI();
-                    showSnackbar("🔔 Notifications enabled! You'll be alerted when cooling periods end.");
+                    showSnackbar("🔔 Notifications enabled!");
                     checkAndSendNotifications();
                 } else {
-                    showSnackbar("❌ Notification permission denied");
+                    showSnackbar("❌ Permission denied");
                 }
             });
         } else {
-            showSnackbar("❌ Notifications blocked. Please allow in browser settings.");
+            showSnackbar("❌ Blocked. Allow in browser settings.");
         }
     }
 
@@ -354,7 +413,6 @@
         const stored = localStorage.getItem('churning_last_notified');
         return stored ? JSON.parse(stored) : {};
     }
-
     function setLastNotifiedMap(map) {
         localStorage.setItem('churning_last_notified', JSON.stringify(map));
     }
@@ -365,16 +423,12 @@
         const todayUTC = getTodayUTC();
         const nextDateStr = nextChurnUTC.toISOString().split('T')[0];
         const key = entry.id.toString();
-        const lastNotified = lastMap[key];
-        if (lastNotified && lastNotified >= nextDateStr) {
-            return false;
-        }
-        const options = {
-            body: `Cooling period for "${entry.name}" ended on ${formatUTCDate(nextChurnUTC)}. You can churn now!`,
+        if (lastMap[key] && lastMap[key] >= nextDateStr) return false;
+        new Notification(`🔔 ${entry.name}`, {
+            body: `Cooling period ended on ${formatUTCDate(nextChurnUTC)}. You can churn now!`,
             icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%236750A4"%3E%3Cpath d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 13c-2.33 0-4.31-1.46-5.11-3.5h10.22c-.8 2.04-2.78 3.5-5.11 3.5z"/%3E%3C/svg%3E',
             silent: false,
-        };
-        new Notification(`🔔 Churning Helper: ${entry.name}`, options);
+        });
         lastMap[key] = nextDateStr;
         setLastNotifiedMap(lastMap);
         return true;
@@ -386,21 +440,18 @@
         let anySent = false;
         for (const entry of entries) {
             const nextUTC = computeNextChurnUTC(entry.closedDateISO, entry.coolingPeriod);
-            if (!nextUTC) continue;
-            if (nextUTC <= todayUTC) {
+            if (nextUTC && nextUTC <= todayUTC) {
                 if (sendNotificationForEntry(entry, nextUTC)) anySent = true;
             }
         }
-        if (anySent) {
-            renderTable();
-        }
+        if (anySent) renderTable();
     }
 
     function clearNotificationHistory() {
         localStorage.removeItem('churning_last_notified');
     }
 
-    // ---------- UTC helpers ----------
+    // UTC helpers
     function parseUTCDate(iso) {
         if (!iso) return null;
         const [y, m, d] = iso.split('-').map(Number);
@@ -436,7 +487,6 @@
         return `⚠️ ${Math.abs(days)} day${Math.abs(days) !== 1 ? 's' : ''} overdue`;
     }
 
-    // Dropdown (0-365 days)
     function buildCoolingDropdown() {
         coolingSelect.innerHTML = '';
         for (let i = 0; i <= 365; i++) {
@@ -448,7 +498,6 @@
         }
     }
 
-    // Persist to localStorage
     function persist() {
         localStorage.setItem('churning_helper_data', JSON.stringify(entries));
     }
@@ -477,8 +526,7 @@
         }
         let html = '';
         for (const entry of entries) {
-            const closedDateObj = parseUTCDate(entry.closedDateISO);
-            const closedFmt = closedDateObj ? formatUTCDate(closedDateObj) : '—';
+            const closedFmt = formatUTCDate(parseUTCDate(entry.closedDateISO));
             const nextUTC = computeNextChurnUTC(entry.closedDateISO, entry.coolingPeriod);
             const nextFmt = nextUTC ? formatUTCDate(nextUTC) : '—';
             const daysLeft = getDaysLeft(nextUTC);
@@ -491,7 +539,7 @@
                 <tr data-id="${entry.id}">
                     <td><strong>${escapeHtml(entry.name)}</strong></td>
                     <td>${closedFmt}</td>
-                    <td>${entry.coolingPeriod} day${entry.coolingPeriod !== 1 ? 's' : ''}</td>
+                    <td>${entry.coolingPeriod} d</td>
                     <td>
                         <div class="next-churn-content">
                             <span class="churn-date">${nextFmt}</span>
@@ -526,7 +574,6 @@
         });
     }
 
-    // CRUD operations
     function addEntry() {
         const name = accountNameInput.value.trim();
         const closed = closedDateInput.value;
@@ -573,8 +620,8 @@
     }
 
     function clearAllData() {
-        if (!entries.length) return showSnackbar('No data to clear');
-        if (confirm('⚠️ Delete ALL accounts permanently?')) {
+        if (!entries.length) return showSnackbar('No data');
+        if (confirm('⚠️ Delete ALL accounts?')) {
             entries = [];
             persist();
             renderTable();
@@ -592,7 +639,7 @@
         closedDateInput.value = entry.closedDateISO;
         coolingSelect.value = entry.coolingPeriod;
         formTitleSpan.innerHTML = '✏️ Edit account';
-        submitBtn.innerHTML = '<span class="material-symbols-outlined">save</span> Update entry';
+        submitBtn.innerHTML = '<span class="material-symbols-outlined">save</span> Update';
         cancelEditBtn.style.display = 'inline-flex';
     }
 
@@ -603,14 +650,13 @@
         closedDateInput.value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
         coolingSelect.value = '30';
         formTitleSpan.innerHTML = '➕ Add new account';
-        submitBtn.innerHTML = '<span class="material-symbols-outlined">add</span> Add entry';
+        submitBtn.innerHTML = '<span class="material-symbols-outlined">add</span> Add';
         cancelEditBtn.style.display = 'none';
     }
 
     function onSubmit() {
         editModeId !== null ? updateEntry() : addEntry();
     }
-
     function cancelEdit() {
         if (editModeId) resetForm();
         showSnackbar('Edit cancelled');
@@ -629,9 +675,7 @@
     function startPeriodicNotificationCheck() {
         if (notificationCheckInterval) clearInterval(notificationCheckInterval);
         notificationCheckInterval = setInterval(() => {
-            if (notificationPermissionGranted) {
-                checkAndSendNotifications();
-            }
+            if (notificationPermissionGranted) checkAndSendNotifications();
         }, 60 * 60 * 1000);
     }
 
