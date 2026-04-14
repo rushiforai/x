@@ -20,7 +20,6 @@
             color: #1c1b1f;
         }
 
-        /* Material Design 3 tokens */
         :root {
             --md-sys-color-primary: #6750A4;
             --md-sys-color-on-primary: #FFFFFF;
@@ -50,7 +49,6 @@
             box-shadow: var(--md-sys-shadow-elevation-1);
             padding: 24px 20px;
             margin-bottom: 28px;
-            transition: box-shadow 0.2s;
         }
 
         .card-header {
@@ -75,7 +73,6 @@
             color: var(--md-sys-color-on-surface);
         }
 
-        /* Form layout */
         .form-grid {
             display: flex;
             flex-wrap: wrap;
@@ -114,7 +111,6 @@
             outline: 2px solid rgba(103, 80, 164, 0.2);
         }
 
-        /* Buttons */
         .btn-group {
             display: flex;
             gap: 12px;
@@ -167,7 +163,7 @@
             background: #ffdad6;
         }
 
-        /* Table styles - improved columns */
+        /* Table styles – actions column forced separate */
         .table-wrapper {
             overflow-x: auto;
             border-radius: var(--md-sys-radius-md);
@@ -177,7 +173,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 0.9rem;
-            min-width: 600px;
+            min-width: 680px;
         }
 
         .data-table th {
@@ -196,23 +192,15 @@
             vertical-align: middle;
         }
 
-        /* Fixed width for actions column */
+        /* Fixed width for Actions column – prevents overlapping */
         .data-table th:last-child,
         .data-table td:last-child {
-            width: 90px;
+            width: 100px;
             text-align: right;
             white-space: nowrap;
         }
 
-        .data-table td:last-child {
-            text-align: right;
-        }
-
-        .data-table tr:hover {
-            background-color: rgba(103, 80, 164, 0.04);
-        }
-
-        /* Next Churn cell with badge */
+        /* Next Churn cell – date + badge only, no buttons */
         .next-churn-cell {
             display: flex;
             flex-direction: column;
@@ -232,7 +220,6 @@
             width: fit-content;
             color: #1C1B1F;
             font-weight: 500;
-            letter-spacing: 0.3px;
         }
         .days-badge.overdue {
             background: #FFDAD6;
@@ -243,7 +230,7 @@
             color: #B85C00;
         }
 
-        /* Action icons container */
+        /* Actions cell – only buttons, aligned right */
         .action-icons {
             display: flex;
             gap: 8px;
@@ -288,7 +275,6 @@
             margin-bottom: 16px;
         }
 
-        /* snackbar */
         .snack-message {
             position: fixed;
             bottom: 24px;
@@ -312,59 +298,48 @@
             100% { opacity: 0; visibility: hidden; }
         }
 
-        /* Responsive touches */
         @media (max-width: 700px) {
-            body {
-                padding: 16px;
-            }
             .data-table th, .data-table td {
                 padding: 12px 8px;
             }
             .data-table th:last-child,
             .data-table td:last-child {
-                width: 70px;
-            }
-            .churn-date {
-                font-size: 0.85rem;
+                width: 80px;
             }
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <!-- Main Card -->
     <div class="card">
         <div class="card-header">
             <div style="display: flex; align-items: center; gap: 12px;">
                 <span class="material-symbols-outlined" style="font-size: 32px; color: #6750A4;">autorenew</span>
                 <h1>Churning Helper</h1>
             </div>
-            <div class="btn-group">
-                <button id="clearAllBtn" class="btn btn-outline btn-danger">
-                    <span class="material-symbols-outlined">delete_sweep</span> Clear all data
-                </button>
-            </div>
+            <button id="clearAllBtn" class="btn btn-outline btn-danger">
+                <span class="material-symbols-outlined">delete_sweep</span> Clear all data
+            </button>
         </div>
-        <p style="color: #49454F; margin-top: 4px;">Track closed accounts & re-subscription eligibility — next churn = closing date + cooling period (UTC-safe, your local timezone).</p>
+        <p style="color: #49454F;">Track closed accounts & re-subscription eligibility — next churn = closing date + cooling period (UTC-safe, your local timezone).</p>
     </div>
 
-    <!-- Form Card -->
     <div class="card">
         <h2><span id="formTitle">➕ Add new account</span></h2>
         <div class="form-grid">
             <div class="input-group">
-                <label>Account name *</label>
-                <input type="text" id="accountName" placeholder="e.g., Netflix, Spotify" autocomplete="off">
+                <label>Account name</label>
+                <input type="text" id="accountName" placeholder="e.g., Netflix, Spotify">
             </div>
             <div class="input-group">
-                <label>Closed date *</label>
-                <input type="date" id="closedDate" value="2026-04-14">
+                <label>Closed date</label>
+                <input type="date" id="closedDate">
             </div>
             <div class="input-group">
                 <label>Cooling period (days)</label>
                 <select id="coolingPeriodSelect"></select>
             </div>
-            <div class="btn-group" style="align-items: flex-end;">
+            <div class="btn-group">
                 <button id="submitBtn" class="btn btn-primary">
                     <span class="material-symbols-outlined">add</span> Add entry
                 </button>
@@ -375,25 +350,24 @@
         </div>
     </div>
 
-    <!-- Table Card -->
     <div class="card">
         <div class="flex-between">
             <h2>📋 Churning log</h2>
-            <span style="font-size: 0.8rem; background: #EADDFF; padding: 4px 12px; border-radius: 30px;" id="recordCount">0 records</span>
+            <span id="recordCount" style="background:#EADDFF; padding:4px 12px; border-radius:30px;">0 records</span>
         </div>
         <div class="table-wrapper">
             <table class="data-table">
                 <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Closed date</th>
-                    <th>Cooling Period (days)</th>
-                    <th>Next Churn</th>
-                    <th>Actions</th>
-                </tr>
+                    <tr>
+                        <th>Name</th>
+                        <th>Closed date</th>
+                        <th>Cooling Period (days)</th>
+                        <th>Next Churn</th>
+                        <th>Actions</th>
+                    </tr>
                 </thead>
                 <tbody id="tableBody">
-                    <tr class="empty-row"><td colspan="5">No accounts yet. Add your first account ✨</td></tr>
+                    <tr class="empty-row"><td colspan="5">✨ No accounts yet. Add your first account ✨</td></tr>
                 </tbody>
             </table>
         </div>
@@ -401,11 +375,9 @@
 </div>
 
 <script>
-    // ---------- Data Model ----------
     let entries = [];
     let editModeId = null;
 
-    // DOM elements
     const accountNameInput = document.getElementById('accountName');
     const closedDateInput = document.getElementById('closedDate');
     const coolingSelect = document.getElementById('coolingPeriodSelect');
@@ -416,7 +388,6 @@
     const clearAllBtn = document.getElementById('clearAllBtn');
     const recordCountSpan = document.getElementById('recordCount');
 
-    // ----- UTC date helpers (timezone safe) -----
     function parseUTCDate(isoDateString) {
         if (!isoDateString) return null;
         const [year, month, day] = isoDateString.split('-').map(Number);
@@ -425,10 +396,7 @@
 
     function formatUTCDateToLocalMDY(utcDate) {
         if (!utcDate || isNaN(utcDate.getTime())) return '—';
-        const year = utcDate.getUTCFullYear();
-        const month = utcDate.getUTCMonth() + 1;
-        const day = utcDate.getUTCDate();
-        return `${month}/${day}/${year}`;
+        return `${utcDate.getUTCMonth()+1}/${utcDate.getUTCDate()}/${utcDate.getUTCFullYear()}`;
     }
 
     function computeNextChurnUTC(closedDateISO, coolingDays) {
@@ -445,79 +413,63 @@
         return new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
     }
 
-    function daysBetweenUTC(date1, date2) {
-        const diffTime = date2.getTime() - date1.getTime();
-        return Math.round(diffTime / (1000 * 60 * 60 * 24));
+    function daysBetweenUTC(d1, d2) {
+        return Math.round((d2 - d1) / (1000 * 60 * 60 * 24));
     }
 
     function getDaysLeftUntilChurn(nextChurnUTC) {
         if (!nextChurnUTC) return null;
-        const todayUTC = getTodayUTC();
-        return daysBetweenUTC(todayUTC, nextChurnUTC);
+        return daysBetweenUTC(getTodayUTC(), nextChurnUTC);
     }
 
     function formatDaysLeft(daysLeft) {
         if (daysLeft === null) return '';
         if (daysLeft === 0) return '🎯 Today';
         if (daysLeft > 0) return `${daysLeft} day${daysLeft !== 1 ? 's' : ''} left`;
-        const overdue = Math.abs(daysLeft);
-        return `⚠️ ${overdue} day${overdue !== 1 ? 's' : ''} overdue`;
+        return `⚠️ ${Math.abs(daysLeft)} day${Math.abs(daysLeft) !== 1 ? 's' : ''} overdue`;
     }
 
     function buildCoolingDropdown() {
         coolingSelect.innerHTML = '';
         for (let i = 0; i <= 365; i++) {
-            const option = document.createElement('option');
-            option.value = i;
-            option.textContent = `${i} day${i !== 1 ? 's' : ''}`;
-            if (i === 30) option.selected = true;
-            coolingSelect.appendChild(option);
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.textContent = `${i} day${i !== 1 ? 's' : ''}`;
+            if (i === 30) opt.selected = true;
+            coolingSelect.appendChild(opt);
         }
     }
 
-    function persistData() {
-        localStorage.setItem('churning_helper_data', JSON.stringify(entries));
-    }
+    function persistData() { localStorage.setItem('churning_helper_data', JSON.stringify(entries)); }
 
     function loadData() {
         const stored = localStorage.getItem('churning_helper_data');
-        if (stored) {
-            entries = JSON.parse(stored);
-        } else {
+        if (stored) entries = JSON.parse(stored);
+        else {
             entries = [
-                { id: Date.now() + 1, name: 'Netflix', closedDateISO: '2026-04-14', coolingPeriod: 4 },
-                { id: Date.now() + 2, name: 'Hulu', closedDateISO: '2026-04-01', coolingPeriod: 15 },
-                { id: Date.now() + 3, name: 'Amazon Prime', closedDateISO: '2026-03-20', coolingPeriod: 45 }
+                { id: Date.now()+1, name: 'Netflix', closedDateISO: '2026-04-14', coolingPeriod: 4 },
+                { id: Date.now()+2, name: 'Hulu', closedDateISO: '2026-04-01', coolingPeriod: 15 },
+                { id: Date.now()+3, name: 'Amazon Prime', closedDateISO: '2026-03-20', coolingPeriod: 45 }
             ];
             persistData();
         }
     }
 
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
+    function escapeHtml(str) { return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])); }
 
     function renderTable() {
-        if (!tableBody) return;
         if (!entries.length) {
             tableBody.innerHTML = '<tr class="empty-row"><td colspan="5">✨ No accounts yet. Add your first account ✨</td></tr>';
-            recordCountSpan.innerText = `0 records`;
+            recordCountSpan.innerText = '0 records';
             return;
         }
-
         let html = '';
         for (const entry of entries) {
-            const closedDateFormatted = formatUTCDateToLocalMDY(parseUTCDate(entry.closedDateISO));
-            const nextChurnUTC = computeNextChurnUTC(entry.closedDateISO, entry.coolingPeriod);
-            const nextChurnFormatted = nextChurnUTC ? formatUTCDateToLocalMDY(nextChurnUTC) : '—';
-            const daysLeft = nextChurnUTC ? getDaysLeftUntilChurn(nextChurnUTC) : null;
-            const daysLeftText = formatDaysLeft(daysLeft);
+            const closedDateFmt = formatUTCDateToLocalMDY(parseUTCDate(entry.closedDateISO));
+            const nextUTC = computeNextChurnUTC(entry.closedDateISO, entry.coolingPeriod);
+            const nextFmt = nextUTC ? formatUTCDateToLocalMDY(nextUTC) : '—';
+            const daysLeft = nextUTC ? getDaysLeftUntilChurn(nextUTC) : null;
+            const badgeText = formatDaysLeft(daysLeft);
             let badgeClass = 'days-badge';
             if (daysLeft !== null && daysLeft < 0) badgeClass += ' overdue';
             else if (daysLeft !== null && daysLeft === 0) badgeClass += ' today';
@@ -525,19 +477,15 @@
             html += `
                 <tr data-id="${entry.id}">
                     <td><strong>${escapeHtml(entry.name)}</strong></td>
-                    <td>${closedDateFormatted}</td>
+                    <td>${closedDateFmt}</td>
                     <td>${entry.coolingPeriod} day${entry.coolingPeriod !== 1 ? 's' : ''}</td>
                     <td class="next-churn-cell">
-                        <span class="churn-date">${nextChurnFormatted}</span>
-                        ${daysLeftText ? `<span class="${badgeClass}">${daysLeftText}</span>` : ''}
+                        <span class="churn-date">${nextFmt}</span>
+                        ${badgeText ? `<span class="${badgeClass}">${badgeText}</span>` : ''}
                     </td>
                     <td class="action-icons">
-                        <button class="icon-btn edit-entry" data-id="${entry.id}" title="Edit account">
-                            <span class="material-symbols-outlined">edit</span>
-                        </button>
-                        <button class="icon-btn delete-entry" data-id="${entry.id}" title="Delete">
-                            <span class="material-symbols-outlined">delete</span>
-                        </button>
+                        <button class="icon-btn edit-entry" data-id="${entry.id}" title="Edit"><span class="material-symbols-outlined">edit</span></button>
+                        <button class="icon-btn delete-entry" data-id="${entry.id}" title="Delete"><span class="material-symbols-outlined">delete</span></button>
                     </td>
                 </tr>
             `;
@@ -545,134 +493,87 @@
         tableBody.innerHTML = html;
         recordCountSpan.innerText = `${entries.length} record${entries.length !== 1 ? 's' : ''}`;
 
-        document.querySelectorAll('.edit-entry').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = parseInt(btn.getAttribute('data-id'));
-                startEditMode(id);
-            });
-        });
-        document.querySelectorAll('.delete-entry').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = parseInt(btn.getAttribute('data-id'));
-                deleteEntryById(id);
-            });
-        });
+        document.querySelectorAll('.edit-entry').forEach(btn => btn.addEventListener('click', e => startEditMode(parseInt(btn.dataset.id))));
+        document.querySelectorAll('.delete-entry').forEach(btn => btn.addEventListener('click', e => deleteEntryById(parseInt(btn.dataset.id))));
     }
 
     function addEntry() {
         const name = accountNameInput.value.trim();
         const closedDate = closedDateInput.value;
-        const coolingPeriod = parseInt(coolingSelect.value, 10);
-
-        if (!name) { showSnackbar('❌ Please enter an account name'); return; }
-        if (!closedDate) { showSnackbar('❌ Please select a closing date'); return; }
-        if (isNaN(coolingPeriod)) { showSnackbar('❌ Invalid cooling period'); return; }
-
-        const newEntry = {
-            id: Date.now(),
-            name: name,
-            closedDateISO: closedDate,
-            coolingPeriod: coolingPeriod
-        };
-        entries.push(newEntry);
-        persistData();
-        renderTable();
-        resetFormToAddMode();
-        const nextDate = computeNextChurnUTC(closedDate, coolingPeriod);
-        const formatted = nextDate ? formatUTCDateToLocalMDY(nextDate) : '—';
-        showSnackbar(`✅ "${name}" added. Next churn: ${formatted}`);
+        const cooling = parseInt(coolingSelect.value);
+        if (!name) return showSnackbar('❌ Enter account name');
+        if (!closedDate) return showSnackbar('❌ Select closing date');
+        entries.push({ id: Date.now(), name, closedDateISO: closedDate, coolingPeriod: cooling });
+        persistData(); renderTable(); resetFormToAddMode();
+        showSnackbar(`✅ "${name}" added.`);
     }
 
     function updateEntry() {
-        if (editModeId === null) return;
+        if (!editModeId) return;
         const name = accountNameInput.value.trim();
         const closedDate = closedDateInput.value;
-        const coolingPeriod = parseInt(coolingSelect.value, 10);
-
-        if (!name) { showSnackbar('❌ Name cannot be empty'); return; }
-        if (!closedDate) { showSnackbar('❌ Please select closing date'); return; }
-
-        const index = entries.findIndex(entry => entry.id === editModeId);
-        if (index === -1) { showSnackbar('Error: entry not found'); resetFormToAddMode(); return; }
-
-        entries[index] = { ...entries[index], name, closedDateISO: closedDate, coolingPeriod };
-        persistData();
-        renderTable();
-        resetFormToAddMode();
-        showSnackbar(`✏️ Updated "${name}" — next churn recalculated.`);
+        const cooling = parseInt(coolingSelect.value);
+        if (!name) return showSnackbar('❌ Name required');
+        const idx = entries.findIndex(e => e.id === editModeId);
+        if (idx === -1) return resetFormToAddMode();
+        entries[idx] = { ...entries[idx], name, closedDateISO: closedDate, coolingPeriod: cooling };
+        persistData(); renderTable(); resetFormToAddMode();
+        showSnackbar(`✏️ Updated "${name}"`);
     }
 
     function deleteEntryById(id) {
         const entry = entries.find(e => e.id === id);
         if (!entry) return;
-        if (confirm(`Delete "${entry.name}" from churning list?`)) {
+        if (confirm(`Delete "${entry.name}"?`)) {
             entries = entries.filter(e => e.id !== id);
-            persistData();
-            renderTable();
+            persistData(); renderTable();
             if (editModeId === id) resetFormToAddMode();
             showSnackbar(`🗑️ Removed "${entry.name}"`);
         }
     }
 
     function clearAllData() {
-        if (entries.length === 0) { showSnackbar('No data to clear'); return; }
-        if (confirm('⚠️ PERMANENT: Delete ALL accounts? This cannot be undone.')) {
-            entries = [];
-            persistData();
-            renderTable();
-            resetFormToAddMode();
-            showSnackbar('All churning data cleared');
+        if (!entries.length) return showSnackbar('No data to clear');
+        if (confirm('⚠️ Delete ALL accounts permanently?')) {
+            entries = []; persistData(); renderTable(); resetFormToAddMode();
+            showSnackbar('All data cleared');
         }
     }
 
     function startEditMode(id) {
-        const entry = entries.find(e => e.id === id);
-        if (!entry) return;
+        const e = entries.find(e => e.id === id);
+        if (!e) return;
         editModeId = id;
-        accountNameInput.value = entry.name;
-        closedDateInput.value = entry.closedDateISO;
-        coolingSelect.value = entry.coolingPeriod;
-
+        accountNameInput.value = e.name;
+        closedDateInput.value = e.closedDateISO;
+        coolingSelect.value = e.coolingPeriod;
         formTitleSpan.innerHTML = '✏️ Edit account';
         submitBtn.innerHTML = '<span class="material-symbols-outlined">save</span> Update entry';
         cancelEditBtn.style.display = 'inline-flex';
-        document.querySelector('.card').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     function resetFormToAddMode() {
         editModeId = null;
         accountNameInput.value = '';
         const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        closedDateInput.value = `${yyyy}-${mm}-${dd}`;
+        closedDateInput.value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
         coolingSelect.value = '30';
         formTitleSpan.innerHTML = '➕ Add new account';
         submitBtn.innerHTML = '<span class="material-symbols-outlined">add</span> Add entry';
         cancelEditBtn.style.display = 'none';
     }
 
-    function onSubmitAction() {
-        if (editModeId !== null) updateEntry();
-        else addEntry();
-    }
+    function onSubmitAction() { editModeId !== null ? updateEntry() : addEntry(); }
+    function cancelEdit() { if (editModeId) resetFormToAddMode(); showSnackbar('Edit cancelled'); }
 
-    function cancelEdit() {
-        if (editModeId !== null) {
-            resetFormToAddMode();
-            showSnackbar('Edit cancelled');
-        }
-    }
-
-    function showSnackbar(message, duration = 3000) {
-        const existing = document.querySelector('.snack-message');
-        if (existing) existing.remove();
-        const snack = document.createElement('div');
-        snack.className = 'snack-message';
-        snack.innerText = message;
-        document.body.appendChild(snack);
-        setTimeout(() => { if (snack.parentNode) snack.remove(); }, duration);
+    function showSnackbar(msg) {
+        const old = document.querySelector('.snack-message');
+        if (old) old.remove();
+        const div = document.createElement('div');
+        div.className = 'snack-message';
+        div.innerText = msg;
+        document.body.appendChild(div);
+        setTimeout(() => div.remove(), 3000);
     }
 
     function init() {
@@ -680,17 +581,13 @@
         loadData();
         renderTable();
         const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        if (!closedDateInput.value) closedDateInput.value = `${yyyy}-${mm}-${dd}`;
-        submitBtn.addEventListener('click', onSubmitAction);
-        cancelEditBtn.addEventListener('click', cancelEdit);
-        clearAllBtn.addEventListener('click', clearAllData);
-        accountNameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') onSubmitAction(); });
-        closedDateInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') onSubmitAction(); });
+        closedDateInput.value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+        submitBtn.onclick = onSubmitAction;
+        cancelEditBtn.onclick = cancelEdit;
+        clearAllBtn.onclick = clearAllData;
+        accountNameInput.onkeypress = e => { if (e.key === 'Enter') onSubmitAction(); };
+        closedDateInput.onkeypress = e => { if (e.key === 'Enter') onSubmitAction(); };
     }
-
     init();
 </script>
 </body>
