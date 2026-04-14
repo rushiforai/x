@@ -2,86 +2,40 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Churning Helper | Material Design 3</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Churning Helper | Debug Column Layout</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" rel="stylesheet" />
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             background: #fef7ff;
-            font-family: 'Roboto', system-ui, -apple-system, 'Segoe UI', sans-serif;
+            font-family: 'Roboto', sans-serif;
             padding: 24px 16px;
-            color: #1c1b1f;
         }
-
-        /* Material Design 3 tokens */
-        :root {
-            --md-sys-color-primary: #6750A4;
-            --md-sys-color-on-primary: #FFFFFF;
-            --md-sys-color-primary-container: #EADDFF;
-            --md-sys-color-on-primary-container: #21005E;
-            --md-sys-color-secondary: #625B71;
-            --md-sys-color-surface: #FFFBFE;
-            --md-sys-color-surface-variant: #E7E0EC;
-            --md-sys-color-on-surface: #1C1B1F;
-            --md-sys-color-on-surface-variant: #49454F;
-            --md-sys-color-outline: #79747E;
-            --md-sys-color-error: #BA1A1A;
-            --md-sys-color-error-container: #FFDAD6;
-            --md-sys-shadow-elevation-1: 0 1px 2px 0 rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
-            --md-sys-shadow-elevation-2: 0 1px 2px 0 rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15);
-            --md-sys-radius-md: 12px;
-        }
-
         .container {
             max-width: 1400px;
             margin: 0 auto;
         }
-
         .card {
-            background: var(--md-sys-color-surface);
-            border-radius: var(--md-sys-radius-md);
-            box-shadow: var(--md-sys-shadow-elevation-1);
+            background: #FFFBFE;
+            border-radius: 12px;
+            box-shadow: 0 1px 2px 0 rgba(0,0,0,0.3);
             padding: 24px 20px;
             margin-bottom: 28px;
-            transition: box-shadow 0.2s;
         }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-            gap: 12px;
-        }
-
-        h1 {
-            font-size: 1.75rem;
-            font-weight: 500;
-            color: var(--md-sys-color-on-surface);
-        }
-
-        h2 {
-            font-size: 1.25rem;
-            font-weight: 500;
-            margin-bottom: 16px;
-            color: var(--md-sys-color-on-surface);
-        }
-
+        h1 { font-size: 1.75rem; font-weight: 500; }
+        h2 { font-size: 1.25rem; font-weight: 500; margin-bottom: 16px; }
         .form-grid {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
             align-items: flex-end;
         }
-
         .input-group {
             flex: 1;
             min-width: 160px;
@@ -89,38 +43,18 @@
             flex-direction: column;
             gap: 6px;
         }
-
-        .input-group label {
+        label {
             font-size: 0.875rem;
             font-weight: 500;
-            color: var(--md-sys-color-on-surface-variant);
-            letter-spacing: 0.5px;
+            color: #49454F;
         }
-
         input, select {
-            background: var(--md-sys-color-surface-variant);
-            border: 1px solid var(--md-sys-color-outline);
+            background: #E7E0EC;
+            border: 1px solid #79747E;
             border-radius: 8px;
             padding: 12px 16px;
-            font-family: 'Roboto', sans-serif;
             font-size: 1rem;
-            transition: all 0.2s;
-            outline: none;
-            color: var(--md-sys-color-on-surface);
         }
-
-        input:focus, select:focus {
-            border-color: var(--md-sys-color-primary);
-            outline: 2px solid rgba(103, 80, 164, 0.2);
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
         .btn {
             display: inline-flex;
             align-items: center;
@@ -128,93 +62,60 @@
             padding: 10px 20px;
             border-radius: 40px;
             font-weight: 500;
-            font-family: 'Roboto', sans-serif;
-            font-size: 0.875rem;
             cursor: pointer;
-            transition: background 0.2s, box-shadow 0.1s;
             border: none;
             background: transparent;
         }
-
         .btn-primary {
-            background: var(--md-sys-color-primary);
-            color: var(--md-sys-color-on-primary);
-            box-shadow: var(--md-sys-shadow-elevation-1);
+            background: #6750A4;
+            color: white;
         }
-
-        .btn-primary:hover {
-            background: #4f378a;
-            box-shadow: var(--md-sys-shadow-elevation-2);
-        }
-
         .btn-outline {
-            border: 1px solid var(--md-sys-color-outline);
-            color: var(--md-sys-color-primary);
-            background: transparent;
+            border: 1px solid #79747E;
+            color: #6750A4;
         }
-
-        .btn-outline:hover {
-            background: rgba(103, 80, 164, 0.08);
-        }
-
         .btn-danger {
-            color: var(--md-sys-color-error);
-            border: 1px solid var(--md-sys-color-error);
+            color: #BA1A1A;
+            border: 1px solid #BA1A1A;
         }
-
-        .btn-danger:hover {
-            background: #ffdad6;
-        }
-
-        /* Table styles – clean, columns properly separated */
+        /* TABLE DEBUG STYLES - column backgrounds */
         .table-wrapper {
             overflow-x: auto;
-            border-radius: var(--md-sys-radius-md);
         }
-
         .data-table {
             width: 100%;
+            table-layout: fixed;  /* force column widths */
             border-collapse: collapse;
             font-size: 0.9rem;
-            min-width: 680px;
         }
-
-        .data-table th {
-            text-align: left;
-            padding: 16px 12px;
-            background-color: #f3edf7;
-            color: var(--md-sys-color-on-surface-variant);
-            font-weight: 500;
-            font-size: 0.875rem;
-        }
-
+        /* Explicit column widths */
+        .data-table th:nth-child(1) { width: 20%; background: #ffe0e0; } /* Name - pink */
+        .data-table th:nth-child(2) { width: 15%; background: #e0ffe0; } /* Closed - green */
+        .data-table th:nth-child(3) { width: 18%; background: #e0e0ff; } /* Cooling - blue */
+        .data-table th:nth-child(4) { width: 30%; background: #ffffe0; } /* Next Churn - yellow */
+        .data-table th:nth-child(5) { width: 17%; background: #ffe0ff; } /* Actions - purple */
+        
         .data-table td {
             padding: 16px 12px;
-            border-bottom: 1px solid #e2dce6;
-            color: var(--md-sys-color-on-surface);
+            border-bottom: 1px solid #ccc;
             vertical-align: middle;
         }
+        /* Match cell backgrounds for debugging */
+        .data-table td:nth-child(1) { background: #ffe0e0; }
+        .data-table td:nth-child(2) { background: #e0ffe0; }
+        .data-table td:nth-child(3) { background: #e0e0ff; }
+        .data-table td:nth-child(4) { background: #ffffe0; }
+        .data-table td:nth-child(5) { background: #ffe0ff; }
 
-        /* Fixed width for Actions column */
-        .data-table th:last-child,
-        .data-table td:last-child {
-            width: 100px;
-            text-align: right;
-            white-space: nowrap;
-        }
-
-        .next-churn-cell {
+        .next-churn-content {
             display: flex;
             flex-direction: column;
             gap: 6px;
         }
-
         .churn-date {
             font-weight: 600;
             color: #21005E;
-            font-size: 0.95rem;
         }
-
         .days-badge {
             font-size: 0.7rem;
             background: #EADDFF;
@@ -222,64 +123,51 @@
             padding: 4px 10px;
             border-radius: 30px;
             width: fit-content;
-            color: #1C1B1F;
             font-weight: 500;
         }
-
         .days-badge.overdue {
             background: #FFDAD6;
             color: #BA1A1A;
         }
-
         .days-badge.today {
             background: #FFE6CC;
             color: #B85C00;
         }
-
         .action-icons {
             display: flex;
             gap: 8px;
             justify-content: flex-end;
             align-items: center;
         }
-
         .icon-btn {
             background: none;
             border: none;
             cursor: pointer;
+            padding: 8px;
+            border-radius: 20px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 8px;
-            border-radius: 20px;
-            transition: background 0.2s;
-            color: var(--md-sys-color-on-surface-variant);
+            color: #49454F;
         }
-
         .icon-btn:hover {
-            background: rgba(0, 0, 0, 0.08);
+            background: rgba(0,0,0,0.08);
         }
-
         .material-symbols-outlined {
             font-size: 20px;
         }
-
         .empty-row td {
             text-align: center;
             padding: 40px;
-            color: var(--md-sys-color-on-surface-variant);
-            font-style: italic;
+            color: #49454F;
+            background: white !important;
         }
-
         .flex-between {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
             margin-bottom: 16px;
         }
-
         .snack-message {
             position: fixed;
             bottom: 24px;
@@ -289,54 +177,46 @@
             color: white;
             padding: 10px 24px;
             border-radius: 28px;
-            font-size: 0.875rem;
-            font-weight: 500;
             z-index: 1000;
-            box-shadow: var(--md-sys-shadow-elevation-2);
             animation: fadeOut 3s forwards;
-            pointer-events: none;
         }
-
         @keyframes fadeOut {
             0% { opacity: 1; visibility: visible; }
-            80% { opacity: 1; }
             100% { opacity: 0; visibility: hidden; }
         }
-
-        @media (max-width: 700px) {
-            .data-table th, .data-table td {
-                padding: 12px 8px;
-            }
-            .data-table th:last-child,
-            .data-table td:last-child {
-                width: 80px;
-            }
+        .debug-note {
+            background: #ffecb3;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-size: 0.8rem;
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <!-- Header Card -->
     <div class="card">
-        <div class="card-header">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;">
             <div style="display: flex; align-items: center; gap: 12px;">
                 <span class="material-symbols-outlined" style="font-size: 32px; color: #6750A4;">autorenew</span>
-                <h1>Churning Helper</h1>
+                <h1>Churning Helper (DEBUG COLORS)</h1>
             </div>
             <button id="clearAllBtn" class="btn btn-outline btn-danger">
                 <span class="material-symbols-outlined">delete_sweep</span> Clear all data
             </button>
         </div>
-        <p style="color: #49454F;">Track closed accounts & re-subscription eligibility — next churn = closing date + cooling period (UTC-safe, your local timezone).</p>
+        <p style="color: #49454F;">Each column has a different background color. <strong>The Actions column (purple) should contain the edit/delete buttons.</strong> If you see buttons in the yellow column, that’s the bug.</p>
+        <div class="debug-note">
+            🔍 DEBUG: Name (pink) | Closed (green) | Cooling (blue) | Next Churn (yellow) | Actions (purple)
+        </div>
     </div>
 
-    <!-- Form Card -->
     <div class="card">
         <h2><span id="formTitle">➕ Add new account</span></h2>
         <div class="form-grid">
             <div class="input-group">
                 <label>Account name</label>
-                <input type="text" id="accountName" placeholder="e.g., Netflix, Spotify" autocomplete="off">
+                <input type="text" id="accountName" placeholder="e.g., Netflix, Spotify">
             </div>
             <div class="input-group">
                 <label>Closed date</label>
@@ -346,7 +226,7 @@
                 <label>Cooling period (days)</label>
                 <select id="coolingPeriodSelect"></select>
             </div>
-            <div class="btn-group">
+            <div>
                 <button id="submitBtn" class="btn btn-primary">
                     <span class="material-symbols-outlined">add</span> Add entry
                 </button>
@@ -357,7 +237,6 @@
         </div>
     </div>
 
-    <!-- Table Card -->
     <div class="card">
         <div class="flex-between">
             <h2>📋 Churning log</h2>
@@ -383,11 +262,10 @@
 </div>
 
 <script>
-    // ---------- Data Model ----------
+    // ---------- Data ----------
     let entries = [];
     let editModeId = null;
 
-    // DOM elements
     const accountNameInput = document.getElementById('accountName');
     const closedDateInput = document.getElementById('closedDate');
     const coolingSelect = document.getElementById('coolingPeriodSelect');
@@ -398,91 +276,73 @@
     const clearAllBtn = document.getElementById('clearAllBtn');
     const recordCountSpan = document.getElementById('recordCount');
 
-    // ----- UTC date helpers (timezone safe) -----
-    function parseUTCDate(isoDateString) {
-        if (!isoDateString) return null;
-        const [year, month, day] = isoDateString.split('-').map(Number);
-        return new Date(Date.UTC(year, month - 1, day));
+    // UTC helpers
+    function parseUTCDate(iso) {
+        if (!iso) return null;
+        const [y, m, d] = iso.split('-').map(Number);
+        return new Date(Date.UTC(y, m-1, d));
     }
-
-    function formatUTCDateToLocalMDY(utcDate) {
-        if (!utcDate || isNaN(utcDate.getTime())) return '—';
-        const year = utcDate.getUTCFullYear();
-        const month = utcDate.getUTCMonth() + 1;
-        const day = utcDate.getUTCDate();
-        return `${month}/${day}/${year}`;
+    function formatUTCDate(utcDate) {
+        if (!utcDate || isNaN(utcDate)) return '—';
+        return `${utcDate.getUTCMonth()+1}/${utcDate.getUTCDate()}/${utcDate.getUTCFullYear()}`;
     }
-
-    function computeNextChurnUTC(closedDateISO, coolingDays) {
-        if (!closedDateISO) return null;
-        const closedUTC = parseUTCDate(closedDateISO);
-        if (!closedUTC) return null;
-        const nextUTC = new Date(closedUTC);
-        nextUTC.setUTCDate(closedUTC.getUTCDate() + coolingDays);
-        return nextUTC;
+    function computeNextChurnUTC(closedISO, days) {
+        if (!closedISO) return null;
+        const closed = parseUTCDate(closedISO);
+        if (!closed) return null;
+        const next = new Date(closed);
+        next.setUTCDate(closed.getUTCDate() + days);
+        return next;
     }
-
     function getTodayUTC() {
         const now = new Date();
         return new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
     }
-
-    function daysBetweenUTC(date1, date2) {
-        const diffTime = date2.getTime() - date1.getTime();
-        return Math.round(diffTime / (1000 * 60 * 60 * 24));
+    function daysBetween(d1, d2) {
+        return Math.round((d2 - d1) / (1000*60*60*24));
     }
-
-    function getDaysLeftUntilChurn(nextChurnUTC) {
-        if (!nextChurnUTC) return null;
-        const todayUTC = getTodayUTC();
-        return daysBetweenUTC(todayUTC, nextChurnUTC);
+    function getDaysLeft(nextUTC) {
+        if (!nextUTC) return null;
+        return daysBetween(getTodayUTC(), nextUTC);
     }
-
-    function formatDaysLeft(daysLeft) {
-        if (daysLeft === null) return '';
-        if (daysLeft === 0) return '🎯 Today';
-        if (daysLeft > 0) return `${daysLeft} day${daysLeft !== 1 ? 's' : ''} left`;
-        const overdue = Math.abs(daysLeft);
-        return `⚠️ ${overdue} day${overdue !== 1 ? 's' : ''} overdue`;
+    function formatDaysLeft(days) {
+        if (days === null) return '';
+        if (days === 0) return '🎯 Today';
+        if (days > 0) return `${days} day${days !== 1 ? 's' : ''} left`;
+        return `⚠️ ${Math.abs(days)} day${Math.abs(days) !== 1 ? 's' : ''} overdue`;
     }
 
     function buildCoolingDropdown() {
         coolingSelect.innerHTML = '';
         for (let i = 0; i <= 365; i++) {
-            const option = document.createElement('option');
-            option.value = i;
-            option.textContent = `${i} day${i !== 1 ? 's' : ''}`;
-            if (i === 30) option.selected = true;
-            coolingSelect.appendChild(option);
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.textContent = `${i} day${i !== 1 ? 's' : ''}`;
+            if (i === 30) opt.selected = true;
+            coolingSelect.appendChild(opt);
         }
     }
 
-    function persistData() {
+    function persist() {
         localStorage.setItem('churning_helper_data', JSON.stringify(entries));
     }
-
     function loadData() {
         const stored = localStorage.getItem('churning_helper_data');
         if (stored) {
             entries = JSON.parse(stored);
         } else {
             entries = [
-                { id: Date.now() + 1, name: 'Netflix', closedDateISO: '2026-04-14', coolingPeriod: 4 },
-                { id: Date.now() + 2, name: 'Hulu', closedDateISO: '2026-04-01', coolingPeriod: 15 },
-                { id: Date.now() + 3, name: 'Amazon Prime', closedDateISO: '2026-03-20', coolingPeriod: 45 }
+                { id: Date.now()+1, name: 'Netflix', closedDateISO: '2026-04-14', coolingPeriod: 4 },
+                { id: Date.now()+2, name: 'Hulu', closedDateISO: '2026-04-01', coolingPeriod: 15 },
+                { id: Date.now()+3, name: 'Amazon Prime', closedDateISO: '2026-03-20', coolingPeriod: 45 }
             ];
-            persistData();
+            persist();
         }
     }
 
     function escapeHtml(str) {
         if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
+        return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
     }
 
     function renderTable() {
@@ -491,14 +351,14 @@
             recordCountSpan.innerText = '0 records';
             return;
         }
-
         let html = '';
         for (const entry of entries) {
-            const closedDateFormatted = formatUTCDateToLocalMDY(parseUTCDate(entry.closedDateISO));
-            const nextChurnUTC = computeNextChurnUTC(entry.closedDateISO, entry.coolingPeriod);
-            const nextChurnFormatted = nextChurnUTC ? formatUTCDateToLocalMDY(nextChurnUTC) : '—';
-            const daysLeft = nextChurnUTC ? getDaysLeftUntilChurn(nextChurnUTC) : null;
-            const daysLeftText = formatDaysLeft(daysLeft);
+            const closedDateObj = parseUTCDate(entry.closedDateISO);
+            const closedFmt = closedDateObj ? formatUTCDate(closedDateObj) : '—';
+            const nextUTC = computeNextChurnUTC(entry.closedDateISO, entry.coolingPeriod);
+            const nextFmt = nextUTC ? formatUTCDate(nextUTC) : '—';
+            const daysLeft = getDaysLeft(nextUTC);
+            const badgeText = formatDaysLeft(daysLeft);
             let badgeClass = 'days-badge';
             if (daysLeft !== null && daysLeft < 0) badgeClass += ' overdue';
             else if (daysLeft !== null && daysLeft === 0) badgeClass += ' today';
@@ -506,14 +366,16 @@
             html += `
                 <tr data-id="${entry.id}">
                     <td><strong>${escapeHtml(entry.name)}</strong></td>
-                    <td>${closedDateFormatted}</td>
+                    <td>${closedFmt}</td>
                     <td>${entry.coolingPeriod} day${entry.coolingPeriod !== 1 ? 's' : ''}</td>
                     <td class="next-churn-cell">
-                        <span class="churn-date">${nextChurnFormatted}</span>
-                        ${daysLeftText ? `<span class="${badgeClass}">${daysLeftText}</span>` : ''}
+                        <div class="next-churn-content">
+                            <span class="churn-date">${nextFmt}</span>
+                            ${badgeText ? `<span class="${badgeClass}">${badgeText}</span>` : ''}
+                        </div>
                     </td>
                     <td class="action-icons">
-                        <button class="icon-btn edit-entry" data-id="${entry.id}" title="Edit account">
+                        <button class="icon-btn edit-entry" data-id="${entry.id}" title="Edit">
                             <span class="material-symbols-outlined">edit</span>
                         </button>
                         <button class="icon-btn delete-entry" data-id="${entry.id}" title="Delete">
@@ -528,79 +390,66 @@
 
         document.querySelectorAll('.edit-entry').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const id = parseInt(btn.getAttribute('data-id'));
-                startEditMode(id);
+                e.stopPropagation();
+                startEditMode(parseInt(btn.dataset.id));
             });
         });
         document.querySelectorAll('.delete-entry').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const id = parseInt(btn.getAttribute('data-id'));
-                deleteEntryById(id);
+                e.stopPropagation();
+                deleteEntryById(parseInt(btn.dataset.id));
             });
         });
     }
 
     function addEntry() {
         const name = accountNameInput.value.trim();
-        const closedDate = closedDateInput.value;
-        const coolingPeriod = parseInt(coolingSelect.value, 10);
-
-        if (!name) { showSnackbar('❌ Please enter an account name'); return; }
-        if (!closedDate) { showSnackbar('❌ Please select a closing date'); return; }
-        if (isNaN(coolingPeriod)) { showSnackbar('❌ Invalid cooling period'); return; }
-
-        const newEntry = {
-            id: Date.now(),
-            name: name,
-            closedDateISO: closedDate,
-            coolingPeriod: coolingPeriod
-        };
-        entries.push(newEntry);
-        persistData();
+        const closed = closedDateInput.value;
+        const cooling = parseInt(coolingSelect.value, 10);
+        if (!name) return showSnackbar('❌ Enter account name');
+        if (!closed) return showSnackbar('❌ Select closing date');
+        entries.push({ id: Date.now(), name, closedDateISO: closed, coolingPeriod: cooling });
+        persist();
         renderTable();
-        resetFormToAddMode();
+        resetForm();
         showSnackbar(`✅ "${name}" added.`);
     }
 
     function updateEntry() {
-        if (editModeId === null) return;
+        if (!editModeId) return;
         const name = accountNameInput.value.trim();
-        const closedDate = closedDateInput.value;
-        const coolingPeriod = parseInt(coolingSelect.value, 10);
-
-        if (!name) { showSnackbar('❌ Name cannot be empty'); return; }
-        if (!closedDate) { showSnackbar('❌ Please select closing date'); return; }
-
-        const index = entries.findIndex(entry => entry.id === editModeId);
-        if (index === -1) { showSnackbar('Error: entry not found'); resetFormToAddMode(); return; }
-
-        entries[index] = { ...entries[index], name, closedDateISO: closedDate, coolingPeriod: coolingPeriod };
-        persistData();
+        const closed = closedDateInput.value;
+        const cooling = parseInt(coolingSelect.value, 10);
+        if (!name) return showSnackbar('❌ Name required');
+        const idx = entries.findIndex(e => e.id === editModeId);
+        if (idx === -1) return resetForm();
+        entries[idx] = { ...entries[idx], name, closedDateISO: closed, coolingPeriod: cooling };
+        persist();
         renderTable();
-        resetFormToAddMode();
+        resetForm();
         showSnackbar(`✏️ Updated "${name}"`);
     }
 
     function deleteEntryById(id) {
         const entry = entries.find(e => e.id === id);
         if (!entry) return;
-        if (confirm(`Delete "${entry.name}" from churning list?`)) {
+        if (confirm(`Delete "${entry.name}"?`)) {
             entries = entries.filter(e => e.id !== id);
-            persistData();
+            persist();
             renderTable();
-            if (editModeId === id) resetFormToAddMode();
+            if (editModeId === id) resetForm();
             showSnackbar(`🗑️ Removed "${entry.name}"`);
         }
     }
 
     function clearAllData() {
-        if (entries.length === 0) { showSnackbar('No data to clear'); return; }
-        if (confirm('⚠️ PERMANENT: Delete ALL accounts? This cannot be undone.')) {
+        if (!entries.length) return showSnackbar('No data to clear');
+        if (confirm('⚠️ Delete ALL accounts permanently?')) {
             entries = [];
-            persistData();
+            persist();
             renderTable();
-            resetFormToAddMode();
-            showSnackbar('All churning data cleared');
+            resetForm();
+            showSnackbar('All data cleared');
         }
     }
 
@@ -611,47 +460,39 @@
         accountNameInput.value = entry.name;
         closedDateInput.value = entry.closedDateISO;
         coolingSelect.value = entry.coolingPeriod;
-
         formTitleSpan.innerHTML = '✏️ Edit account';
         submitBtn.innerHTML = '<span class="material-symbols-outlined">save</span> Update entry';
         cancelEditBtn.style.display = 'inline-flex';
-        document.querySelector('.card').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    function resetFormToAddMode() {
+    function resetForm() {
         editModeId = null;
         accountNameInput.value = '';
         const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        closedDateInput.value = `${yyyy}-${mm}-${dd}`;
+        closedDateInput.value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
         coolingSelect.value = '30';
         formTitleSpan.innerHTML = '➕ Add new account';
         submitBtn.innerHTML = '<span class="material-symbols-outlined">add</span> Add entry';
         cancelEditBtn.style.display = 'none';
     }
 
-    function onSubmitAction() {
-        if (editModeId !== null) updateEntry();
-        else addEntry();
+    function onSubmit() {
+        editModeId !== null ? updateEntry() : addEntry();
     }
 
     function cancelEdit() {
-        if (editModeId !== null) {
-            resetFormToAddMode();
-            showSnackbar('Edit cancelled');
-        }
+        if (editModeId) resetForm();
+        showSnackbar('Edit cancelled');
     }
 
-    function showSnackbar(message, duration = 3000) {
-        const existing = document.querySelector('.snack-message');
-        if (existing) existing.remove();
-        const snack = document.createElement('div');
-        snack.className = 'snack-message';
-        snack.innerText = message;
-        document.body.appendChild(snack);
-        setTimeout(() => { if (snack.parentNode) snack.remove(); }, duration);
+    function showSnackbar(msg) {
+        const old = document.querySelector('.snack-message');
+        if (old) old.remove();
+        const div = document.createElement('div');
+        div.className = 'snack-message';
+        div.textContent = msg;
+        document.body.appendChild(div);
+        setTimeout(() => div.remove(), 3000);
     }
 
     function init() {
@@ -659,17 +500,13 @@
         loadData();
         renderTable();
         const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        closedDateInput.value = `${yyyy}-${mm}-${dd}`;
-        submitBtn.addEventListener('click', onSubmitAction);
-        cancelEditBtn.addEventListener('click', cancelEdit);
-        clearAllBtn.addEventListener('click', clearAllData);
-        accountNameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') onSubmitAction(); });
-        closedDateInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') onSubmitAction(); });
+        closedDateInput.value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+        submitBtn.onclick = onSubmit;
+        cancelEditBtn.onclick = cancelEdit;
+        clearAllBtn.onclick = clearAllData;
+        accountNameInput.onkeypress = e => { if (e.key === 'Enter') onSubmit(); };
+        closedDateInput.onkeypress = e => { if (e.key === 'Enter') onSubmit(); };
     }
-
     init();
 </script>
 </body>
