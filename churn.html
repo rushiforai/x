@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Churning Helper | Mobile Ready</title>
+    <title>Churning Helper | Collapsible + Mobile Cards</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" rel="stylesheet" />
     <style>
@@ -35,8 +35,19 @@
         h2 {
             font-size: 1.2rem;
             font-weight: 500;
-            margin-bottom: 14px;
-            text-align: center;
+            margin: 0;
+        }
+        .collapsible-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 4px 0;
+        }
+        .toggle-icon {
+            font-size: 24px;
+            color: #6750A4;
+            transition: transform 0.2s;
         }
         .form-grid {
             display: flex;
@@ -44,6 +55,7 @@
             gap: 16px;
             align-items: flex-end;
             justify-content: center;
+            margin-top: 16px;
         }
         .input-group {
             flex: 1;
@@ -110,6 +122,7 @@
             opacity: 0.7;
             cursor: default;
         }
+        /* Desktop table styles */
         .table-wrapper {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -197,6 +210,46 @@
             gap: 12px;
             margin-bottom: 12px;
         }
+        /* Mobile card layout */
+        .cards-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .churn-card {
+            background: #FFFBFE;
+            border: 1px solid #e2dce6;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .card-field {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0eef2;
+        }
+        .card-field:last-child {
+            border-bottom: none;
+        }
+        .field-label {
+            font-weight: 500;
+            color: #49454F;
+            font-size: 0.8rem;
+        }
+        .field-value {
+            font-weight: 500;
+            color: #1C1B1F;
+            text-align: right;
+        }
+        .card-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 12px;
+            padding-top: 8px;
+        }
         .snack-message {
             position: fixed;
             bottom: 20px;
@@ -220,7 +273,7 @@
             100% { opacity: 0; visibility: hidden; }
         }
 
-        /* Mobile specific improvements */
+        /* Mobile specific overrides */
         @media (max-width: 600px) {
             body {
                 padding: 12px;
@@ -245,37 +298,14 @@
                 align-items: stretch;
                 text-align: center;
             }
-            .flex-between h2 {
-                margin-bottom: 8px;
-            }
-            .data-table th, .data-table td {
-                padding: 10px 6px;
-            }
-            .data-table th:last-child,
-            .data-table td:last-child {
-                width: 80px;
-            }
-            .action-icons {
-                gap: 4px;
-            }
-            .icon-btn {
-                padding: 4px;
-            }
-            .material-symbols-outlined {
-                font-size: 16px;
-            }
             .snack-message {
                 white-space: normal;
                 text-align: center;
                 max-width: 90%;
             }
-            /* Stack header buttons on mobile */
             .card > div:first-child {
                 flex-direction: column;
                 align-items: center;
-            }
-            .card > div:first-child > div:first-child {
-                justify-content: center;
             }
             #notifyBtn, #clearAllBtn {
                 white-space: normal;
@@ -294,7 +324,7 @@
             </div>
             <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
                 <button id="notifyBtn" class="btn btn-notify">
-                    <span class="material-symbols-outlined">notifications</span> Enable Notifications
+                    <span class="material-symbols-outlined">notifications</span> Enable
                 </button>
                 <button id="clearAllBtn" class="btn btn-outline btn-danger">
                     <span class="material-symbols-outlined">delete_sweep</span> Clear all
@@ -304,52 +334,46 @@
         <p style="color: #49454F; text-align: center; font-size: 0.85rem;">Track closed accounts — get notified when cooling period ends.</p>
     </div>
 
+    <!-- Collapsible Add Section -->
     <div class="card">
-        <h2><span id="formTitle">➕ Add new account</span></h2>
-        <div class="form-grid">
-            <div class="input-group">
-                <label>Account name</label>
-                <input type="text" id="accountName" placeholder="e.g., Chime">
-            </div>
-            <div class="input-group">
-                <label>Closed date</label>
-                <input type="date" id="closedDate">
-            </div>
-            <div class="input-group">
-                <label>Cooling period (days)</label>
-                <select id="coolingPeriodSelect"></select>
-            </div>
-            <div class="btn-group">
-                <button id="submitBtn" class="btn btn-primary">
-                    <span class="material-symbols-outlined">add</span> Add
-                </button>
-                <button id="cancelEditBtn" class="btn btn-outline" style="display: none;">
-                    <span class="material-symbols-outlined">close</span> Cancel
-                </button>
+        <div class="collapsible-header" id="toggleAddSection">
+            <h2><span id="formTitle">➕ Add new account</span></h2>
+            <span class="material-symbols-outlined toggle-icon" id="toggleIcon">expand_more</span>
+        </div>
+        <div id="addFormContent" style="display: flex;">
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>Account name</label>
+                    <input type="text" id="accountName" placeholder="e.g., Chime">
+                </div>
+                <div class="input-group">
+                    <label>Closed date</label>
+                    <input type="date" id="closedDate">
+                </div>
+                <div class="input-group">
+                    <label>Cooling period (days)</label>
+                    <select id="coolingPeriodSelect"></select>
+                </div>
+                <div class="btn-group">
+                    <button id="submitBtn" class="btn btn-primary">
+                        <span class="material-symbols-outlined">add</span> Add
+                    </button>
+                    <button id="cancelEditBtn" class="btn btn-outline" style="display: none;">
+                        <span class="material-symbols-outlined">close</span> Cancel
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- Churning log section -->
     <div class="card">
         <div class="flex-between">
             <h2>📋 Churning log</h2>
             <span id="recordCount" style="background:#EADDFF; padding:4px 12px; border-radius:30px; font-size:0.8rem;">0 records</span>
         </div>
-        <div class="table-wrapper">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Closed</th>
-                        <th>Cooling</th>
-                        <th>Next Churn</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    <tr class="empty-row"><td colspan="5">✨ No accounts yet. Add your first account ✨</td></tr>
-                </tbody>
-            </table>
+        <div id="logContainer" class="table-wrapper">
+            <!-- Dynamic content: either table or cards -->
         </div>
     </div>
 </div>
@@ -360,17 +384,31 @@
     let editModeId = null;
     let notificationPermissionGranted = false;
     let notificationCheckInterval = null;
+    let isMobile = window.innerWidth < 600;
 
+    // DOM elements
     const accountNameInput = document.getElementById('accountName');
     const closedDateInput = document.getElementById('closedDate');
     const coolingSelect = document.getElementById('coolingPeriodSelect');
     const submitBtn = document.getElementById('submitBtn');
     const cancelEditBtn = document.getElementById('cancelEditBtn');
     const formTitleSpan = document.getElementById('formTitle');
-    const tableBody = document.getElementById('tableBody');
     const clearAllBtn = document.getElementById('clearAllBtn');
     const recordCountSpan = document.getElementById('recordCount');
     const notifyBtn = document.getElementById('notifyBtn');
+    const logContainer = document.getElementById('logContainer');
+    const addFormContent = document.getElementById('addFormContent');
+    const toggleAddSection = document.getElementById('toggleAddSection');
+    const toggleIcon = document.getElementById('toggleIcon');
+
+    // Collapsible logic
+    let isFormCollapsed = false;
+    function toggleAddForm() {
+        isFormCollapsed = !isFormCollapsed;
+        addFormContent.style.display = isFormCollapsed ? 'none' : 'flex';
+        toggleIcon.textContent = isFormCollapsed ? 'expand_more' : 'expand_less';
+    }
+    toggleAddSection.addEventListener('click', toggleAddForm);
 
     // Notification UI
     function updateNotificationButtonUI() {
@@ -444,7 +482,7 @@
                 if (sendNotificationForEntry(entry, nextUTC)) anySent = true;
             }
         }
-        if (anySent) renderTable();
+        if (anySent) renderResponsive();
     }
 
     function clearNotificationHistory() {
@@ -518,13 +556,45 @@
         return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
     }
 
-    function renderTable() {
+    // Desktop table rendering
+    function renderDesktopTable() {
         if (!entries.length) {
-            tableBody.innerHTML = '<tr class="empty-row"><td colspan="5">✨ No accounts yet. Add your first account ✨</td></tr>';
-            recordCountSpan.innerText = '0 records';
-            return;
+            return `<div class="table-wrapper"><table class="data-table"><tbody><tr class="empty-row"><td colspan="5">✨ No accounts yet. Add your first account ✨</td></tr></tbody></table></div>`;
         }
-        let html = '';
+        let html = `<div class="table-wrapper"><table class="data-table"><thead><tr>
+            <th>Name</th><th>Closed date</th><th>Cooling (days)</th><th>Next Churn</th><th>Actions</th>
+        </tr></thead><tbody>`;
+        for (const entry of entries) {
+            const closedFmt = formatUTCDate(parseUTCDate(entry.closedDateISO));
+            const nextUTC = computeNextChurnUTC(entry.closedDateISO, entry.coolingPeriod);
+            const nextFmt = nextUTC ? formatUTCDate(nextUTC) : '—';
+            const daysLeft = getDaysLeft(nextUTC);
+            const badgeText = formatDaysLeft(daysLeft);
+            let badgeClass = 'days-badge';
+            if (daysLeft !== null && daysLeft < 0) badgeClass += ' overdue';
+            else if (daysLeft !== null && daysLeft === 0) badgeClass += ' today';
+
+            html += `<tr data-id="${entry.id}">
+                <td><strong>${escapeHtml(entry.name)}</strong></td>
+                <td>${closedFmt}</td>
+                <td>${entry.coolingPeriod} d</td>
+                <td><div class="next-churn-content"><span class="churn-date">${nextFmt}</span>${badgeText ? `<span class="${badgeClass}">${badgeText}</span>` : ''}</div></td>
+                <td class="action-icons">
+                    <button class="icon-btn edit-entry" data-id="${entry.id}" title="Edit"><span class="material-symbols-outlined">edit</span></button>
+                    <button class="icon-btn delete-entry" data-id="${entry.id}" title="Delete"><span class="material-symbols-outlined">delete</span></button>
+                </td>
+            </tr>`;
+        }
+        html += `</tbody></table></div>`;
+        return html;
+    }
+
+    // Mobile cards rendering
+    function renderMobileCards() {
+        if (!entries.length) {
+            return `<div class="cards-list"><div class="churn-card" style="text-align:center; color:#49454F;">✨ No accounts yet. Add your first account ✨</div></div>`;
+        }
+        let html = `<div class="cards-list">`;
         for (const entry of entries) {
             const closedFmt = formatUTCDate(parseUTCDate(entry.closedDateISO));
             const nextUTC = computeNextChurnUTC(entry.closedDateISO, entry.coolingPeriod);
@@ -536,44 +606,69 @@
             else if (daysLeft !== null && daysLeft === 0) badgeClass += ' today';
 
             html += `
-                <tr data-id="${entry.id}">
-                    <td><strong>${escapeHtml(entry.name)}</strong></td>
-                    <td>${closedFmt}</td>
-                    <td>${entry.coolingPeriod} d</td>
-                    <td>
-                        <div class="next-churn-content">
-                            <span class="churn-date">${nextFmt}</span>
-                            ${badgeText ? `<span class="${badgeClass}">${badgeText}</span>` : ''}
-                        </div>
-                    </td>
-                    <td class="action-icons">
-                        <button class="icon-btn edit-entry" data-id="${entry.id}" title="Edit">
-                            <span class="material-symbols-outlined">edit</span>
-                        </button>
-                        <button class="icon-btn delete-entry" data-id="${entry.id}" title="Delete">
-                            <span class="material-symbols-outlined">delete</span>
-                        </button>
-                    </td>
-                </tr>
-            `;
+            <div class="churn-card" data-id="${entry.id}">
+                <div class="card-field"><span class="field-label">Account</span><span class="field-value"><strong>${escapeHtml(entry.name)}</strong></span></div>
+                <div class="card-field"><span class="field-label">Closed date</span><span class="field-value">${closedFmt}</span></div>
+                <div class="card-field"><span class="field-label">Cooling period</span><span class="field-value">${entry.coolingPeriod} days</span></div>
+                <div class="card-field"><span class="field-label">Next Churn</span><span class="field-value">${nextFmt}</span></div>
+                ${badgeText ? `<div class="card-field"><span class="field-label">Status</span><span class="field-value"><span class="${badgeClass}">${badgeText}</span></span></div>` : ''}
+                <div class="card-actions">
+                    <button class="icon-btn edit-entry" data-id="${entry.id}" title="Edit"><span class="material-symbols-outlined">edit</span> Edit</button>
+                    <button class="icon-btn delete-entry" data-id="${entry.id}" title="Delete"><span class="material-symbols-outlined">delete</span> Delete</button>
+                </div>
+            </div>`;
         }
-        tableBody.innerHTML = html;
-        recordCountSpan.innerText = `${entries.length} record${entries.length !== 1 ? 's' : ''}`;
-
-        document.querySelectorAll('.edit-entry').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                startEditMode(parseInt(btn.dataset.id));
-            });
-        });
-        document.querySelectorAll('.delete-entry').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                deleteEntryById(parseInt(btn.dataset.id));
-            });
-        });
+        html += `</div>`;
+        return html;
     }
 
+    function attachCardEvents() {
+        document.querySelectorAll('.edit-entry').forEach(btn => {
+            btn.removeEventListener('click', handleEdit);
+            btn.addEventListener('click', handleEdit);
+        });
+        document.querySelectorAll('.delete-entry').forEach(btn => {
+            btn.removeEventListener('click', handleDelete);
+            btn.addEventListener('click', handleDelete);
+        });
+    }
+    function handleEdit(e) {
+        const btn = e.currentTarget;
+        const id = parseInt(btn.dataset.id);
+        startEditMode(id);
+    }
+    function handleDelete(e) {
+        const btn = e.currentTarget;
+        const id = parseInt(btn.dataset.id);
+        deleteEntryById(id);
+    }
+
+    function renderResponsive() {
+        const isNowMobile = window.innerWidth < 600;
+        let html;
+        if (isNowMobile) {
+            html = renderMobileCards();
+            logContainer.innerHTML = html;
+            attachCardEvents();
+        } else {
+            html = renderDesktopTable();
+            logContainer.innerHTML = html;
+            // attach events for table buttons
+            document.querySelectorAll('.edit-entry').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    startEditMode(parseInt(btn.dataset.id));
+                });
+            });
+            document.querySelectorAll('.delete-entry').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    deleteEntryById(parseInt(btn.dataset.id));
+                });
+            });
+        }
+        recordCountSpan.innerText = `${entries.length} record${entries.length !== 1 ? 's' : ''}`;
+    }
+
+    // CRUD operations
     function addEntry() {
         const name = accountNameInput.value.trim();
         const closed = closedDateInput.value;
@@ -582,7 +677,7 @@
         if (!closed) return showSnackbar('❌ Select closing date');
         entries.push({ id: Date.now(), name, closedDateISO: closed, coolingPeriod: cooling });
         persist();
-        renderTable();
+        renderResponsive();
         resetForm();
         showSnackbar(`✅ "${name}" added.`);
         checkAndSendNotifications();
@@ -598,7 +693,7 @@
         if (idx === -1) return resetForm();
         entries[idx] = { ...entries[idx], name, closedDateISO: closed, coolingPeriod: cooling };
         persist();
-        renderTable();
+        renderResponsive();
         resetForm();
         showSnackbar(`✏️ Updated "${name}"`);
         checkAndSendNotifications();
@@ -610,7 +705,7 @@
         if (confirm(`Delete "${entry.name}"?`)) {
             entries = entries.filter(e => e.id !== id);
             persist();
-            renderTable();
+            renderResponsive();
             if (editModeId === id) resetForm();
             showSnackbar(`🗑️ Removed "${entry.name}"`);
             const lastMap = getLastNotifiedMap();
@@ -624,7 +719,7 @@
         if (confirm('⚠️ Delete ALL accounts?')) {
             entries = [];
             persist();
-            renderTable();
+            renderResponsive();
             resetForm();
             clearNotificationHistory();
             showSnackbar('All data cleared');
@@ -641,6 +736,8 @@
         formTitleSpan.innerHTML = '✏️ Edit account';
         submitBtn.innerHTML = '<span class="material-symbols-outlined">save</span> Update';
         cancelEditBtn.style.display = 'inline-flex';
+        // Expand form if collapsed
+        if (isFormCollapsed) toggleAddForm();
     }
 
     function resetForm() {
@@ -679,10 +776,14 @@
         }, 60 * 60 * 1000);
     }
 
+    function handleResize() {
+        renderResponsive();
+    }
+
     function init() {
         buildCoolingDropdown();
         loadData();
-        renderTable();
+        renderResponsive();
         const today = new Date();
         closedDateInput.value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
         submitBtn.onclick = onSubmit;
@@ -691,6 +792,7 @@
         notifyBtn.onclick = requestNotificationPermission;
         accountNameInput.onkeypress = e => { if (e.key === 'Enter') onSubmit(); };
         closedDateInput.onkeypress = e => { if (e.key === 'Enter') onSubmit(); };
+        window.addEventListener('resize', handleResize);
 
         if ("Notification" in window && Notification.permission === "granted") {
             notificationPermissionGranted = true;
