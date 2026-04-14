@@ -238,11 +238,6 @@
             font-style: italic;
         }
 
-        .clear-btn {
-            background-color: #fff3f3;
-            border-color: var(--md-sys-color-error);
-        }
-
         .flex-between {
             display: flex;
             justify-content: space-between;
@@ -251,7 +246,35 @@
             gap: 16px;
         }
 
-        /* snackbar style (inline feedback) */
+        .next-churn-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .churn-date {
+            font-weight: 500;
+            color: #21005E;
+        }
+        .days-badge {
+            font-size: 0.7rem;
+            background: #EADDFF;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 30px;
+            width: fit-content;
+            color: #1C1B1F;
+            font-weight: 500;
+        }
+        .days-badge.overdue {
+            background: #FFDAD6;
+            color: #BA1A1A;
+        }
+        .days-badge.today {
+            background: #FFE6CC;
+            color: #B85C00;
+        }
+
+        /* snackbar message */
         .snack-message {
             position: fixed;
             bottom: 24px;
@@ -278,7 +301,7 @@
 </head>
 <body>
 <div class="container">
-    <!-- Main Card: Header & Info -->
+    <!-- Main Card -->
     <div class="card">
         <div class="card-header">
             <div style="display: flex; align-items: center; gap: 12px;">
@@ -291,10 +314,10 @@
                 </button>
             </div>
         </div>
-        <p style="color: #49454F; margin-top: 4px;">Track closed accounts & re-subscription eligibility — next churn date = closing date + cooling period.</p>
+        <p style="color: #49454F; margin-top: 4px;">Track closed accounts & re-subscription eligibility — next churn = closing date + cooling period (UTC-safe, your local timezone).</p>
     </div>
 
-    <!-- Form Card: Add / Edit Entry (Material Design 3) -->
+    <!-- Form Card -->
     <div class="card">
         <h2>
             <span id="formTitle">➕ Add new account</span>
@@ -351,7 +374,7 @@
 <script>
     // ---------- Data Model ----------
     let entries = [];         // each entry: { id, name, closedDateISO, coolingPeriod }
-    let editModeId = null;   // if not null, we are editing this id
+    let editModeId = null;
 
     // DOM elements
     const accountNameInput = document.getElementById('accountName');
@@ -364,79 +387,109 @@
     const clearAllBtn = document.getElementById('clearAllBtn');
     const recordCountSpan = document.getElementById('recordCount');
 
-    // Helper: format YYYY-MM-DD -> MM/DD/YYYY (US style like example)
-    function formatDateToMDY(isoDate) {
-        if (!isoDate) return '—';
-        const [year, month, day] = isoDate.split('-');
-        if (!year || !month || !day) return isoDate;
-        return `${parseInt(month)}/${parseInt(day)}/${year}`;
+    // ----- UTC date helpers (timezone safe) -----
+    // Parse YYYY-MM-DD as UTC midnight, returns Date object (UTC-based)
+    function parseUTCDate(isoDateString) {
+        if (!isoDateString) return null;
+        const [year, month, day] = isoDateString.split('-').map(Number);
+        // Date.UTC returns timestamp, then create Date object (will represent that UTC moment)
+        return new Date(Date.UTC(year, month - 1, day));
     }
 
-    // Compute next churn: closedDateISO + coolingDays (integer) => formatted MM/DD/YYYY
-    function computeNextChurn(closedDateISO, coolingDays) {
-        if (!closedDateISO) return '—';
-        const parts = closedDateISO.split('-');
-        let year = parseInt(parts[0], 10);
-        let month = parseInt(parts[1], 10) - 1; // JS months 0-index
-        let day = parseInt(parts[2], 10);
-        const dateObj = new Date(year, month, day);
-        if (isNaN(dateObj.getTime())) return 'Invalid date';
-        dateObj.setDate(dateObj.getDate() + coolingDays);
-        const newMonth = dateObj.getMonth() + 1;
-        const newDay = dateObj.getDate();
-        const newYear = dateObj.getFullYear();
-        return `${newMonth}/${newDay}/${newYear}`;
+    // Format a UTC date (from our functions) as local date string MM/DD/YYYY (no timezone shift)
+    // Since we store as UTC midnight, to display correctly in local time we need to get the UTC date components.
+    function formatUTCDateToLocalMDY(utcDate) {
+        if (!utcDate || isNaN(utcDate.getTime())) return '—';
+        // Extract UTC components to avoid timezone offset
+        const year = utcDate.getUTCFullYear();
+        const month = utcDate.getUTCMonth() + 1;
+        const day = utcDate.getUTCDate();
+        return `${month}/${day}/${year}`;
     }
 
-    // Populate cooling dropdown (0-365)
+    // Compute next churn UTC date object (closedDateUTC + coolingDays)
+    function computeNextChurnUTC(closedDateISO, coolingDays) {
+        if (!closedDateISO) return null;
+        const closedUTC = parseUTCDate(closedDateISO);
+        if (!closedUTC) return null;
+        const nextUTC = new Date(closedUTC);
+        nextUTC.setUTCDate(closedUTC.getUTCDate() + coolingDays);
+        return nextUTC;
+    }
+
+    // Get today's date in UTC (midnight UTC) for comparison
+    function getTodayUTC() {
+        const now = new Date();
+        return new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+    }
+
+    // Calculate days difference between two UTC dates (date2 - date1) in whole days
+    function daysBetweenUTC(date1, date2) {
+        const diffTime = date2.getTime() - date1.getTime();
+        return Math.round(diffTime / (1000 * 60 * 60 * 24));
+    }
+
+    // Get days left until next churn (positive = days left, zero = today, negative = overdue)
+    function getDaysLeftUntilChurn(nextChurnUTC) {
+        if (!nextChurnUTC) return null;
+        const todayUTC = getTodayUTC();
+        return daysBetweenUTC(todayUTC, nextChurnUTC);
+    }
+
+    // Format the days left message
+    function formatDaysLeft(daysLeft) {
+        if (daysLeft === null) return '';
+        if (daysLeft === 0) return '🎯 Today';
+        if (daysLeft > 0) return `${daysLeft} day${daysLeft !== 1 ? 's' : ''} left`;
+        const overdue = Math.abs(daysLeft);
+        return `⚠️ ${overdue} day${overdue !== 1 ? 's' : ''} overdue`;
+    }
+
+    // Build dropdown 0-365
     function buildCoolingDropdown() {
         coolingSelect.innerHTML = '';
         for (let i = 0; i <= 365; i++) {
             const option = document.createElement('option');
             option.value = i;
             option.textContent = `${i} day${i !== 1 ? 's' : ''}`;
-            if (i === 30) option.selected = true; // default 30 days
+            if (i === 30) option.selected = true;
             coolingSelect.appendChild(option);
         }
     }
 
-    // Save to localStorage
+    // Persist to localStorage
     function persistData() {
         localStorage.setItem('churning_helper_data', JSON.stringify(entries));
     }
 
-    // Load from localStorage & optionally seed demo data
+    // Load data with demo seeding
     function loadData() {
         const stored = localStorage.getItem('churning_helper_data');
         if (stored) {
             entries = JSON.parse(stored);
         } else {
-            // Seed demo data to showcase functionality (matches example)
+            // Seed demo (ensuring UTC-safe)
             entries = [
-                {
-                    id: Date.now() + 1,
-                    name: 'Netflix',
-                    closedDateISO: '2026-04-14',
-                    coolingPeriod: 4
-                },
-                {
-                    id: Date.now() + 2,
-                    name: 'Hulu',
-                    closedDateISO: '2026-04-01',
-                    coolingPeriod: 15
-                },
-                {
-                    id: Date.now() + 3,
-                    name: 'Amazon Prime',
-                    closedDateISO: '2026-03-20',
-                    coolingPeriod: 45
-                }
+                { id: Date.now() + 1, name: 'Netflix', closedDateISO: '2026-04-14', coolingPeriod: 4 },
+                { id: Date.now() + 2, name: 'Hulu', closedDateISO: '2026-04-01', coolingPeriod: 15 },
+                { id: Date.now() + 3, name: 'Amazon Prime', closedDateISO: '2026-03-20', coolingPeriod: 45 }
             ];
             persistData();
         }
     }
 
-    // Render table from entries, compute Next Churn dynamically
+    // Escape HTML
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // Render table with next churn + days indicator
     function renderTable() {
         if (!tableBody) return;
         if (!entries.length) {
@@ -444,18 +497,29 @@
             recordCountSpan.innerText = `0 records`;
             return;
         }
+
         let html = '';
         for (const entry of entries) {
-            const closedDateFormatted = formatDateToMDY(entry.closedDateISO);
-            const nextChurnDate = computeNextChurn(entry.closedDateISO, entry.coolingPeriod);
+            const closedDateFormatted = formatUTCDateToLocalMDY(parseUTCDate(entry.closedDateISO));
+            const nextChurnUTC = computeNextChurnUTC(entry.closedDateISO, entry.coolingPeriod);
+            const nextChurnFormatted = nextChurnUTC ? formatUTCDateToLocalMDY(nextChurnUTC) : '—';
+            const daysLeft = nextChurnUTC ? getDaysLeftUntilChurn(nextChurnUTC) : null;
+            const daysLeftText = formatDaysLeft(daysLeft);
+            let badgeClass = 'days-badge';
+            if (daysLeft !== null && daysLeft < 0) badgeClass += ' overdue';
+            else if (daysLeft !== null && daysLeft === 0) badgeClass += ' today';
+
             html += `
                 <tr data-id="${entry.id}">
                     <td><strong>${escapeHtml(entry.name)}</strong></td>
                     <td>${closedDateFormatted}</td>
                     <td>${entry.coolingPeriod} day${entry.coolingPeriod !== 1 ? 's' : ''}</td>
-                    <td style="font-weight: 500; color:#21005E;">${nextChurnDate}</td>
+                    <td class="next-churn-cell">
+                        <span class="churn-date">${nextChurnFormatted}</span>
+                        ${daysLeftText ? `<span class="${badgeClass}">${daysLeftText}</span>` : ''}
+                    </td>
                     <td class="action-icons">
-                        <button class="icon-btn edit-entry" data-id="${entry.id}" title="Edit account">
+                        <button class="icon-btn edit-entry" data-id="${entry.id}" title="Edit">
                             <span class="material-symbols-outlined">edit</span>
                         </button>
                         <button class="icon-btn delete-entry" data-id="${entry.id}" title="Delete">
@@ -468,55 +532,30 @@
         tableBody.innerHTML = html;
         recordCountSpan.innerText = `${entries.length} record${entries.length !== 1 ? 's' : ''}`;
 
-        // Attach event listeners dynamically for edit/delete buttons
+        // attach edit/delete events
         document.querySelectorAll('.edit-entry').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                e.stopPropagation();
                 const id = parseInt(btn.getAttribute('data-id'));
                 startEditMode(id);
             });
         });
-
         document.querySelectorAll('.delete-entry').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                e.stopPropagation();
                 const id = parseInt(btn.getAttribute('data-id'));
                 deleteEntryById(id);
             });
         });
     }
 
-    // simple XSS guard
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-            return c;
-        });
-    }
-
-    // Add new entry
+    // Add entry
     function addEntry() {
         const name = accountNameInput.value.trim();
         const closedDate = closedDateInput.value;
         const coolingPeriod = parseInt(coolingSelect.value, 10);
 
-        if (!name) {
-            showSnackbar('❌ Please enter an account name');
-            return;
-        }
-        if (!closedDate) {
-            showSnackbar('❌ Please select a closing date');
-            return;
-        }
-        if (isNaN(coolingPeriod)) {
-            showSnackbar('❌ Invalid cooling period');
-            return;
-        }
+        if (!name) { showSnackbar('❌ Please enter an account name'); return; }
+        if (!closedDate) { showSnackbar('❌ Please select a closing date'); return; }
+        if (isNaN(coolingPeriod)) { showSnackbar('❌ Invalid cooling period'); return; }
 
         const newEntry = {
             id: Date.now(),
@@ -528,67 +567,48 @@
         persistData();
         renderTable();
         resetFormToAddMode();
-        showSnackbar(`✅ "${name}" added. Next churn: ${computeNextChurn(closedDate, coolingPeriod)}`);
+        const nextDate = computeNextChurnUTC(closedDate, coolingPeriod);
+        const formatted = nextDate ? formatUTCDateToLocalMDY(nextDate) : '—';
+        showSnackbar(`✅ "${name}" added. Next churn: ${formatted}`);
     }
 
-    // Update existing entry
+    // Update entry
     function updateEntry() {
         if (editModeId === null) return;
         const name = accountNameInput.value.trim();
         const closedDate = closedDateInput.value;
         const coolingPeriod = parseInt(coolingSelect.value, 10);
 
-        if (!name) {
-            showSnackbar('❌ Name cannot be empty');
-            return;
-        }
-        if (!closedDate) {
-            showSnackbar('❌ Please select closing date');
-            return;
-        }
+        if (!name) { showSnackbar('❌ Name cannot be empty'); return; }
+        if (!closedDate) { showSnackbar('❌ Please select closing date'); return; }
 
         const index = entries.findIndex(entry => entry.id === editModeId);
-        if (index === -1) {
-            showSnackbar('Error: entry not found');
-            resetFormToAddMode();
-            return;
-        }
+        if (index === -1) { showSnackbar('Error: entry not found'); resetFormToAddMode(); return; }
 
-        entries[index] = {
-            ...entries[index],
-            name: name,
-            closedDateISO: closedDate,
-            coolingPeriod: coolingPeriod
-        };
+        entries[index] = { ...entries[index], name, closedDateISO: closedDate, coolingPeriod };
         persistData();
         renderTable();
         resetFormToAddMode();
         showSnackbar(`✏️ Updated "${name}" — next churn recalculated.`);
     }
 
-    // Delete entry by id
+    // Delete
     function deleteEntryById(id) {
-        const entryToDelete = entries.find(e => e.id === id);
-        if (!entryToDelete) return;
-        if (confirm(`Delete "${entryToDelete.name}" from churning list?`)) {
-            entries = entries.filter(entry => entry.id !== id);
+        const entry = entries.find(e => e.id === id);
+        if (!entry) return;
+        if (confirm(`Delete "${entry.name}" from churning list?`)) {
+            entries = entries.filter(e => e.id !== id);
             persistData();
             renderTable();
-            // If we were editing the deleted item, cancel edit mode
-            if (editModeId === id) {
-                resetFormToAddMode();
-            }
-            showSnackbar(`🗑️ Removed "${entryToDelete.name}"`);
+            if (editModeId === id) resetFormToAddMode();
+            showSnackbar(`🗑️ Removed "${entry.name}"`);
         }
     }
 
-    // Clear all data (with confirmation)
+    // Clear all data
     function clearAllData() {
-        if (entries.length === 0) {
-            showSnackbar('No data to clear');
-            return;
-        }
-        if (confirm('⚠️ PERMANENT: Delete ALL accounts from the table? This action cannot be undone.')) {
+        if (entries.length === 0) { showSnackbar('No data to clear'); return; }
+        if (confirm('⚠️ PERMANENT: Delete ALL accounts? This cannot be undone.')) {
             entries = [];
             persistData();
             renderTable();
@@ -597,51 +617,40 @@
         }
     }
 
-    // Start editing: fill form, switch UI to edit mode
+    // Edit mode
     function startEditMode(id) {
         const entry = entries.find(e => e.id === id);
         if (!entry) return;
-
         editModeId = id;
         accountNameInput.value = entry.name;
         closedDateInput.value = entry.closedDateISO;
         coolingSelect.value = entry.coolingPeriod;
 
-        // Update UI to edit state
         formTitleSpan.innerHTML = '✏️ Edit account';
         submitBtn.innerHTML = '<span class="material-symbols-outlined">save</span> Update entry';
         cancelEditBtn.style.display = 'inline-flex';
-        submitBtn.classList.add('btn-primary');
-        // scroll to form for better UX
         document.querySelector('.card').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    // Reset form & back to "Add" mode
     function resetFormToAddMode() {
         editModeId = null;
         accountNameInput.value = '';
-        // set default closed date to today? but keep previous example but empty? Let's set a sensible default: today's date
         const today = new Date();
         const yyyy = today.getFullYear();
         const mm = String(today.getMonth() + 1).padStart(2, '0');
         const dd = String(today.getDate()).padStart(2, '0');
         closedDateInput.value = `${yyyy}-${mm}-${dd}`;
-        coolingSelect.value = '30';    // default 30 days
+        coolingSelect.value = '30';
         formTitleSpan.innerHTML = '➕ Add new account';
         submitBtn.innerHTML = '<span class="material-symbols-outlined">add</span> Add entry';
         cancelEditBtn.style.display = 'none';
     }
 
-    // Submit handler (depending on mode)
     function onSubmitAction() {
-        if (editModeId !== null) {
-            updateEntry();
-        } else {
-            addEntry();
-        }
+        if (editModeId !== null) updateEntry();
+        else addEntry();
     }
 
-    // Cancel edit: reset mode
     function cancelEdit() {
         if (editModeId !== null) {
             resetFormToAddMode();
@@ -649,7 +658,7 @@
         }
     }
 
-    // Snackbar notification (Material style)
+    // Snackbar
     let snackbarTimeout;
     function showSnackbar(message, duration = 3000) {
         const existing = document.querySelector('.snack-message');
@@ -658,42 +667,26 @@
         snack.className = 'snack-message';
         snack.innerText = message;
         document.body.appendChild(snack);
-        setTimeout(() => {
-            if (snack && snack.parentNode) snack.remove();
-        }, duration);
+        setTimeout(() => { if (snack.parentNode) snack.remove(); }, duration);
     }
 
-    // Recompute Next Churn on the fly? Already computed during render; but for live preview, no needed.
-    // But we ensure local storage sync.
-
-    // Initialize event listeners and populate dropdown
+    // Initialize
     function init() {
         buildCoolingDropdown();
         loadData();
         renderTable();
-
-        // Set default closed date to today for fresh add
-        const todayDate = new Date();
-        const yyyy = todayDate.getFullYear();
-        const mm = String(todayDate.getMonth() + 1).padStart(2, '0');
-        const dd = String(todayDate.getDate()).padStart(2, '0');
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
         if (!closedDateInput.value) closedDateInput.value = `${yyyy}-${mm}-${dd}`;
-
         submitBtn.addEventListener('click', onSubmitAction);
         cancelEditBtn.addEventListener('click', cancelEdit);
         clearAllBtn.addEventListener('click', clearAllData);
-
-        // Extra: if user presses enter in name field, trigger submit
-        accountNameInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') onSubmitAction();
-        });
-        closedDateInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') onSubmitAction();
-        });
+        accountNameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') onSubmitAction(); });
+        closedDateInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') onSubmitAction(); });
     }
 
-    // additional helper: recompute next churn anytime but already done via render.
-    // Start app
     init();
 </script>
 </body>
