@@ -1212,28 +1212,6 @@
 
         return true;
       }
-      {
-        // const values = getActiveValues();
-        // if (values.length === 0) {
-        //   alert("No name or preset selected.");
-        //   return false;
-        // }
-        // const anyChecked = Array.from(
-        //   document.querySelectorAll(checkboxSelector),
-        // ).some((cb) => cb.checked);
-        // if (!anyChecked) {
-        //   alert(`No ${categoryName} selected.`);
-        //   return false;
-        // }
-        //   let msg = `Open ${categoryName} for: `;
-        //   if (values.length === 1) msg += `"${values[0].value}"`;
-        //   else
-        //     msg += `${values.length} presets: ${values.map((v) => v.value).join(", ")}`;
-        //   if (!confirm(msg + " ?")) return false;
-        //   for (let val of values)
-        //     openUrlsForValue(val, urlsArray, checkboxSelector);
-        return true;
-      }
       // Dark mode
       function initDarkMode() {
         const stored = localStorage.getItem("theme");
