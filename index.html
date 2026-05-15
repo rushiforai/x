@@ -719,7 +719,7 @@
           label: "ixxx",
           default: "https://www.ixxx.com/",
           1: "https://www.ixxx.com/pornstar/{value}?filter%5Badvertiser_publish_date%5D=&filter%5Bduration%5D=&filter%5Bquality%5D=&filter%5Bvirtual_reality%5D=&filter%5Badvertiser_site%5D=&filter%5Border_by%5D=duration",
-          2: "https://www.ixxx.com/search/a/{value}?filter%5Badvertiser_publish_date%5D=&filter%5Bduration%5D=&filter%5Bquality%5D=&filter%5Bvirtual_reality%5D=&filter%5Badvertiser_site%5D=&filter%5Border_by%5D=duration",
+          2: "https://www.ixxx.com/search/{value}?filter%5Badvertiser_publish_date%5D=&filter%5Bduration%5D=&filter%5Bquality%5D=&filter%5Bvirtual_reality%5D=&filter%5Badvertiser_site%5D=&filter%5Border_by%5D=duration",
           format: "hyphen",
           defaultSelected: true,
         },
@@ -887,7 +887,13 @@
       const deselectAllOtherBtn = document.getElementById("deselectAllOther");
       // Helper: format value
       function formatValue(rawValue, formatType) {
-        let trimmed = rawValue.trim().toLowerCase(); // <-- add .toLowerCase()
+        let trimmed = rawValue
+          .trim()
+          .toLowerCase()
+          .replace(/[-_/\\%]+/g, " ") // convert separators to spaces
+          .replace(/[^\w\s]/g, "") // remove remaining special chars
+          .replace(/\s+/g, " ") // collapse multiple spaces
+          .trim();
         if (trimmed === "") return "";
         switch (formatType) {
           case "hyphen":
