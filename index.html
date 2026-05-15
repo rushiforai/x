@@ -1218,13 +1218,13 @@
         //   alert("No name or preset selected.");
         //   return false;
         // }
-        const anyChecked = Array.from(
-          document.querySelectorAll(checkboxSelector),
-        ).some((cb) => cb.checked);
-        if (!anyChecked) {
-          alert(`No ${categoryName} selected.`);
-          return false;
-        }
+        // const anyChecked = Array.from(
+        //   document.querySelectorAll(checkboxSelector),
+        // ).some((cb) => cb.checked);
+        // if (!anyChecked) {
+        //   alert(`No ${categoryName} selected.`);
+        //   return false;
+        // }
         let msg = `Open ${categoryName} for: `;
         if (values.length === 1) msg += `"${values[0].value}"`;
         else
