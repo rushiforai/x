@@ -592,6 +592,37 @@
           <button id="openOtherBtn" class="btn-open">OPEN</button>
         </div>
       </div>
+      <!-- FANS SITES -->
+      <div class="card">
+        <div class="card-title">Fans</div>
+
+        <div class="flex-row">
+          <div class="input-group">
+            <input
+              type="text"
+              id="fansInput"
+              placeholder="Enter creator name"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+
+        <div class="select-all-bar">
+          <button id="selectAllFans" class="select-all-btn">
+            ✅ Select All
+          </button>
+
+          <button id="deselectAllFans" class="select-all-btn">
+            ❌ Deselect All
+          </button>
+        </div>
+
+        <div id="fansListContainer" class="urls-section"></div>
+
+        <div class="action-buttons">
+          <button id="openFansBtn" class="btn-open">OPEN</button>
+        </div>
+      </div>
       <!-- <footer>Default checked items are set in code (hardcoded).</footer> -->
     </div>
     <script>
@@ -853,6 +884,98 @@
           defaultSelected: false,
         },
       ];
+
+      const FANS_SITES = [
+        {
+          label: "hotleak.vip",
+          1: "https://hotleak.vip/{value}/video",
+          2: "https://hotleak.vip/search?search={value}",
+          format: "plus",
+          defaultSelected: false,
+        },
+        {
+          label: "kemono",
+          1: "https://kemono.cr/artists?q={value}&service=&sort_by=name&order=",
+          format: "plus",
+          defaultSelected: false,
+        },
+        {
+          label: "coomer",
+          1: "https://coomer.st/artists?q={value}",
+          format: "plus",
+          defaultSelected: false,
+        },
+        {
+          label: "ososedki",
+          1: "https://ososedki.com/search?q={value}",
+          2: "https://ososedki.com/model/{value}",
+          format: "plus",
+          defaultSelected: false,
+        },
+        {
+          label: "redditplug",
+          1: "https://redditplug.com/?s={value}",
+          2: "https://redditplug.com/{value}",
+          format: "plus",
+          defaultSelected: false,
+        },
+        {
+          label: "erothots 1",
+          1: "https://erothots.co/videos/{value}",
+          format: "percent20",
+          defaultSelected: false,
+        },
+        {
+          label: "erothots 2",
+          1: "https://erothots.co/{value}-onlyfans-leaks",
+          format: "hyphen",
+          defaultSelected: false,
+        },
+        {
+          label: "faponic",
+          1: "https://faponic.com/search/{value}",
+          2: "https://faponic.com/",
+          format: "hyphen",
+          defaultSelected: false,
+        },
+        {
+          label: "bunkr albums",
+          1: "https://bunkr-albums.io/?search={value}",
+          format: "plus",
+          defaultSelected: false,
+        },
+        {
+          label: "nudostar",
+          1: "https://nudostar.tv/models/{value}",
+          format: "hyphen",
+          defaultSelected: false,
+        },
+        {
+          label: "fapello",
+          1: "https://fapello.com/{value}",
+          2: "https://fapello.com/search/{value}",
+          3: "https://fapello.com/search_v2/{value}",
+          format: "hyphen",
+          defaultSelected: false,
+        },
+        {
+          label: "x-x-x",
+          1: "https://x-x-x.tube/search/{value}",
+          2: "https://x-x-x.tube/models/{value}",
+          3: "https://x-x-x.video/models/{value}",
+          4: "https://x-x-x.video/search/{value}",
+          format: "hyphen",
+          defaultSelected: false,
+        },
+        {
+          label: "thothub",
+          1: "https://thothub.to/search/{value}",
+          2: "https://thothub.to/models/{value}",
+          format: "hyphen",
+          defaultSelected: false,
+        },
+      ];
+
       // ======================== PRESETS ===============================
       let presetList = [
         "bbc",
@@ -885,6 +1008,100 @@
         document.getElementById("deselectAllPremium");
       const selectAllOtherBtn = document.getElementById("selectAllOther");
       const deselectAllOtherBtn = document.getElementById("deselectAllOther");
+      const fansInput = document.getElementById("fansInput");
+
+      const fansContainer = document.getElementById("fansListContainer");
+
+      const openFansBtn = document.getElementById("openFansBtn");
+
+      const selectAllFansBtn = document.getElementById("selectAllFans");
+
+      const deselectAllFansBtn = document.getElementById("deselectAllFans");
+      function renderFansList() {
+        fansContainer.innerHTML = "";
+
+        FANS_SITES.forEach((item) => {
+          const div = document.createElement("div");
+
+          div.className = "url-check-item";
+
+          const cb = document.createElement("input");
+
+          cb.type = "checkbox";
+
+          cb.className = "fans-checkbox";
+
+          cb.checked = item.defaultSelected;
+
+          const labelSpan = document.createElement("span");
+
+          labelSpan.className = "portal-label";
+
+          labelSpan.textContent = item.label;
+
+          div.appendChild(cb);
+
+          div.appendChild(labelSpan);
+
+          fansContainer.appendChild(div);
+        });
+      }
+      function selectAllFans() {
+        document
+          .querySelectorAll(".fans-checkbox")
+          .forEach((cb) => (cb.checked = true));
+      }
+
+      function deselectAllFans() {
+        document
+          .querySelectorAll(".fans-checkbox")
+          .forEach((cb) => (cb.checked = false));
+      }
+      function openFansUrls() {
+        const rawValue = fansInput.value.trim();
+
+        if (!rawValue) {
+          alert("Enter a name.");
+          return;
+        }
+
+        const checkboxes = document.querySelectorAll(".fans-checkbox");
+
+        const selected = [];
+
+        checkboxes.forEach((cb, idx) => {
+          if (cb.checked) selected.push(idx);
+        });
+
+        if (selected.length === 0) {
+          alert("No Fans sites selected.");
+          return;
+        }
+
+        const confirmed = confirm(`Open Fans URLs for "${rawValue}" ?`);
+
+        if (!confirmed) return;
+
+        for (let idx of selected) {
+          const entry = FANS_SITES[idx];
+
+          if (!entry) continue;
+
+          const formatted = formatValue(rawValue, entry.format);
+
+          Object.keys(entry).forEach((key) => {
+            if (!/^\d+$/.test(key)) return;
+
+            const template = entry[key];
+
+            if (!template) return;
+
+            const url = template.replace(/\{value\}/g, formatted);
+
+            window.open(url, "_blank");
+          });
+        }
+      }
       // Helper: format value
       function formatValue(rawValue, formatType) {
         let trimmed = rawValue
@@ -1249,6 +1466,7 @@
           loadPresets();
           renderPremiumList();
           renderOtherList();
+          renderFansList();
         } else pinErrorSpan.innerText = "❌ Incorrect PIN.";
       }
 
@@ -1260,6 +1478,7 @@
           loadPresets();
           renderPremiumList();
           renderOtherList();
+          renderFansList();
         } else {
           pinModal.style.display = "flex";
           mainAppDiv.style.display = "none";
@@ -1272,6 +1491,11 @@
           "keypress",
           (e) => e.key === "Enter" && unlockWithPin(),
         );
+        openFansBtn.addEventListener("click", openFansUrls);
+
+        selectAllFansBtn.addEventListener("click", selectAllFans);
+
+        deselectAllFansBtn.addEventListener("click", deselectAllFans);
         lockScreenBtn.addEventListener("click", lockScreen);
         darkModeToggle.addEventListener("click", toggleDarkMode);
         nameInput.addEventListener("input", () => {
