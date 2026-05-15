@@ -1007,18 +1007,8 @@
           if (Array.isArray(parsed) && parsed.length) presetList = parsed;
           else presetList = presetList;
         } else presetList = presetList;
-        const storedSelected = localStorage.getItem("portal_selected_presets");
-        if (storedSelected) {
-          const parsedSel = JSON.parse(storedSelected);
-          if (Array.isArray(parsedSel)) {
-            selectedPresets.clear();
-            parsedSel.forEach((p) => selectedPresets.add(p));
-          } else {
-            selectedPresets.clear();
-          }
-        } else {
-          selectedPresets.clear();
-        }
+        selectedPresets.clear();
+        savePresetsSelection();
         renderPresetCheckboxes();
       }
 
@@ -1255,6 +1245,7 @@
           pinModal.style.display = "none";
           mainAppDiv.style.display = "block";
           pinErrorSpan.innerText = "";
+          nameInput.value = "";
           loadPresets();
           renderPremiumList();
           renderOtherList();
@@ -1265,6 +1256,7 @@
         if (sessionStorage.getItem("portal_unlocked") === "true") {
           pinModal.style.display = "none";
           mainAppDiv.style.display = "block";
+          nameInput.value = "";
           loadPresets();
           renderPremiumList();
           renderOtherList();
