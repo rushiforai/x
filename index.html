@@ -602,64 +602,73 @@
       const PREMIUM_PORTALS = [
         {
           label: "Blacked",
-          nameTemplate: "https://blacked.com/performers/{value}",
-          presetTemplate: "https://blacked.com/videos?search={value}",
+          default: "https://blacked.com/videos",
+          model: "https://blacked.com/performers/{value}",
+          preset: "https://blacked.com/videos?search={value}",
           format: "hyphen",
           defaultSelected: true,
         },
         {
           label: "Blacked Raw",
-          nameTemplate: "https://blackedraw.com/performers/{value}",
-          presetTemplate: "https://blackedraw.com/videos?search={value}",
+          default: "https://blackedraw.com/videos",
+          model: "https://blackedraw.com/performers/{value}",
+          preset: "https://blackedraw.com/videos?search={value}",
           format: "hyphen",
           defaultSelected: true,
         },
         {
           label: "Vixen",
-          nameTemplate: "https://vixen.com/performers/{value}",
-          presetTemplate: "https://vixen.com/videos?search={value}",
+          default: "https://vixen.com/videos",
+          model: "https://vixen.com/performers/{value}",
+          preset: "https://vixen.com/videos?search={value}",
           format: "hyphen",
           defaultSelected: true,
         },
         {
           label: "Deeper",
-          nameTemplate: "https://deeper.com/performers/{value}",
-          presetTemplate: "https://deeper.com/videos?search={value}",
+          default: "https://deeper.com/videos",
+          model: "https://deeper.com/performers/{value}",
+          preset: "https://deeper.com/videos?search={value}",
           format: "hyphen",
           defaultSelected: true,
         },
         {
           label: "Milfy",
-          nameTemplate: "https://milfy.com/performers/{value}",
-          presetTemplate: "https://milfy.com/videos?search={value}",
+          default: "https://milfy.com/videos",
+          model: "https://milfy.com/performers/{value}",
+          preset: "https://milfy.com/videos?search={value}",
           format: "hyphen",
           defaultSelected: true,
         },
         {
           label: "Wifey",
-          nameTemplate: "https://wifey.com/performers/{value}",
-          presetTemplate: "https://wifey.com/videos?search={value}",
+          default: "https://wifey.com/videos",
+          model: "https://wifey.com/performers/{value}",
+          preset: "https://wifey.com/videos?search={value}",
           format: "hyphen",
           defaultSelected: true,
         },
         {
           label: "Tushy",
-          nameTemplate: "https://tushy.com/performers/{value}",
-          presetTemplate: "https://tushy.com/videos?search={value}",
+          default: "https://tushy.com/videos",
+          model: "https://tushy.com/performers/{value}",
+          preset: "https://tushy.com/videos?search={value}",
           format: "hyphen",
           defaultSelected: false,
         },
         {
           label: "Tushy Raw",
-          nameTemplate: "https://tushyraw.com/performers/{value}",
-          presetTemplate: "https://tushyraw.com/videos?search={value}",
+          default: "https://tushyraw.com/videos",
+          model: "https://tushyraw.com/performers/{value}",
+          preset: "https://tushyraw.com/videos?search={value}",
           format: "hyphen",
           defaultSelected: false,
         },
         {
           label: "Slayed",
-          nameTemplate: "https://slayed.com/performers/{value}",
-          presetTemplate: "https://slayed.com/videos?search={value}",
+          default: "https://slayed.com/videos",
+          model: "https://slayed.com/performers/{value}",
+          preset: "https://slayed.com/videos?search={value}",
           format: "hyphen",
           defaultSelected: false,
         },
@@ -667,177 +676,179 @@
       const OTHER_SITES = [
         {
           label: "Tube Perverzija",
-          nameTemplate: "https://tube.perverzija.com/stars/{value}",
-          presetTemplate: "https://tube.perverzija.com/tag/{value}",
+          default: "https://tube.perverzija.com/",
+          1: "https://tube.perverzija.com/stars/{value}",
+          preset: "https://tube.perverzija.com/tag/{value}",
           format: "hyphen",
           defaultSelected: true,
         },
         {
           label: "Porn Dish",
-          nameTemplate: "https://porndish.com/video2/{value}",
-          presetTemplate: "https://porndish.com/video2/{value}",
+          default: "https://porndish.com/",
+          1: "https://porndish.com/video2/{value}",
+          preset: "https://porndish.com/video2/{value}",
           format: "hyphen",
           defaultSelected: true,
         },
         {
           label: "Hqpornero",
-          nameTemplate: "https://hqpornero.com/tags/{value}.html",
-          presetTemplate: "https://hqpornero.com/tags/{value}.html",
+          default: "https://hqpornero.com/",
+          1: "https://hqpornero.com/tags/{value}.html",
+          preset: "https://hqpornero.com/tags/{value}.html",
           format: "hyphen",
           defaultSelected: true,
         },
         {
           label: "Pornhoarder",
-          nameTemplate: "https://pornhoarder.tw/search/?search={value}",
-          presetTemplate:
+          default: "https://pornhoarder.tw/",
+          1: "https://pornhoarder.tw/search/?search={value}",
+          preset:
             "https://pornhoarder.tw/search/?search=black+::+bbc+::+interracial+::+blacked+::+blackedraw+::+{value}",
           format: "percent20",
           defaultSelected: true,
         },
         {
           label: "Sxyprn",
-          nameTemplate: "https://sxyprn.com/{value}.html",
-          presetTemplate: "https://sxyprn.com/{value}.html",
+          default: "https://sxyprn.com/",
+          1: "https://sxyprn.com/{value}.html",
+          preset: "https://sxyprn.com/{value}.html",
           format: "hyphen",
           defaultSelected: true,
         },
         {
           label: "ixxx",
-          nameTemplate:
-            "https://www.ixxx.com/pornstar/{value}?filter%5Badvertiser_publish_date%5D=&filter%5Bduration%5D=&filter%5Bquality%5D=&filter%5Bvirtual_reality%5D=&filter%5Badvertiser_site%5D=&filter%5Border_by%5D=duration",
-          presetTemplate:
-            "https://www.ixxx.com/pornstar/{value}?filter%5Badvertiser_publish_date%5D=&filter%5Bduration%5D=&filter%5Bquality%5D=&filter%5Bvirtual_reality%5D=&filter%5Badvertiser_site%5D=&filter%5Border_by%5D=duration",
+          default: "https://www.ixxx.com/",
+          1: "https://www.ixxx.com/pornstar/{value}?filter%5Badvertiser_publish_date%5D=&filter%5Bduration%5D=&filter%5Bquality%5D=&filter%5Bvirtual_reality%5D=&filter%5Badvertiser_site%5D=&filter%5Border_by%5D=duration",
+          2: "https://www.ixxx.com/search/a/{value}?filter%5Badvertiser_publish_date%5D=&filter%5Bduration%5D=&filter%5Bquality%5D=&filter%5Bvirtual_reality%5D=&filter%5Badvertiser_site%5D=&filter%5Border_by%5D=duration",
           format: "hyphen",
-          defaultSelected: true,
-        },
-        {
-          label: "ixxx",
-          nameTemplate:
-            "https://www.ixxx.com/search/a/{value}?filter%5Badvertiser_publish_date%5D=&filter%5Bduration%5D=&filter%5Bquality%5D=&filter%5Bvirtual_reality%5D=&filter%5Badvertiser_site%5D=&filter%5Border_by%5D=duration",
-          presetTemplate:
-            "https://www.ixxx.com/search/a/{value}?filter%5Badvertiser_publish_date%5D=&filter%5Bduration%5D=&filter%5Bquality%5D=&filter%5Bvirtual_reality%5D=&filter%5Badvertiser_site%5D=&filter%5Border_by%5D=duration",
-          format: "percent20",
           defaultSelected: true,
         },
         {
           label: "Mat6tube",
-          nameTemplate: "https://mat6tube.com/video/{value}?sort=1&hd=1",
-          presetTemplate: "https://mat6tube.com/video/{value}?sort=1&hd=1",
+          default: "https://mat6tube.com/",
+          1: "https://mat6tube.com/video/{value}?sort=1&hd=1",
+          preset: "https://mat6tube.com/video/{value}?sort=1&hd=1",
           format: "percent20",
           defaultSelected: false,
         },
         {
           label: "pornone",
-          nameTemplate: "https://pornone.com/search?q={value}?",
-          presetTemplate: "https://pornone.com/{value}?/longest/",
+          default: "https://pornone.com/",
+          1: "https://pornone.com/search?q={value}?",
+          preset: "https://pornone.com/{value}?/longest/",
           format: "percent20",
           defaultSelected: false,
         },
         {
           label: "Fpo",
-          nameTemplate: "https://www.fpo.xxx/models/{value}/",
-          presetTemplate: "https://www.fpo.xxx/models/{value}/",
-          format: "hyphen",
-          defaultSelected: false,
-        },
-        {
-          label: "Fpo",
-          nameTemplate: "https://www.fpo.xxx/search/{value}/",
-          presetTemplate: "https://www.fpo.xxx/search/{value}/",
+          default: "https://www.fpo.xxx/",
+          1: "https://www.fpo.xxx/models/{value}/",
+          2: "https://www.fpo.xxx/search/{value}/",
+          preset: "https://www.fpo.xxx/search/{value}/",
           format: "hyphen",
           defaultSelected: false,
         },
         {
           label: "Xfreehd",
-          nameTemplate:
-            "https://www.xfreehd.com/search?search_query={value}&search_type=videos&o=lg",
-          presetTemplate: "https://www.xfreehd.com/tag/{value}",
+          default: "https://www.xfreehd.com/",
+          1: "https://www.xfreehd.com/search?search_query={value}&search_type=videos&o=lg",
+          preset: "https://www.xfreehd.com/tag/{value}",
           format: "percent20",
           defaultSelected: false,
         },
         {
           label: "Fux",
-          nameTemplate: "https://fux.com/pornstar/{value}",
-          presetTemplate: "https://fux.com/category/{value}",
+          default: "https://fux.com/",
+          1: "https://fux.com/pornstar/{value}",
+          preset: "https://fux.com/category/{value}",
           format: "hyphen",
           defaultSelected: false,
         },
         {
           label: "Youporn",
-          nameTemplate: "https://www.youporn.com/pornstar/{value}/duration/",
-          presetTemplate: "https://www.youporn.com/category/{value}/",
+          default: "https://www.youporn.com/",
+          1: "https://www.youporn.com/pornstar/{value}/duration/",
+          preset: "https://www.youporn.com/category/{value}/",
           format: "hyphen",
           defaultSelected: false,
         },
         {
           label: "Pxxbay",
-          nameTemplate: "https://www.pxxbay.com/?s={value}",
-          presetTemplate: "https://www.pxxbay.com/tag/{value}",
+          default: "https://www.pxxbay.com/",
+          1: "https://www.pxxbay.com/?s={value}",
+          preset: "https://www.pxxbay.com/tag/{value}",
           format: "plus",
           defaultSelected: false,
         },
         {
           label: "Whereismyporn",
-          nameTemplate: "https://whereismyporn.com/?s={value}",
-          presetTemplate: "https://whereismyporn.com/tag/{value}",
+          default: "https://whereismyporn.com/",
+          1: "https://whereismyporn.com/?s={value}",
+          preset: "https://whereismyporn.com/tag/{value}",
           format: "plus",
           defaultSelected: false,
         },
         {
           label: "Fullporner",
-          nameTemplate: "https://fullporner.com/pornstar/{value}",
-          presetTemplate: "https://fullporner.com/category/{value}",
+          default: "https://fullporner.com/",
+          1: "https://fullporner.com/pornstar/{value}",
+          preset: "https://fullporner.com/category/{value}",
           format: "hyphen",
           defaultSelected: false,
         },
         {
           label: "Pornhits",
-          nameTemplate:
-            "https://www.pornhits.com/videos.php?p=1&s=d&ps={value}",
-          presetTemplate:
-            "https://www.pornhits.com/videos.php?p=1&s=l&ct={value}",
+          default: "https://www.pornhits.com/",
+          1: "https://www.pornhits.com/videos.php?p=1&s=d&ps={value}",
+          preset: "https://www.pornhits.com/videos.php?p=1&s=l&ct={value}",
           format: "hyphen",
           defaultSelected: false,
         },
         {
           label: "Porn4days",
-          nameTemplate: "https://porn4days.red/search/?s={value}",
-          presetTemplate: "https://porn4days.red/search/?s={value}",
+          default: "https://porn4days.red/",
+          1: "https://porn4days.red/search/?s={value}",
+          preset: "https://porn4days.red/search/?s={value}",
           format: "plus",
           defaultSelected: false,
         },
         {
           label: "Pornhd3x",
-          nameTemplate: "https://www.pornhd3x.tv/search/{value}",
-          presetTemplate: "https://www.pornhd3x.tv/tag/{value}",
+          default: "https://www.pornhd3x.tv/",
+          1: "https://www.pornhd3x.tv/search/{value}",
+          preset: "https://www.pornhd3x.tv/tag/{value}",
           format: "percent20",
           defaultSelected: false,
         },
         {
           label: "Fullvideosporn",
-          nameTemplate: "https://fullvideosporn.com/videos.php?p=1&q={value}",
-          presetTemplate: "https://fullvideosporn.com/videos.php?p=1&q={value}",
+          default: "https://fullvideosporn.com/",
+          1: "https://fullvideosporn.com/videos.php?p=1&q={value}",
+          preset: "https://fullvideosporn.com/videos.php?p=1&q={value}",
           format: "plus",
           defaultSelected: false,
         },
         {
           label: "Mega-xxx",
-          nameTemplate: "https://top.mega-xxx.name/tags/{value}/",
-          presetTemplate: "https://top.mega-xxx.name/tags/{value}/",
+          default: "https://top.mega-xxx.name/",
+          1: "https://top.mega-xxx.name/tags/{value}/",
+          preset: "https://top.mega-xxx.name/tags/{value}/",
           format: "hyphen",
           defaultSelected: false,
         },
         {
           label: "Pornrips",
-          nameTemplate: "https://pornrips.to/?s={value}",
-          presetTemplate: "https://pornrips.to/tag/{value}",
+          default: "https://pornrips.to/",
+          1: "https://pornrips.to/?s={value}",
+          preset: "https://pornrips.to/tag/{value}",
           format: "plus",
           defaultSelected: false,
         },
         {
           label: "Porntex",
-          nameTemplate: "https://www.porntrex.com/models/{value}/longest/",
-          presetTemplate: "https://www.porntrex.com/tags/{value}/",
+          default: "https://www.porntrex.com/",
+          1: "https://www.porntrex.com/models/{value}/longest/",
+          preset: "https://www.porntrex.com/tags/{value}/",
           format: "hyphen",
           defaultSelected: false,
         },
@@ -851,8 +862,7 @@
         "blacked",
         "blackedraw",
       ];
-      let selectedPresets = new Set(["bbc"]);
-      // ======================== DOM elements ==========================
+      let selectedPresets = new Set(); // ======================== DOM elements ==========================
       const pinModal = document.getElementById("pinModal");
       const mainAppDiv = document.getElementById("mainApp");
       const pinInput = document.getElementById("pinInput");
@@ -901,13 +911,7 @@
             },
           ];
         const selected = Array.from(selectedPresets);
-        if (selected.length === 0)
-          return [
-            {
-              source: "preset",
-              value: "bbc",
-            },
-          ];
+        if (selected.length === 0) return [];
         return selected.map((p) => ({
           source: "preset",
           value: p,
@@ -999,11 +1003,9 @@
             parsedSel.forEach((p) => selectedPresets.add(p));
           } else {
             selectedPresets.clear();
-            selectedPresets.add("bbc");
           }
         } else {
           selectedPresets.clear();
-          selectedPresets.add("bbc");
         }
         renderPresetCheckboxes();
       }
@@ -1033,8 +1035,7 @@
           selectedPresets.delete(p);
         });
         if (presetList.length === 0) presetList.push("bbc");
-        if (selectedPresets.size === 0) selectedPresets.add("bbc");
-        savePresets();
+        if (selectedPresets.size === 0) savePresets();
         renderPresetCheckboxes();
       }
       // Select/Deselect all
@@ -1062,26 +1063,94 @@
           .forEach((cb) => (cb.checked = false));
       }
       // Open URLs
-      function openUrlsForValue(activeValue, urlsArray, checkboxSelector) {
+      function openUrlsForValue(
+        activeValue,
+        urlsArray,
+        checkboxSelector,
+        categoryType,
+      ) {
         const checkboxes = document.querySelectorAll(checkboxSelector);
+
         const selected = [];
+
         checkboxes.forEach((cb, idx) => {
           if (cb.checked) selected.push(idx);
         });
+
         if (selected.length === 0) return false;
+
         for (let idx of selected) {
           const entry = urlsArray[idx];
+
           if (!entry) continue;
-          let template =
-            activeValue.source === "name"
-              ? entry.nameTemplate
-              : entry.presetTemplate;
-          if (!template) continue;
-          let formatted = formatValue(activeValue.value, entry.format);
-          let url = template.replace(/\{value\}/g, formatted);
-          if (!url.startsWith("http")) url = "https://" + url;
-          window.open(url, "_blank");
+
+          // =========================
+          // DEFAULT URL
+          // =========================
+
+          if (!activeValue) {
+            if (entry.default) {
+              window.open(entry.default, "_blank");
+            }
+
+            continue;
+          }
+
+          const formatted = formatValue(activeValue.value, entry.format);
+
+          // =========================
+          // PREMIUM PORTALS
+          // =========================
+
+          if (categoryType === "premium") {
+            let template = null;
+
+            if (activeValue.source === "name") {
+              template = entry.model;
+            } else if (activeValue.source === "preset") {
+              template = entry.preset;
+            }
+
+            if (!template) continue;
+
+            const url = template.replace(/\{value\}/g, formatted);
+
+            window.open(url, "_blank");
+          }
+
+          // =========================
+          // OTHER SITES
+          // =========================
+
+          if (categoryType === "other") {
+            // preset selected
+            if (activeValue.source === "preset") {
+              if (!entry.preset) continue;
+
+              const url = entry.preset.replace(/\{value\}/g, formatted);
+
+              window.open(url, "_blank");
+
+              continue;
+            }
+
+            // name entered
+            if (activeValue.source === "name") {
+              Object.keys(entry).forEach((key) => {
+                if (!/^\d+$/.test(key)) return;
+
+                const template = entry[key];
+
+                if (!template) return;
+
+                const url = template.replace(/\{value\}/g, formatted);
+
+                window.open(url, "_blank");
+              });
+            }
+          }
         }
+
         return true;
       }
 
@@ -1089,7 +1158,54 @@
         urlsArray,
         checkboxSelector,
         categoryName,
+        categoryType,
       ) {
+        const values = getActiveValues();
+
+        const anyChecked = Array.from(
+          document.querySelectorAll(checkboxSelector),
+        ).some((cb) => cb.checked);
+
+        if (!anyChecked) {
+          alert(`No ${categoryName} selected.`);
+          return false;
+        }
+
+        // =========================
+        // NOTHING SELECTED
+        // =========================
+
+        if (values.length === 0) {
+          if (!confirm(`Open default ${categoryName} URLs?`)) {
+            return false;
+          }
+
+          openUrlsForValue(null, urlsArray, checkboxSelector, categoryType);
+
+          return true;
+        }
+
+        // =========================
+        // NORMAL FLOW
+        // =========================
+
+        let msg = `Open ${categoryName} for: `;
+
+        if (values.length === 1) {
+          msg += `"${values[0].value}"`;
+        } else {
+          msg += `${values.length} presets`;
+        }
+
+        if (!confirm(msg + " ?")) return false;
+
+        for (let val of values) {
+          openUrlsForValue(val, urlsArray, checkboxSelector, categoryType);
+        }
+
+        return true;
+      }
+      {
         const values = getActiveValues();
         if (values.length === 0) {
           alert("No name or preset selected.");
@@ -1186,6 +1302,7 @@
             OTHER_SITES,
             ".other-checkbox",
             "Other Sites",
+            "other",
           ),
         );
         selectAllPremiumBtn.addEventListener("click", selectAllPremium);
