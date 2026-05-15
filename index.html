@@ -970,8 +970,14 @@
           cb.value = preset;
           cb.checked = selectedPresets.has(preset);
           cb.addEventListener("change", (e) => {
-            if (e.target.checked) selectedPresets.add(preset);
-            else selectedPresets.delete(preset);
+            // selecting preset clears name input
+            if (e.target.checked) {
+              nameInput.value = "";
+              selectedPresets.add(preset);
+            } else {
+              selectedPresets.delete(preset);
+            }
+
             savePresetsSelection();
           });
           const label = document.createElement("span");
@@ -1276,6 +1282,13 @@
         );
         lockScreenBtn.addEventListener("click", lockScreen);
         darkModeToggle.addEventListener("click", toggleDarkMode);
+        nameInput.addEventListener("input", () => {
+          if (nameInput.value.trim() !== "") {
+            selectedPresets.clear();
+            savePresetsSelection();
+            renderPresetCheckboxes();
+          }
+        });
         addPresetBtn.addEventListener("click", addPreset);
         removeSelectedPresetsBtn.addEventListener(
           "click",
